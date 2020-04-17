@@ -14,21 +14,22 @@
  *
  */
 
-package org.entando.kubernetes.model.debundle;
+package org.entando.kubernetes.model.bundle;
 
 import io.fabric8.kubernetes.api.builder.Builder;
 
-public class EntandoDeBundleBuilder extends EntandoDeBundleFluent<EntandoDeBundleBuilder> implements Builder<EntandoDeBundle> {
+public class EntandoBundleReleaseBuilder extends
+        EntandoBundleReleaseFluent<EntandoBundleReleaseBuilder> implements Builder<EntandoBundleRelease> {
 
-    public EntandoDeBundleBuilder() {
+    public EntandoBundleReleaseBuilder() {
     }
 
-    public EntandoDeBundleBuilder(EntandoDeBundle bundle) {
+    public EntandoBundleReleaseBuilder(EntandoBundleRelease bundle) {
         super(bundle.getSpec(), bundle.getMetadata());
     }
 
     @Override
-    public EntandoDeBundle build() {
-        return new EntandoDeBundle(super.metadata.build(), super.spec.build());
+    public EntandoBundleRelease build() {
+        return new EntandoBundleRelease(super.metadata.build(), super.spec.build());
     }
 }

@@ -14,14 +14,29 @@
  *
  */
 
-package org.entando.kubernetes.model.debundle;
+package org.entando.kubernetes.model.bundle;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.fabric8.kubernetes.client.CustomResourceList;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.fabric8.zjsonpatch.internal.guava.Strings;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+import java.util.Locale;
 
-@JsonDeserialize
 @RegisterForReflection
-public class EntandoDeBundleList extends CustomResourceList<EntandoDeBundle> {
+public enum EntandoBundleFormat {
+    NPM,
+    GIT;
 
+    @JsonValue
+    public String toValue() {
+        return name().toLowerCase();
+    }
+
+    @JsonCreator
+    public static EntandoBundleFormat fromValue(String value) {
+        if (Strings.isNullOrEmpty(value)) {
+            return null;
+        }
+        return valueOf(value.toUpperCase(Locale.getDefault()));
+    }
 }

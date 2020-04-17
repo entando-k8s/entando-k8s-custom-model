@@ -24,10 +24,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.entando.kubernetes.model.app.EntandoApp;
 import org.entando.kubernetes.model.app.EntandoAppOperationFactory;
+import org.entando.kubernetes.model.bundle.EntandoBundleRelease;
+import org.entando.kubernetes.model.bundle.EntandoBundleReleaseOperationFactory;
 import org.entando.kubernetes.model.compositeapp.EntandoCompositeApp;
 import org.entando.kubernetes.model.compositeapp.EntandoCompositeAppOperationFactory;
-import org.entando.kubernetes.model.debundle.EntandoDeBundle;
-import org.entando.kubernetes.model.debundle.EntandoDeBundleOperationFactory;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseService;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseServiceOperationFactory;
 import org.entando.kubernetes.model.infrastructure.EntandoClusterInfrastructure;
@@ -61,7 +61,7 @@ public class EntandoResourceOperationsRegistry {
         operationSuppliers.put(EntandoAppPluginLink.class, EntandoAppPluginLinkOperationFactory::produceAllEntandoAppPluginLinks);
         operationSuppliers.put(EntandoDatabaseService.class, EntandoDatabaseServiceOperationFactory::produceAllEntandoDatabaseServices);
         operationSuppliers.put(EntandoCompositeApp.class, EntandoCompositeAppOperationFactory::produceAllEntandoCompositeApps);
-        operationSuppliers.put(EntandoDeBundle.class, EntandoDeBundleOperationFactory::produceAllEntandoDeBundles);
+        operationSuppliers.put(EntandoBundleRelease.class, EntandoBundleReleaseOperationFactory::produceAllEntandoDeBundles);
         return Collections.unmodifiableMap(operationSuppliers);
     }
 

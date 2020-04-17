@@ -14,14 +14,17 @@
  *
  */
 
-package org.entando.kubernetes.model.debundle;
+package org.entando.kubernetes.model.bundle;
 
-public class EntandoDeBundleTagBuilder extends EntandoDeBundleTagFluent<EntandoDeBundleTagBuilder> {
+public class EntandoBundleReleaseSpecBuilder extends
+        EntandoBundleReleaseSpecFluent<EntandoBundleReleaseSpecBuilder> {
 
-    public EntandoDeBundleTagBuilder(EntandoDeBundleTag tag) {
-        super(tag);
+    public EntandoBundleReleaseSpecBuilder() {
+        super();
     }
 
-    public EntandoDeBundleTagBuilder() {
+    public EntandoBundleReleaseSpecBuilder(EntandoBundleReleaseSpec spec) {
+        super(spec);
     }
+
 }

@@ -14,40 +14,40 @@
  *
  */
 
-package org.entando.kubernetes.model.debundle;
+package org.entando.kubernetes.model.bundle;
 
 import io.fabric8.kubernetes.api.builder.Nested;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
 import org.entando.kubernetes.model.EntandoBaseFluent;
 
-public class EntandoDeBundleFluent<A extends EntandoDeBundleFluent<A>> extends EntandoBaseFluent<A> {
+public class EntandoBundleReleaseFluent<A extends EntandoBundleReleaseFluent<A>> extends EntandoBaseFluent<A> {
 
-    protected EntandoDeBundleSpecBuilder spec;
+    protected EntandoBundleReleaseSpecBuilder spec;
 
-    protected EntandoDeBundleFluent() {
-        this(new ObjectMetaBuilder(), new EntandoDeBundleSpecBuilder());
+    protected EntandoBundleReleaseFluent() {
+        this(new ObjectMetaBuilder(), new EntandoBundleReleaseSpecBuilder());
     }
 
-    protected EntandoDeBundleFluent(EntandoDeBundleSpec spec, ObjectMeta objectMeta) {
-        this(new ObjectMetaBuilder(objectMeta), new EntandoDeBundleSpecBuilder(spec));
+    protected EntandoBundleReleaseFluent(EntandoBundleReleaseSpec spec, ObjectMeta objectMeta) {
+        this(new ObjectMetaBuilder(objectMeta), new EntandoBundleReleaseSpecBuilder(spec));
     }
 
-    private EntandoDeBundleFluent(ObjectMetaBuilder metadata, EntandoDeBundleSpecBuilder spec) {
+    private EntandoBundleReleaseFluent(ObjectMetaBuilder metadata, EntandoBundleReleaseSpecBuilder spec) {
         super(metadata);
         this.spec = spec;
     }
 
-    public SpecNestedImpl<A> editSpec() {
-        return new SpecNestedImpl<>(thisAsA(), this.spec.build());
+    public ReleaseSpecNestedImpl<A> editSpec() {
+        return new ReleaseSpecNestedImpl<>(thisAsA(), this.spec.build());
     }
 
-    public SpecNestedImpl<A> withNewSpec() {
-        return new SpecNestedImpl<>(thisAsA());
+    public ReleaseSpecNestedImpl<A> withNewSpec() {
+        return new ReleaseSpecNestedImpl<>(thisAsA());
     }
 
-    public A withSpec(EntandoDeBundleSpec spec) {
-        this.spec = new EntandoDeBundleSpecBuilder(spec);
+    public A withSpec(EntandoBundleReleaseSpec spec) {
+        this.spec = new EntandoBundleReleaseSpecBuilder(spec);
         return thisAsA();
     }
 
@@ -56,17 +56,18 @@ public class EntandoDeBundleFluent<A extends EntandoDeBundleFluent<A>> extends E
         return (A) this;
     }
 
-    public static class SpecNestedImpl<N extends EntandoDeBundleFluent> extends EntandoDeBundleSpecFluent<SpecNestedImpl<N>> implements
+    public static class ReleaseSpecNestedImpl<N extends EntandoBundleReleaseFluent> extends
+            EntandoBundleReleaseSpecFluent<ReleaseSpecNestedImpl<N>> implements
             Nested<N> {
 
         private final N parentBuilder;
 
-        SpecNestedImpl(N parentBuilder, EntandoDeBundleSpec spec) {
+        ReleaseSpecNestedImpl(N parentBuilder, EntandoBundleReleaseSpec spec) {
             super(spec);
             this.parentBuilder = parentBuilder;
         }
 
-        public SpecNestedImpl(N parentBuilder) {
+        public ReleaseSpecNestedImpl(N parentBuilder) {
             super();
             this.parentBuilder = parentBuilder;
         }

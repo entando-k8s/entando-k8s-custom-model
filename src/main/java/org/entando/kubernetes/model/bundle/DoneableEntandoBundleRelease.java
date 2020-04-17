@@ -14,7 +14,7 @@
  *
  */
 
-package org.entando.kubernetes.model.debundle;
+package org.entando.kubernetes.model.bundle;
 
 import io.fabric8.kubernetes.api.builder.Function;
 import java.util.Optional;
@@ -23,37 +23,37 @@ import org.entando.kubernetes.model.DoneableEntandoCustomResource;
 import org.entando.kubernetes.model.EntandoCustomResourceStatus;
 import org.entando.kubernetes.model.EntandoDeploymentPhase;
 
-public class DoneableEntandoDeBundle extends EntandoDeBundleFluent<DoneableEntandoDeBundle> implements
-        DoneableEntandoCustomResource<DoneableEntandoDeBundle, EntandoDeBundle> {
+public class DoneableEntandoBundleRelease extends EntandoBundleReleaseFluent<DoneableEntandoBundleRelease> implements
+        DoneableEntandoCustomResource<DoneableEntandoBundleRelease, EntandoBundleRelease> {
 
     private final EntandoCustomResourceStatus status;
-    private final Function<EntandoDeBundle, EntandoDeBundle> function;
+    private final Function<EntandoBundleRelease, EntandoBundleRelease> function;
 
-    public DoneableEntandoDeBundle(Function<EntandoDeBundle, EntandoDeBundle> function) {
+    public DoneableEntandoBundleRelease(Function<EntandoBundleRelease, EntandoBundleRelease> function) {
         this.function = function;
         this.status = new EntandoCustomResourceStatus();
     }
 
-    public DoneableEntandoDeBundle(EntandoDeBundle resource, Function<EntandoDeBundle, EntandoDeBundle> function) {
+    public DoneableEntandoBundleRelease(EntandoBundleRelease resource, Function<EntandoBundleRelease, EntandoBundleRelease> function) {
         super(resource.getSpec(), resource.getMetadata());
         this.status = Optional.ofNullable(resource.getStatus()).orElse(new EntandoCustomResourceStatus());
         this.function = function;
     }
 
     @Override
-    public DoneableEntandoDeBundle withStatus(AbstractServerStatus serverStatus) {
+    public DoneableEntandoBundleRelease withStatus(AbstractServerStatus serverStatus) {
         this.status.putServerStatus(serverStatus);
         return this;
     }
 
     @Override
-    public DoneableEntandoDeBundle withPhase(EntandoDeploymentPhase phase) {
+    public DoneableEntandoBundleRelease withPhase(EntandoDeploymentPhase phase) {
         status.setEntandoDeploymentPhase(phase);
         return this;
     }
 
     @Override
-    public EntandoDeBundle done() {
-        return function.apply(new EntandoDeBundle(metadata.build(), spec.build(), status));
+    public EntandoBundleRelease done() {
+        return function.apply(new EntandoBundleRelease(metadata.build(), spec.build(), status));
     }
 }

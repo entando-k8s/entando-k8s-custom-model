@@ -33,8 +33,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.entando.kubernetes.model.app.EntandoApp;
+import org.entando.kubernetes.model.bundle.EntandoBundleRelease;
 import org.entando.kubernetes.model.compositeapp.EntandoCompositeApp;
-import org.entando.kubernetes.model.debundle.EntandoDeBundle;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseService;
 import org.entando.kubernetes.model.infrastructure.EntandoClusterInfrastructure;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServer;
@@ -78,7 +78,7 @@ public class EntandoCustomResourceResolver<R extends EntandoCustomResource, L ex
         KubernetesDeserializer.registerCustomKind("entando.org/v1#EntandoKeycloakServer", EntandoKeycloakServer.class);
         KubernetesDeserializer.registerCustomKind("entando.org/v1#EntandoAppPluginLink", EntandoAppPluginLink.class);
         KubernetesDeserializer.registerCustomKind("entando.org/v1#EntandoDatabaseService", EntandoDatabaseService.class);
-        KubernetesDeserializer.registerCustomKind("entando.org/v1#EntandoDeBundle", EntandoDeBundle.class);
+        KubernetesDeserializer.registerCustomKind("entando.org/v1#EntandoBundleRelease", EntandoBundleRelease.class);
         KubernetesDeserializer.registerCustomKind("entando.org/v1#EntandoCompositeApp", EntandoCompositeApp.class);
     }
 

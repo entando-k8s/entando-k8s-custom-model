@@ -14,7 +14,7 @@
  *
  */
 
-package org.entando.kubernetes.model.debundle;
+package org.entando.kubernetes.model.bundle;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -23,8 +23,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import java.io.Serializable;
+import org.entando.kubernetes.model.EntandoBaseCustomResource;
+import org.entando.kubernetes.model.EntandoCustomResourceStatus;
 
 @JsonSerialize
 @JsonDeserialize
@@ -33,36 +35,28 @@ import java.io.Serializable;
         setterVisibility = Visibility.NONE)
 @RegisterForReflection
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EntandoDeBundleTag implements Serializable {
+public class EntandoBundleRelease extends EntandoBaseCustomResource<EntandoBundleReleaseSpec> {
 
-    private String version;
-    private String integrity;
-    private String shasum;
-    private String tarball;
+    public static final String CRD_NAME = "entandobundlereleases.entando.org";
 
-    public EntandoDeBundleTag(String version, String integrity, String shasum, String tarball) {
-        this.version = version;
-        this.integrity = integrity;
-        this.shasum = shasum;
-        this.tarball = tarball;
+    public EntandoBundleRelease() {
+        this(null);
     }
 
-    public EntandoDeBundleTag() {
+    public EntandoBundleRelease(EntandoBundleReleaseSpec spec) {
+        this(new ObjectMeta(), spec);
     }
 
-    public String getVersion() {
-        return version;
+    public EntandoBundleRelease(ObjectMeta metadata, EntandoBundleReleaseSpec spec) {
+        this(metadata, spec, null);
     }
 
-    public String getIntegrity() {
-        return integrity;
+    public EntandoBundleRelease(ObjectMeta metadata, EntandoBundleReleaseSpec spec, EntandoCustomResourceStatus status) {
+        super(metadata, spec, status);
     }
 
-    public String getShasum() {
-        return shasum;
-    }
-
-    public String getTarball() {
-        return tarball;
+    @Override
+    public String getDefinitionName() {
+        return CRD_NAME;
     }
 }

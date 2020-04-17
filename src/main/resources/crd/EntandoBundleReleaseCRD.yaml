@@ -1,0 +1,45 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: entandobundlereleases.entando.org
+spec:
+  group: entando.org
+  version: v1
+  names:
+    kind: EntandoBundleRelease
+    plural: entandobundlereleases
+  scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      properties:
+        spec:
+          type: object
+          properties:
+              name:
+                type: string
+              title:
+                type: string
+              organization:
+                type: string
+              description:
+                type: string
+              thumbnail:
+                type: string
+                maxLength: 320000
+              version:
+                type: object
+              url:
+                type: string
+              format:
+                type: string
+              author:
+                type: string
+              signature:
+                type: string
+              sha256:
+                type: string
+              certificate:
+                type: string
+              releaseAt:
+                type: string
+        entandoStatus: {}

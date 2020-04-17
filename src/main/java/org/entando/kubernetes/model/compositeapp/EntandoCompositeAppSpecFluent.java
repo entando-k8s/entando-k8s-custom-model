@@ -30,8 +30,8 @@ import org.entando.kubernetes.model.EntandoBaseFluent;
 import org.entando.kubernetes.model.app.EntandoApp;
 import org.entando.kubernetes.model.app.EntandoAppBuilder;
 import org.entando.kubernetes.model.app.EntandoAppFluent;
-import org.entando.kubernetes.model.debundle.EntandoDeBundle;
-import org.entando.kubernetes.model.debundle.EntandoDeBundleBuilder;
+import org.entando.kubernetes.model.bundle.EntandoBundleRelease;
+import org.entando.kubernetes.model.bundle.EntandoBundleReleaseBuilder;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseService;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseServiceBuilder;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseServiceFluent;
@@ -70,7 +70,7 @@ public abstract class EntandoCompositeAppSpecFluent<A extends EntandoCompositeAp
         result.put(EntandoPlugin.class, EntandoPluginBuilder.class);
         result.put(EntandoAppPluginLink.class, EntandoAppPluginLinkBuilder.class);
         result.put(EntandoDatabaseService.class, EntandoDatabaseServiceBuilder.class);
-        result.put(EntandoDeBundle.class, EntandoDeBundleBuilder.class);
+        result.put(EntandoBundleRelease.class, EntandoBundleReleaseBuilder.class);
         return result;
     }
 
