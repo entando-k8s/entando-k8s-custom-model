@@ -44,6 +44,7 @@ public abstract class AbstractEntandoBundleReleaseTest implements CustomResource
     public static final String BUNDLE_RELEASE_AT = "2020-04-17T15:30:00Z";
 
     protected static final String BUNDLE_NAMESPACE = TestConfig.calculateNameSpace("my-namespace");
+    public static final String BUNDLER_CRT = "BUNDLER_CRT";
     private EntandoResourceOperationsRegistry registry;
 
     @BeforeEach
@@ -83,19 +84,19 @@ public abstract class AbstractEntandoBundleReleaseTest implements CustomResource
         EntandoBundleRelease actual = entandoDeBundles().inNamespace(BUNDLE_NAMESPACE).withName(BUNDLE_NAME).get();
 
         //Then
-        assertThat(actual.getSpec().getName(), is(BUNDLE_NAME));
-        assertThat(actual.getSpec().getOrganization(), is(BUNDLE_ORGANIZATION));
-        assertThat(actual.getSpec().getDescription(), is(BUNDLE_DESCRIPTION));
-        assertThat(actual.getSpec().getThumbnail(), is(BUNDLE_THUMBNAIL));
-        assertThat(actual.getSpec().getTitle(), is(BUNDLE_TITLE));
-        assertThat(actual.getSpec().getVersion(), is(BUNDLE_VERSION));
-        assertThat(actual.getSpec().getUrl(), is(BUNDLE_URL));
-        assertThat(actual.getSpec().getFormat(), is(EntandoBundleFormat.GIT));
-        assertThat(actual.getSpec().getAuthor(), is(BUNDLE_AUTHOR));
-        assertThat(actual.getSpec().getSha256(), is(BUNDLE_SHA256));
-        assertThat(actual.getSpec().getSignature(), is(BUNDLE_SIGNATURE));
-        assertThat(actual.getSpec().getCertificate(), is(null));
-        assertThat(actual.getSpec().getReleaseAt(), is(BUNDLE_RELEASE_AT));
+        assertThat(actual.getSpec().getName().get(), is(BUNDLE_NAME));
+        assertThat(actual.getSpec().getOrganization().get(), is(BUNDLE_ORGANIZATION));
+        assertThat(actual.getSpec().getDescription().get(), is(BUNDLE_DESCRIPTION));
+        assertThat(actual.getSpec().getThumbnail().get(), is(BUNDLE_THUMBNAIL));
+        assertThat(actual.getSpec().getTitle().get(), is(BUNDLE_TITLE));
+        assertThat(actual.getSpec().getVersion().get(), is(BUNDLE_VERSION));
+        assertThat(actual.getSpec().getUrl().get(), is(BUNDLE_URL));
+        assertThat(actual.getSpec().getFormat().get(), is(EntandoBundleFormat.GIT));
+        assertThat(actual.getSpec().getAuthor().get(), is(BUNDLE_AUTHOR));
+        assertThat(actual.getSpec().getSha256().get(), is(BUNDLE_SHA256));
+        assertThat(actual.getSpec().getSignature().get(), is(BUNDLE_SIGNATURE));
+        assertThat(actual.getSpec().getCertificate().isPresent(), is(false));
+        assertThat(actual.getSpec().getReleaseAt().get(), is(BUNDLE_RELEASE_AT));
         assertThat(actual.getMetadata().getName(), is(BUNDLE_NAME));
     }
 
@@ -133,12 +134,12 @@ public abstract class AbstractEntandoBundleReleaseTest implements CustomResource
                 .withPhase(EntandoDeploymentPhase.STARTED)
                 .done();
         //Then
-        assertThat(actual.getSpec().getName(), is(BUNDLE_NAME));
-        assertThat(actual.getSpec().getDescription(), is(BUNDLE_DESCRIPTION));
-        assertThat(actual.getSpec().getThumbnail(), is(BUNDLE_THUMBNAIL));
-        assertThat(actual.getSpec().getVersion(), is(BUNDLE_VERSION));
-        assertThat(actual.getSpec().getSha256(), is(BUNDLE_SHA256));
-        assertThat(actual.getSpec().getUrl(), is(BUNDLE_URL));
+        assertThat(actual.getSpec().getName().get(), is(BUNDLE_NAME));
+        assertThat(actual.getSpec().getDescription().get(), is(BUNDLE_DESCRIPTION));
+        assertThat(actual.getSpec().getThumbnail().get(), is(BUNDLE_THUMBNAIL));
+        assertThat(actual.getSpec().getVersion().get(), is(BUNDLE_VERSION));
+        assertThat(actual.getSpec().getSha256().get(), is(BUNDLE_SHA256));
+        assertThat(actual.getSpec().getUrl().get(), is(BUNDLE_URL));
         assertThat(actual.getMetadata().getName(), is(BUNDLE_NAME));
     }
 

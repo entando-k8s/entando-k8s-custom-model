@@ -27,7 +27,7 @@ spec:
                 type: string
                 maxLength: 320000
               version:
-                type: object
+                type: string
               url:
                 type: string
               format:
