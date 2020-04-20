@@ -23,13 +23,14 @@ import org.entando.kubernetes.model.EntandoCustomResourceResolver;
 public final class EntandoBundleReleaseOperationFactory {
 
     private static EntandoCustomResourceResolver<EntandoBundleRelease, EntandoBundleReleaseList, DoneableEntandoBundleRelease> resolver =
-            new EntandoCustomResourceResolver<>(EntandoBundleRelease.class, EntandoBundleReleaseList.class, DoneableEntandoBundleRelease.class);
+            new EntandoCustomResourceResolver<>(EntandoBundleRelease.class, EntandoBundleReleaseList.class,
+                    DoneableEntandoBundleRelease.class);
 
     private EntandoBundleReleaseOperationFactory() {
     }
 
-    public static CustomResourceOperationsImpl<EntandoBundleRelease, EntandoBundleReleaseList, DoneableEntandoBundleRelease> produceAllEntandoDeBundles(
-            KubernetesClient client) {
+    public static CustomResourceOperationsImpl<EntandoBundleRelease,
+            EntandoBundleReleaseList, DoneableEntandoBundleRelease> produceAllEntandoDeBundles(KubernetesClient client) {
         return resolver.resolveOperation(client);
     }
 }
