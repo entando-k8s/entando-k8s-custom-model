@@ -61,7 +61,7 @@ public class EntandoResourceOperationsRegistry {
         operationSuppliers.put(EntandoAppPluginLink.class, EntandoAppPluginLinkOperationFactory::produceAllEntandoAppPluginLinks);
         operationSuppliers.put(EntandoDatabaseService.class, EntandoDatabaseServiceOperationFactory::produceAllEntandoDatabaseServices);
         operationSuppliers.put(EntandoCompositeApp.class, EntandoCompositeAppOperationFactory::produceAllEntandoCompositeApps);
-        operationSuppliers.put(EntandoBundleRelease.class, EntandoBundleReleaseOperationFactory::produceAllEntandoDeBundles);
+        operationSuppliers.put(EntandoBundleRelease.class, EntandoBundleReleaseOperationFactory::produceAllEntandoBundleReleases);
         return Collections.unmodifiableMap(operationSuppliers);
     }
 

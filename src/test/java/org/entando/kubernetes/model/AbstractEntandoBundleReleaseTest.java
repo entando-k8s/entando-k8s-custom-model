@@ -48,13 +48,13 @@ public abstract class AbstractEntandoBundleReleaseTest implements CustomResource
     private EntandoResourceOperationsRegistry registry;
 
     @BeforeEach
-    public void deleteEntandoDeBundles() {
+    public void deleteEntandoBundleReleases() {
         this.registry = new EntandoResourceOperationsRegistry(getClient());
-        prepareNamespace(entandoDeBundles(), BUNDLE_NAMESPACE);
+        prepareNamespace(entandoBundleReleases(), BUNDLE_NAMESPACE);
     }
 
     @Test
-    public void testCreateEntandoDeBundle() {
+    public void testCreateEntandoBundleRelease() {
         //Given
         EntandoBundleRelease entandoBundleRelease = new EntandoBundleReleaseBuilder()
                 .withNewMetadata()
@@ -78,10 +78,10 @@ public abstract class AbstractEntandoBundleReleaseTest implements CustomResource
                 .withReleaseAt(BUNDLE_RELEASE_AT)
                 .endSpec()
                 .build();
-        entandoDeBundles().inNamespace(BUNDLE_NAMESPACE).createNew().withMetadata(entandoBundleRelease.getMetadata())
+        entandoBundleReleases().inNamespace(BUNDLE_NAMESPACE).createNew().withMetadata(entandoBundleRelease.getMetadata())
                 .withSpec(entandoBundleRelease.getSpec()).done();
         //When
-        EntandoBundleRelease actual = entandoDeBundles().inNamespace(BUNDLE_NAMESPACE).withName(BUNDLE_NAME).get();
+        EntandoBundleRelease actual = entandoBundleReleases().inNamespace(BUNDLE_NAMESPACE).withName(BUNDLE_NAME).get();
 
         //Then
         assertThat(actual.getSpec().getName().get(), is(BUNDLE_NAME));
@@ -101,7 +101,7 @@ public abstract class AbstractEntandoBundleReleaseTest implements CustomResource
     }
 
     @Test
-    public void testEditEntandoDeBundle() {
+    public void testEditEntandoBundleRelease() {
         //Given
         EntandoBundleRelease entandoApp = new EntandoBundleReleaseBuilder()
                 .withNewMetadata()
@@ -120,7 +120,7 @@ public abstract class AbstractEntandoBundleReleaseTest implements CustomResource
                 .build();
         //When
         //We are not using the mock server here because of a known bug
-        EntandoBundleRelease actual = editEntandoDeBundle(entandoApp)
+        EntandoBundleRelease actual = editEntandoBundleRelease(entandoApp)
                 .editMetadata()
                 .endMetadata()
                 .editSpec()
@@ -143,13 +143,13 @@ public abstract class AbstractEntandoBundleReleaseTest implements CustomResource
         assertThat(actual.getMetadata().getName(), is(BUNDLE_NAME));
     }
 
-    protected DoneableEntandoBundleRelease editEntandoDeBundle(EntandoBundleRelease entandoApp) {
-        entandoDeBundles().inNamespace(BUNDLE_NAMESPACE).create(entandoApp);
-        return entandoDeBundles().inNamespace(BUNDLE_NAMESPACE).withName(BUNDLE_NAME).edit();
+    protected DoneableEntandoBundleRelease editEntandoBundleRelease(EntandoBundleRelease entandoApp) {
+        entandoBundleReleases().inNamespace(BUNDLE_NAMESPACE).create(entandoApp);
+        return entandoBundleReleases().inNamespace(BUNDLE_NAMESPACE).withName(BUNDLE_NAME).edit();
     }
 
     protected CustomResourceOperationsImpl<EntandoBundleRelease, CustomResourceList<EntandoBundleRelease>,
-            DoneableEntandoBundleRelease> entandoDeBundles() {
+            DoneableEntandoBundleRelease> entandoBundleReleases() {
         return registry.getOperations(EntandoBundleRelease.class);
     }
 

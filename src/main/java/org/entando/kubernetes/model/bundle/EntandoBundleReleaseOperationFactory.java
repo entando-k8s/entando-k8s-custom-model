@@ -30,7 +30,7 @@ public final class EntandoBundleReleaseOperationFactory {
     }
 
     public static CustomResourceOperationsImpl<EntandoBundleRelease,
-            EntandoBundleReleaseList, DoneableEntandoBundleRelease> produceAllEntandoDeBundles(KubernetesClient client) {
+            EntandoBundleReleaseList, DoneableEntandoBundleRelease> produceAllEntandoBundleReleases(KubernetesClient client) {
         return resolver.resolveOperation(client);
     }
 }
