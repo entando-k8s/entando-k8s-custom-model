@@ -28,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import org.entando.kubernetes.model.DbmsVendor;
 import org.entando.kubernetes.model.EntandoBaseCustomResource;
+import org.entando.kubernetes.model.EntandoCustomResourceStatus;
 import org.entando.kubernetes.model.EntandoFluent;
 import org.entando.kubernetes.model.app.EntandoApp;
 import org.entando.kubernetes.model.app.EntandoAppBuilder;
@@ -54,7 +55,7 @@ import org.entando.kubernetes.model.plugin.EntandoPluginFluent;
 @SuppressWarnings("java:S1452")
 public abstract class EntandoCompositeAppSpecFluent<F extends EntandoCompositeAppSpecFluent<F>> {
 
-    private static final Map<Class<? extends EntandoBaseCustomResource<? extends Serializable>>,
+    private static final Map<Class<? extends EntandoBaseCustomResource<? extends Serializable, EntandoCustomResourceStatus>>,
             Class<? extends EntandoFluent<?>>> BUILDERS = createBuilderMap();
     protected List<EntandoFluent<?>> components;
     private String ingressHostNameOverride;
@@ -72,7 +73,7 @@ public abstract class EntandoCompositeAppSpecFluent<F extends EntandoCompositeAp
         this.components = new ArrayList<>();
     }
 
-    public static EntandoFluent<?> newBuilderFrom(EntandoBaseCustomResource<? extends Serializable> r) {
+    public static EntandoFluent<?> newBuilderFrom(EntandoBaseCustomResource<? extends Serializable, EntandoCustomResourceStatus> r) {
         try {
             return BUILDERS.get(r.getClass()).getConstructor(r.getClass()).newInstance(r);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -80,9 +81,9 @@ public abstract class EntandoCompositeAppSpecFluent<F extends EntandoCompositeAp
         }
     }
 
-    private static Map<Class<? extends EntandoBaseCustomResource<? extends Serializable>>,
+    private static Map<Class<? extends EntandoBaseCustomResource<? extends Serializable, EntandoCustomResourceStatus>>,
             Class<? extends EntandoFluent<?>>> createBuilderMap() {
-        Map<Class<? extends EntandoBaseCustomResource<? extends Serializable>>,
+        Map<Class<? extends EntandoBaseCustomResource<? extends Serializable, EntandoCustomResourceStatus>>,
                 Class<? extends EntandoFluent<?>>> result = new ConcurrentHashMap<>();
         result.put(EntandoKeycloakServer.class, EntandoKeycloakServerBuilder.class);
         result.put(EntandoClusterInfrastructure.class, EntandoClusterInfrastructureBuilder.class);
@@ -110,17 +111,18 @@ public abstract class EntandoCompositeAppSpecFluent<F extends EntandoCompositeAp
         return thisAsF();
     }
 
-    public F withComponents(List<EntandoBaseCustomResource<? extends Serializable>> components) {
+    public F withComponents(List<EntandoBaseCustomResource<? extends Serializable, EntandoCustomResourceStatus>> components) {
         this.components = createComponentBuilders(components);
         return thisAsF();
     }
 
     @SafeVarargs
-    public final F withComponents(EntandoBaseCustomResource<? extends Serializable>... components) {
+    public final F withComponents(EntandoBaseCustomResource<? extends Serializable, EntandoCustomResourceStatus>... components) {
         return withComponents(Arrays.asList(components));
     }
 
-    private List<EntandoFluent<?>> createComponentBuilders(List<EntandoBaseCustomResource<? extends Serializable>> components) {
+    private List<EntandoFluent<?>> createComponentBuilders(
+            List<EntandoBaseCustomResource<? extends Serializable, EntandoCustomResourceStatus>> components) {
         return components.stream()
                 .map(EntandoCompositeAppSpecFluent::newBuilderFrom).collect(Collectors.<EntandoFluent<?>>toList());
     }
@@ -136,7 +138,7 @@ public abstract class EntandoCompositeAppSpecFluent<F extends EntandoCompositeAp
         return new EntandoCompositeAppSpec(this.components.stream()
                 .map(Builder.class::cast)
                 .map(Builder::build)
-                .map(o -> (EntandoBaseCustomResource<?>) o)
+                .map(o -> (EntandoBaseCustomResource<?, EntandoCustomResourceStatus>) o)
                 .collect(Collectors.toList()), ingressHostNameOverride, dbmsOverride, tlsSecretNameOverride);
     }
 

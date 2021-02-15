@@ -26,6 +26,7 @@ public class MetadataNestedImpl<N extends EntandoBaseFluent<N>> extends ObjectMe
 
     private final N parentBuilder;
     private final ObjectMetaBuilder objectMetaBuilder;
+    private final Object hashCode = new Object();
 
     public MetadataNestedImpl(N parentBuilder, ObjectMeta item) {
         super();
@@ -47,7 +48,7 @@ public class MetadataNestedImpl<N extends EntandoBaseFluent<N>> extends ObjectMe
 
     @Override
     public int hashCode() {
-        return this.objectMetaBuilder.hashCode();
+        return this.hashCode.hashCode();
     }
 
     public N endMetadata() {

@@ -20,10 +20,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
-import io.fabric8.kubernetes.client.CustomResourceList;
-import io.fabric8.kubernetes.client.dsl.internal.CustomResourceOperationsImpl;
+import io.fabric8.kubernetes.api.model.KubernetesResourceList;
+import io.fabric8.kubernetes.client.dsl.MixedOperation;
+import io.fabric8.kubernetes.client.dsl.Resource;
 import org.entando.kubernetes.model.app.EntandoAppBuilder;
-import org.entando.kubernetes.model.compositeapp.DoneableEntandoCompositeApp;
 import org.entando.kubernetes.model.compositeapp.EntandoCompositeApp;
 import org.entando.kubernetes.model.compositeapp.EntandoCompositeAppBuilder;
 import org.entando.kubernetes.model.compositeapp.EntandoCustomResourceReference;
@@ -51,11 +51,9 @@ public abstract class AbstractEntandoCompositeAppTest implements CustomResourceT
     public static final String MY_PLUGIN_REF = "my-plugin-ref";
     private static final String MY_HOSTNAME = "my.hostname.com";
     private static final String MY_TLS_SECRET = "my-tls-secret";
-    private EntandoResourceOperationsRegistry registry;
 
     @BeforeEach
     public void deleteEntandoCompositeApps() {
-        registry = new EntandoResourceOperationsRegistry(getClient());
         prepareNamespace(entandoCompositeApps(), MY_NAMESPACE);
     }
 
@@ -86,9 +84,7 @@ public abstract class AbstractEntandoCompositeAppTest implements CustomResourceT
                 .endEntandoCustomResourceReference()
                 .endSpec()
                 .build();
-        entandoCompositeApps().inNamespace(MY_NAMESPACE).createNew().withMetadata(entandoCompositeApp.getMetadata())
-                .withSpec(entandoCompositeApp.getSpec())
-                .done();
+        entandoCompositeApps().inNamespace(MY_NAMESPACE).create(entandoCompositeApp);
         //When
         EntandoCompositeApp actual = entandoCompositeApps().inNamespace(MY_NAMESPACE).withName(MY_COMPOSITE_APP).get();
         //Then
@@ -134,31 +130,34 @@ public abstract class AbstractEntandoCompositeAppTest implements CustomResourceT
 
         //When
         //We are not using the mock server here because of a known bug
-        entandoCompositeApps().inNamespace(MY_NAMESPACE).create(entandoCompositeApp);
-        EntandoCompositeApp actual = entandoCompositeApps().inNamespace(MY_NAMESPACE).withName(MY_COMPOSITE_APP).edit()
-                .editMetadata().addToLabels("my-label", "my-value")
-                .endMetadata()
-                .editSpec()
-                .withIngressHostNameOverride(MY_HOSTNAME)
-                .withDbmsOverride(DbmsVendor.MYSQL)
-                .withTlsSecretNameOverride(MY_TLS_SECRET)
-                .withComponents(
-                        new EntandoKeycloakServerBuilder().withNewMetadata().withName(MY_KEYCLOAK).endMetadata().build(),
-                        new EntandoClusterInfrastructureBuilder().withNewMetadata().withName(MY_CLUSTER_INFRASTRUCTURE).endMetadata()
-                                .build(),
-                        new EntandoAppBuilder().withNewMetadata().withName(MY_APP).endMetadata().build(),
-                        new EntandoPluginBuilder().withNewMetadata().withName(MY_PLUGIN).endMetadata().build(),
-                        new EntandoAppPluginLinkBuilder().withNewMetadata().withName(MY_APP_PLUGIN_LINK).endMetadata().build(),
-                        new EntandoDatabaseServiceBuilder().withNewMetadata().withName(MY_DATABASE_SERVICE).endMetadata().build(),
-                        new EntandoCustomResourceReferenceBuilder().withNewMetadata().withName(MY_PLUGIN_REF).endMetadata().editSpec()
-                                .withTargetKind("EntandoPlugin")
-                                .withTargetName(MY_PLUGIN)
-                                .withTargetNamespace(MY_NAMESPACE)
-                                .endSpec()
-                                .build()
-                )
-                .endSpec()
-                .done();
+        final EntandoCompositeAppBuilder toEdit = new EntandoCompositeAppBuilder(
+                entandoCompositeApps().inNamespace(MY_NAMESPACE).create(entandoCompositeApp));
+        EntandoCompositeApp actual = entandoCompositeApps().inNamespace(MY_NAMESPACE).withName(MY_COMPOSITE_APP).patch(
+                toEdit.editMetadata().addToLabels("my-label", "my-value")
+                        .endMetadata()
+                        .editSpec()
+                        .withIngressHostNameOverride(MY_HOSTNAME)
+                        .withDbmsOverride(DbmsVendor.MYSQL)
+                        .withTlsSecretNameOverride(MY_TLS_SECRET)
+                        .withComponents(
+                                new EntandoKeycloakServerBuilder().withNewMetadata().withName(MY_KEYCLOAK).endMetadata().build(),
+                                new EntandoClusterInfrastructureBuilder().withNewMetadata().withName(MY_CLUSTER_INFRASTRUCTURE)
+                                        .endMetadata()
+                                        .build(),
+                                new EntandoAppBuilder().withNewMetadata().withName(MY_APP).endMetadata().build(),
+                                new EntandoPluginBuilder().withNewMetadata().withName(MY_PLUGIN).endMetadata().build(),
+                                new EntandoAppPluginLinkBuilder().withNewMetadata().withName(MY_APP_PLUGIN_LINK).endMetadata().build(),
+                                new EntandoDatabaseServiceBuilder().withNewMetadata().withName(MY_DATABASE_SERVICE).endMetadata().build(),
+                                new EntandoCustomResourceReferenceBuilder().withNewMetadata().withName(MY_PLUGIN_REF).endMetadata()
+                                        .editSpec()
+                                        .withTargetKind("EntandoPlugin")
+                                        .withTargetName(MY_PLUGIN)
+                                        .withTargetNamespace(MY_NAMESPACE)
+                                        .endSpec()
+                                        .build()
+                        )
+                        .endSpec()
+                        .build());
         actual.getStatus().putServerStatus(new WebServerStatus("some-qualifier"));
         actual.getStatus().putServerStatus(new WebServerStatus("some-other-qualifier"));
         actual.getStatus().putServerStatus(new WebServerStatus("some-qualifier"));
@@ -191,9 +190,8 @@ public abstract class AbstractEntandoCompositeAppTest implements CustomResourceT
 
     }
 
-    protected CustomResourceOperationsImpl<EntandoCompositeApp, CustomResourceList<EntandoCompositeApp>,
-            DoneableEntandoCompositeApp> entandoCompositeApps() {
-        return registry.getOperations(EntandoCompositeApp.class);
+    protected MixedOperation<EntandoCompositeApp, KubernetesResourceList<EntandoCompositeApp>, Resource<EntandoCompositeApp>> entandoCompositeApps() {
+        return getClient().customResources(EntandoCompositeApp.class);
 
     }
 }

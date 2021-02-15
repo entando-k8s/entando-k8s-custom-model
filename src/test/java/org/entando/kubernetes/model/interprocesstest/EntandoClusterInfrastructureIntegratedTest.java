@@ -62,17 +62,17 @@ class EntandoClusterInfrastructureIntegratedTest extends AbstractEntandoClusterI
                 .create(keycloakServer);
         assertThat(eci1.getMetadata().getGeneration(), is(1L));
         EntandoClusterInfrastructure eci2 = entandoInfrastructure().inNamespace(MY_NAMESPACE).withName(MY_ENTANDO_CLUSTER_INFRASTRUCTURE)
-                .edit()
-                .editSpec()
-                .withServiceAccountToUse("asdfasdfasdfsad")
-                .endSpec()
-                .done();
+                .patch(new EntandoClusterInfrastructureBuilder(eci1)
+                        .editSpec()
+                        .withServiceAccountToUse("asdfasdfasdfsad")
+                        .endSpec()
+                        .build());
         assertThat(eci2.getMetadata().getGeneration(), is(2L));
         EntandoClusterInfrastructure eci3 = entandoInfrastructure().inNamespace(MY_NAMESPACE).withName(MY_ENTANDO_CLUSTER_INFRASTRUCTURE)
-                .edit()
-                .editMetadata().addToLabels("my-label", "my-value")
-                .endMetadata()
-                .done();
+                .patch(new EntandoClusterInfrastructureBuilder(eci2)
+                        .editMetadata().addToLabels("my-label", "my-value")
+                        .endMetadata()
+                        .build());
         assertThat(eci3.getMetadata().getGeneration(), is(2L));
         eci3.getStatus().updateDeploymentPhase(EntandoDeploymentPhase.FAILED, eci2.getMetadata().getGeneration());
         EntandoClusterInfrastructure eci4 = entandoInfrastructure().inNamespace(MY_NAMESPACE).withName(MY_ENTANDO_CLUSTER_INFRASTRUCTURE)
@@ -80,11 +80,11 @@ class EntandoClusterInfrastructureIntegratedTest extends AbstractEntandoClusterI
         assertThat(eci4.getMetadata().getGeneration(), is(2L));
         assertThat(eci4.getStatus().getObservedGeneration(), is(2L));
         EntandoClusterInfrastructure eci5 = entandoInfrastructure().inNamespace(MY_NAMESPACE).withName(MY_ENTANDO_CLUSTER_INFRASTRUCTURE)
-                .edit()
-                .editSpec()
-                .withServiceAccountToUse("asdf-asdf")
-                .endSpec()
-                .done();
+                .patch(new EntandoClusterInfrastructureBuilder(eci4)
+                        .editSpec()
+                        .withServiceAccountToUse("asdf-asdf")
+                        .endSpec()
+                        .build());
         assertThat(eci5.getMetadata().getGeneration(), is(3L));
 
     }

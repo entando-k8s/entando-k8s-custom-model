@@ -30,6 +30,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.client.CustomResource;
+import io.fabric8.kubernetes.model.annotation.Group;
+import io.fabric8.kubernetes.model.annotation.Version;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.io.Serializable;
 import org.entando.kubernetes.model.app.EntandoApp;
@@ -62,17 +64,14 @@ import org.entando.kubernetes.model.plugin.EntandoPlugin;
         @Type(value = EntandoDatabaseService.class, name = "EntandoDatabaseService"),
         @Type(value = EntandoCustomResourceReference.class, name = "EntandoCustomResourceReference")
 })
-
-public abstract class EntandoBaseCustomResource<S extends Serializable> extends CustomResource implements EntandoCustomResource {
-
-    private S spec;
-    private EntandoCustomResourceStatus status;
+public abstract class EntandoBaseCustomResource<S extends Serializable, T extends EntandoCustomResourceStatus> extends
+        CustomResource<S, T> implements EntandoCustomResource {
 
     protected EntandoBaseCustomResource() {
         super();
     }
 
-    protected EntandoBaseCustomResource(ObjectMeta objectMeta, S spec, EntandoCustomResourceStatus status) {
+    protected EntandoBaseCustomResource(ObjectMeta objectMeta, S spec, T status) {
         super();
         super.setMetadata(objectMeta);
         this.spec = spec;
@@ -88,15 +87,11 @@ public abstract class EntandoBaseCustomResource<S extends Serializable> extends 
     }
 
     @Override
-    public EntandoCustomResourceStatus getStatus() {
+    public T getStatus() {
         if (status == null) {
             setStatus(new EntandoCustomResourceStatus());
         }
         return this.status;
     }
 
-    @Override
-    public void setStatus(EntandoCustomResourceStatus status) {
-        this.status = status;
-    }
 }

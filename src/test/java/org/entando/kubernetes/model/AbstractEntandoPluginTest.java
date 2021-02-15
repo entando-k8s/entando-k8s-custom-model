@@ -22,11 +22,11 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import io.fabric8.kubernetes.api.model.EnvVar;
-import io.fabric8.kubernetes.client.CustomResourceList;
-import io.fabric8.kubernetes.client.dsl.internal.CustomResourceOperationsImpl;
+import io.fabric8.kubernetes.api.model.KubernetesResourceList;
+import io.fabric8.kubernetes.client.dsl.MixedOperation;
+import io.fabric8.kubernetes.client.dsl.Resource;
 import java.util.Arrays;
 import java.util.Collections;
-import org.entando.kubernetes.model.plugin.DoneableEntandoPlugin;
 import org.entando.kubernetes.model.plugin.EntandoPlugin;
 import org.entando.kubernetes.model.plugin.EntandoPluginBuilder;
 import org.entando.kubernetes.model.plugin.ExpectedRole;
@@ -58,11 +58,9 @@ public abstract class AbstractEntandoPluginTest implements CustomResourceTestUti
     private static final String PARAMETER_NAME = "env";
     private static final String PARAMETER_VALUE = "B";
     private static final String MY_PUBLIC_CLIENT = "my-public-client";
-    private EntandoResourceOperationsRegistry registry;
 
     @BeforeEach
     public void deleteEntandoPlugins() {
-        registry = new EntandoResourceOperationsRegistry(getClient());
         prepareNamespace(entandoPlugins(), MY_NAMESPACE);
     }
 
@@ -96,8 +94,7 @@ public abstract class AbstractEntandoPluginTest implements CustomResourceTestUti
                 .withClusterInfrastructureToUse(null, MY_CLUSTER_INFRASTRUCTURE)
                 .endSpec()
                 .build();
-        entandoPlugins().inNamespace(MY_NAMESPACE).createNew().withMetadata(entandoPlugin.getMetadata()).withSpec(entandoPlugin.getSpec())
-                .done();
+        entandoPlugins().inNamespace(MY_NAMESPACE).create(entandoPlugin);
         //When
         EntandoPlugin actual = entandoPlugins().inNamespace(MY_NAMESPACE).withName(MY_PLUGIN).get();
         //Then
@@ -161,8 +158,9 @@ public abstract class AbstractEntandoPluginTest implements CustomResourceTestUti
                 .endSpec()
                 .build();
         //When
-        entandoPlugins().inNamespace(MY_NAMESPACE).create(entandoPlugin);
-        EntandoPlugin actual = entandoPlugins().inNamespace(MY_NAMESPACE).withName(MY_PLUGIN).edit()
+        final EntandoPluginBuilder toEdit = new EntandoPluginBuilder(
+                entandoPlugins().inNamespace(MY_NAMESPACE).create(entandoPlugin));
+        EntandoPlugin actual = entandoPlugins().inNamespace(MY_NAMESPACE).withName(MY_PLUGIN).patch(toEdit
                 .editMetadata().addToLabels("my-label", "my-value")
                 .endMetadata()
                 .editSpec()
@@ -185,7 +183,7 @@ public abstract class AbstractEntandoPluginTest implements CustomResourceTestUti
                 .endKeycloakToUse()
                 .withClusterInfrastructureToUse(null, MY_CLUSTER_INFRASTRUCTURE)
                 .endSpec()
-                .done();
+                .build());
         actual.getStatus().putServerStatus(new WebServerStatus("some-qualifier"));
         actual.getStatus().putServerStatus(new WebServerStatus("some-other-qualifier"));
         actual.getStatus().putServerStatus(new WebServerStatus("some-qualifier"));
@@ -219,8 +217,8 @@ public abstract class AbstractEntandoPluginTest implements CustomResourceTestUti
         assertThat(actual.getStatus().getEntandoDeploymentPhase(), is(EntandoDeploymentPhase.STARTED));
     }
 
-    protected CustomResourceOperationsImpl<EntandoPlugin, CustomResourceList<EntandoPlugin>, DoneableEntandoPlugin> entandoPlugins() {
-        return registry.getOperations(EntandoPlugin.class);
+    protected MixedOperation<EntandoPlugin, KubernetesResourceList<EntandoPlugin>, Resource<EntandoPlugin>> entandoPlugins() {
+        return getClient().customResources(EntandoPlugin.class);
     }
 
 }

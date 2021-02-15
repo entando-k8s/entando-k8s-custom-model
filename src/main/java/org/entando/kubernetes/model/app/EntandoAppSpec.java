@@ -37,7 +37,6 @@ import org.entando.kubernetes.model.EntandoResourceRequirements;
 import org.entando.kubernetes.model.JeeServer;
 import org.entando.kubernetes.model.KeycloakToUse;
 import org.entando.kubernetes.model.ResourceReference;
-import org.entando.kubernetes.model.gitspec.GitSpec;
 
 @JsonSerialize
 @JsonDeserialize()
@@ -51,7 +50,6 @@ public class EntandoAppSpec extends ClusterInfrastructureAwareSpec {
     private JeeServer standardServerImage;
     private String customServerImage;
     private String ingressPath;
-    private GitSpec backupGitSpec;
     private String ecrGitSshSecretName;
 
     public EntandoAppSpec() {
@@ -71,7 +69,6 @@ public class EntandoAppSpec extends ClusterInfrastructureAwareSpec {
             @JsonProperty("tlsSecretName") String tlsSecretName,
             @JsonProperty("keycloakToUse") KeycloakToUse keycloakToUse,
             @JsonProperty("clusterInfrastructureToUse") ResourceReference clusterInfrastructureToUse,
-            @JsonProperty("backupGitSpec") GitSpec backupGitSpec,
             @JsonProperty("serviceAccountToUse") String serviceAccountToUse,
             @JsonProperty("environmentVariables") List<EnvVar> environmentVariables,
             @JsonProperty("resourceRequirements") EntandoResourceRequirements resourceRequirements,
@@ -81,7 +78,6 @@ public class EntandoAppSpec extends ClusterInfrastructureAwareSpec {
         this.standardServerImage = standardServerImage;
         this.customServerImage = customServerImage;
         this.ingressPath = ingressPath;
-        this.backupGitSpec = backupGitSpec;
         this.ecrGitSshSecretName = ecrGitSshSecretName;
     }
 
@@ -99,10 +95,6 @@ public class EntandoAppSpec extends ClusterInfrastructureAwareSpec {
 
     public Optional<String> getCustomServerImage() {
         return ofNullable(customServerImage);
-    }
-
-    public Optional<GitSpec> getBackupGitSpec() {
-        return ofNullable(backupGitSpec);
     }
 
 }

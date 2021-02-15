@@ -19,9 +19,9 @@ package org.entando.kubernetes.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import io.fabric8.kubernetes.client.CustomResourceList;
-import io.fabric8.kubernetes.client.dsl.internal.CustomResourceOperationsImpl;
-import org.entando.kubernetes.model.infrastructure.DoneableEntandoClusterInfrastructure;
+import io.fabric8.kubernetes.api.model.KubernetesResourceList;
+import io.fabric8.kubernetes.client.dsl.MixedOperation;
+import io.fabric8.kubernetes.client.dsl.Resource;
 import org.entando.kubernetes.model.infrastructure.EntandoClusterInfrastructure;
 import org.entando.kubernetes.model.infrastructure.EntandoClusterInfrastructureBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,11 +39,9 @@ public abstract class AbstractEntandoClusterInfrastructureTest implements Custom
     private static final String MY_KEYCLOAK_REALM = "my-keycloak-realm";
     private static final String MY_PUBLIC_CLIENT = "my-public-client";
     private static final String MY_KEYCLOAK_NAME_SPACE = "my-keycloak-namespace";
-    private EntandoResourceOperationsRegistry registry;
 
     @BeforeEach
     public void deleteEntandoClusterInfrastructure() {
-        registry = new EntandoResourceOperationsRegistry(getClient());
         prepareNamespace(entandoInfrastructure(), MY_NAMESPACE);
     }
 
@@ -68,8 +66,7 @@ public abstract class AbstractEntandoClusterInfrastructureTest implements Custom
                 .withDefault(true)
                 .endSpec()
                 .build();
-        entandoInfrastructure().inNamespace(MY_NAMESPACE).createNew().withMetadata(clusterInfrastructure.getMetadata())
-                .withSpec(clusterInfrastructure.getSpec()).done();
+        entandoInfrastructure().inNamespace(MY_NAMESPACE).create(clusterInfrastructure);
         //When
         EntandoClusterInfrastructure actual = entandoInfrastructure().inNamespace(MY_NAMESPACE).withName(MY_ENTANDO_CLUSTER_INFRASTRUCTURE)
                 .get();
@@ -111,23 +108,26 @@ public abstract class AbstractEntandoClusterInfrastructureTest implements Custom
         //We are not using the mock server here because of a known bug
         entandoInfrastructure().inNamespace(MY_NAMESPACE).create(keycloakServer);
         EntandoClusterInfrastructure actual = entandoInfrastructure().inNamespace(MY_NAMESPACE).withName(MY_ENTANDO_CLUSTER_INFRASTRUCTURE)
-                .edit()
-                .editMetadata().addToLabels("my-label", "my-value")
-                .endMetadata()
-                .editSpec()
-                .withDbms(DbmsVendor.MYSQL)
-                .withIngressHostName(MYHOST_COM)
-                .withReplicas(5)
-                .editKeycloakToUse()
-                .withNamespace(MY_KEYCLOAK_NAME_SPACE)
-                .withName(MY_KEYCLOAK_NAME)
-                .withRealm(MY_KEYCLOAK_REALM)
-                .withPublicClientId(MY_PUBLIC_CLIENT)
-                .endKeycloakToUse()
-                .withTlsSecretName(MY_TLS_SECRET)
-                .withDefault(true)
-                .endSpec()
-                .done();
+                .patch(
+                        new EntandoClusterInfrastructureBuilder(
+                                entandoInfrastructure().inNamespace(MY_NAMESPACE).withName(MY_ENTANDO_CLUSTER_INFRASTRUCTURE).fromServer()
+                                        .get())
+                                .editMetadata().addToLabels("my-label", "my-value")
+                                .endMetadata()
+                                .editSpec()
+                                .withDbms(DbmsVendor.MYSQL)
+                                .withIngressHostName(MYHOST_COM)
+                                .withReplicas(5)
+                                .editKeycloakToUse()
+                                .withNamespace(MY_KEYCLOAK_NAME_SPACE)
+                                .withName(MY_KEYCLOAK_NAME)
+                                .withRealm(MY_KEYCLOAK_REALM)
+                                .withPublicClientId(MY_PUBLIC_CLIENT)
+                                .endKeycloakToUse()
+                                .withTlsSecretName(MY_TLS_SECRET)
+                                .withDefault(true)
+                                .endSpec()
+                                .build());
 
         actual.getStatus().putServerStatus(new WebServerStatus("some-qualifier"));
         actual.getStatus().putServerStatus(new WebServerStatus("some-other-qualifier"));
@@ -154,8 +154,8 @@ public abstract class AbstractEntandoClusterInfrastructureTest implements Custom
         assertThat(actual.getStatus().getEntandoDeploymentPhase(), is(EntandoDeploymentPhase.STARTED));
     }
 
-    protected CustomResourceOperationsImpl<EntandoClusterInfrastructure, CustomResourceList<EntandoClusterInfrastructure>,
-            DoneableEntandoClusterInfrastructure> entandoInfrastructure() {
-        return registry.getOperations(EntandoClusterInfrastructure.class);
+    protected MixedOperation<EntandoClusterInfrastructure, KubernetesResourceList<EntandoClusterInfrastructure>,
+            Resource<EntandoClusterInfrastructure>> entandoInfrastructure() {
+        return getClient().customResources(EntandoClusterInfrastructure.class);
     }
 }

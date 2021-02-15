@@ -16,20 +16,18 @@
 
 package org.entando.kubernetes.model.app;
 
+import io.fabric8.kubernetes.api.model.KubernetesResourceList;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.internal.CustomResourceOperationsImpl;
-import org.entando.kubernetes.model.EntandoCustomResourceResolver;
+import io.fabric8.kubernetes.client.dsl.MixedOperation;
+import io.fabric8.kubernetes.client.dsl.Resource;
 
 public final class EntandoAppOperationFactory {
-
-    private static EntandoCustomResourceResolver<EntandoApp, EntandoAppList, DoneableEntandoApp> resolver =
-            new EntandoCustomResourceResolver<>(EntandoApp.class, EntandoAppList.class, DoneableEntandoApp.class);
 
     private EntandoAppOperationFactory() {
     }
 
-    public static CustomResourceOperationsImpl<EntandoApp, EntandoAppList, DoneableEntandoApp> produceAllEntandoApps(
+    public static MixedOperation<EntandoApp, KubernetesResourceList<EntandoApp>, Resource<EntandoApp>> produceAllEntandoApps(
             KubernetesClient client) {
-        return resolver.resolveOperation(client);
+        return client.customResources(EntandoApp.class);
     }
 }

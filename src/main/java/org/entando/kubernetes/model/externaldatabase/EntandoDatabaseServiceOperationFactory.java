@@ -16,22 +16,19 @@
 
 package org.entando.kubernetes.model.externaldatabase;
 
+import io.fabric8.kubernetes.api.model.KubernetesResourceList;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.internal.CustomResourceOperationsImpl;
-import org.entando.kubernetes.model.EntandoCustomResourceResolver;
+import io.fabric8.kubernetes.client.dsl.MixedOperation;
+import io.fabric8.kubernetes.client.dsl.Resource;
 
 public final class EntandoDatabaseServiceOperationFactory {
-
-    private static EntandoCustomResourceResolver
-            <EntandoDatabaseService, EntandoDatabaseServiceList, DoneableEntandoDatabaseService> resolver =
-            new EntandoCustomResourceResolver<>(
-                    EntandoDatabaseService.class, EntandoDatabaseServiceList.class, DoneableEntandoDatabaseService.class);
 
     private EntandoDatabaseServiceOperationFactory() {
     }
 
-    public static CustomResourceOperationsImpl<EntandoDatabaseService, EntandoDatabaseServiceList,
-            DoneableEntandoDatabaseService> produceAllEntandoDatabaseServices(KubernetesClient client) {
-        return resolver.resolveOperation(client);
+    public static MixedOperation<EntandoDatabaseService, KubernetesResourceList<EntandoDatabaseService>,
+            Resource<EntandoDatabaseService>> produceAllEntandoDatabaseServices(
+            KubernetesClient client) {
+        return client.customResources(EntandoDatabaseService.class);
     }
 }

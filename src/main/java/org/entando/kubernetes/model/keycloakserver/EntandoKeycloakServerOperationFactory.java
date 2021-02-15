@@ -16,24 +16,18 @@
 
 package org.entando.kubernetes.model.keycloakserver;
 
+import io.fabric8.kubernetes.api.model.KubernetesResourceList;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.internal.CustomResourceOperationsImpl;
-import org.entando.kubernetes.model.EntandoCustomResourceResolver;
+import io.fabric8.kubernetes.client.dsl.MixedOperation;
+import io.fabric8.kubernetes.client.dsl.Resource;
 
 public final class EntandoKeycloakServerOperationFactory {
-
-    private static EntandoCustomResourceResolver
-            <EntandoKeycloakServer, EntandoKeycloakServerList, DoneableEntandoKeycloakServer> resolver =
-            new EntandoCustomResourceResolver<>(
-                    EntandoKeycloakServer.class, EntandoKeycloakServerList.class, DoneableEntandoKeycloakServer.class);
 
     private EntandoKeycloakServerOperationFactory() {
     }
 
-    public static CustomResourceOperationsImpl<
-            EntandoKeycloakServer,
-            EntandoKeycloakServerList,
-            DoneableEntandoKeycloakServer> produceAllEntandoKeycloakServers(KubernetesClient client) {
-        return resolver.resolveOperation(client);
+    public static MixedOperation<EntandoKeycloakServer, KubernetesResourceList<EntandoKeycloakServer>, Resource<EntandoKeycloakServer>> produceAllEntandoKeycloakServers(
+            KubernetesClient client) {
+        return client.customResources(EntandoKeycloakServer.class);
     }
 }

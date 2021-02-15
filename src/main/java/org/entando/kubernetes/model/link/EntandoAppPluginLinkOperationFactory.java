@@ -16,21 +16,18 @@
 
 package org.entando.kubernetes.model.link;
 
+import io.fabric8.kubernetes.api.model.KubernetesResourceList;
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.dsl.internal.CustomResourceOperationsImpl;
-import org.entando.kubernetes.model.EntandoCustomResourceResolver;
+import io.fabric8.kubernetes.client.dsl.MixedOperation;
+import io.fabric8.kubernetes.client.dsl.Resource;
 
 public final class EntandoAppPluginLinkOperationFactory {
-
-    private static EntandoCustomResourceResolver<EntandoAppPluginLink, EntandoAppPluginLinkList, DoneableEntandoAppPluginLink> resolver =
-            new EntandoCustomResourceResolver<>(EntandoAppPluginLink.class, EntandoAppPluginLinkList.class,
-                    DoneableEntandoAppPluginLink.class);
 
     private EntandoAppPluginLinkOperationFactory() {
     }
 
-    public static CustomResourceOperationsImpl<EntandoAppPluginLink, EntandoAppPluginLinkList,
-            DoneableEntandoAppPluginLink> produceAllEntandoAppPluginLinks(KubernetesClient client) {
-        return resolver.resolveOperation(client);
+    public static MixedOperation<EntandoAppPluginLink, KubernetesResourceList<EntandoAppPluginLink>, Resource<EntandoAppPluginLink>> produceAllEntandoAppPluginLinks(
+            KubernetesClient client) {
+        return client.customResources(EntandoAppPluginLink.class);
     }
 }
