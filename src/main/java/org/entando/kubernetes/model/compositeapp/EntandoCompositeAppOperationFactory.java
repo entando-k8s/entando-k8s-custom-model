@@ -27,8 +27,8 @@ public final class EntandoCompositeAppOperationFactory {
     private EntandoCompositeAppOperationFactory() {
     }
 
-    public static MixedOperation<EntandoBaseCustomResource, KubernetesResourceList<EntandoBaseCustomResource>,
-            Resource<EntandoBaseCustomResource>> produceAllEntandoCompositeApps(KubernetesClient client) {
-        return client.customResources(EntandoBaseCustomResource.class);
+    public static MixedOperation<EntandoCompositeApp, KubernetesResourceList<EntandoCompositeApp>,
+            Resource<EntandoCompositeApp>> produceAllEntandoCompositeApps(KubernetesClient client) {
+        return client.customResources(EntandoCompositeApp.class);
     }
 }
