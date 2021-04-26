@@ -65,7 +65,9 @@ public class EntandoAppSpecFluent<N extends EntandoAppSpecFluent<N>> extends Clu
                 this.replicas, this.tlsSecretName, this.keycloakToUse,
                 this.clusterInfrastructureToUse,
                 this.serviceAccountToUse, this.environmentVariables, this.resourceRequirements,
-                this.ecrGitSshSecretName);
+                this.ecrGitSshSecretName,
+                this.storageClass
+        );
     }
 
 }

@@ -14,7 +14,7 @@
  *
  */
 
-package org.entando.kubernetes.model.keycloakserver;
+package org.entando.kubernetes.model.infrastructure;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -28,64 +28,45 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.fabric8.kubernetes.api.model.EnvVar;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.util.List;
-import java.util.Optional;
 import org.entando.kubernetes.model.DbmsVendor;
-import org.entando.kubernetes.model.EntandoIngressingDeploymentSpec;
 import org.entando.kubernetes.model.EntandoResourceRequirements;
+import org.entando.kubernetes.model.KeycloakAwareSpec;
+import org.entando.kubernetes.model.KeycloakToUse;
 
 @JsonInclude(Include.NON_NULL)
 @JsonSerialize
-@JsonDeserialize()
+@JsonDeserialize
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, isGetterVisibility = Visibility.NONE, getterVisibility = Visibility.NONE,
         setterVisibility = Visibility.NONE)
 @RegisterForReflection
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EntandoKeycloakServerSpec extends EntandoIngressingDeploymentSpec {
+public class EntandoClusterInfrastructureSpec extends KeycloakAwareSpec {
 
-    private String customImage;
-    private StandardKeycloakImage standardImage;
     private boolean isDefault;
-    private String frontEndUrl;
 
-    public EntandoKeycloakServerSpec() {
+    public EntandoClusterInfrastructureSpec() {
         super();
     }
 
     @JsonCreator
-    public EntandoKeycloakServerSpec(
-            @JsonProperty("customName") String customImage,
-            @JsonProperty("standardImage") StandardKeycloakImage standardImage,
-            @JsonProperty("frontEndUrl") String frontEndUrl,
+    public EntandoClusterInfrastructureSpec(
             @JsonProperty("dbms") DbmsVendor dbms,
             @JsonProperty("ingressHostName") String ingressHostName,
             @JsonProperty("tlsSecretName") String tlsSecretName,
             @JsonProperty("replicas") Integer replicas,
+            @JsonProperty("keycloakToUse") KeycloakToUse keycloakToUse,
             @JsonProperty("isDefault") Boolean isDefault,
             @JsonProperty("serviceAccountToUse") String serviceAccountToUse,
             @JsonProperty("environmentVariables") List<EnvVar> environmentVariables,
             @JsonProperty("resourceRequirements") EntandoResourceRequirements resourceRequirements,
             @JsonProperty("storageClass") String storageClass) {
         super(ingressHostName, tlsSecretName, replicas, dbms, serviceAccountToUse, environmentVariables, resourceRequirements,
-                storageClass);
-        this.customImage = customImage;
-        this.standardImage = standardImage;
-        this.frontEndUrl = frontEndUrl;
+                keycloakToUse, storageClass);
         this.isDefault = Boolean.TRUE.equals(isDefault);
-    }
-
-    public Optional<String> getCustomImage() {
-        return Optional.ofNullable(customImage);
-    }
-
-    public Optional<String> getFrontEndUrl() {
-        return Optional.ofNullable(frontEndUrl);
-    }
-
-    public Optional<StandardKeycloakImage> getStandardImage() {
-        return Optional.ofNullable(standardImage);
     }
 
     public boolean isDefault() {
         return isDefault;
     }
+
 }
