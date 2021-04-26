@@ -42,18 +42,18 @@ public class EntandoCustomResourceStatus implements Serializable {
 
     private Long observedGeneration;
 
-    private EntandoDeploymentPhase entandoDeploymentPhase;
+    private EntandoDeploymentPhase phase;
 
     public EntandoCustomResourceStatus() {
-        entandoDeploymentPhase = EntandoDeploymentPhase.REQUESTED;
+        phase = EntandoDeploymentPhase.REQUESTED;
     }
 
-    public EntandoDeploymentPhase getEntandoDeploymentPhase() {
-        return entandoDeploymentPhase;
+    public EntandoDeploymentPhase getPhase() {
+        return phase;
     }
 
     public void updateDeploymentPhase(EntandoDeploymentPhase entandoDeploymentPhase, Long observedGeneration) {
-        this.entandoDeploymentPhase = entandoDeploymentPhase;
+        this.phase = entandoDeploymentPhase;
         this.observedGeneration = observedGeneration;
     }
 

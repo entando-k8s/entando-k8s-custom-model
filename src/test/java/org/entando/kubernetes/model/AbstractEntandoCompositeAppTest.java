@@ -29,7 +29,6 @@ import org.entando.kubernetes.model.compositeapp.EntandoCompositeAppBuilder;
 import org.entando.kubernetes.model.compositeapp.EntandoCustomResourceReference;
 import org.entando.kubernetes.model.compositeapp.EntandoCustomResourceReferenceBuilder;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseServiceBuilder;
-import org.entando.kubernetes.model.infrastructure.EntandoClusterInfrastructureBuilder;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServerBuilder;
 import org.entando.kubernetes.model.link.EntandoAppPluginLinkBuilder;
 import org.entando.kubernetes.model.plugin.EntandoPluginBuilder;
@@ -69,8 +68,6 @@ public abstract class AbstractEntandoCompositeAppTest implements CustomResourceT
                 .withDbmsOverride(DbmsVendor.MYSQL)
                 .withTlsSecretNameOverride(MY_TLS_SECRET)
                 .addNewEntandoKeycloakServer().withNewMetadata().withName(MY_KEYCLOAK).endMetadata().endEntandoKeycloakServer()
-                .addNewEntandoClusterInfrastructure().withNewMetadata().withName(MY_CLUSTER_INFRASTRUCTURE).endMetadata()
-                .endEntandoClusterInfrastructure()
                 .addNewEntandoApp().withNewMetadata().withName(MY_APP).endMetadata().endEntandoApp()
                 .addNewEntandoPlugin().withNewMetadata().withName(MY_PLUGIN).endMetadata().endEntandoPlugin()
                 .addNewEntandoAppPluginLink().withNewMetadata().withName(MY_APP_PLUGIN_LINK).endMetadata().editSpec().endSpec()
@@ -118,8 +115,6 @@ public abstract class AbstractEntandoCompositeAppTest implements CustomResourceT
                 .withDbmsOverride(DbmsVendor.POSTGRESQL)
                 .withIngressHostNameOverride("some.other.hostname.com")
                 .addNewEntandoKeycloakServer().withNewMetadata().withName("some-keycloak").endMetadata().endEntandoKeycloakServer()
-                .addNewEntandoClusterInfrastructure().withNewMetadata().withName("some-cluster-infrastructure").endMetadata()
-                .endEntandoClusterInfrastructure()
                 .addNewEntandoApp().withNewMetadata().withName("some-app").endMetadata().endEntandoApp()
                 .addNewEntandoPlugin().withNewMetadata().withName("some-plugin").endMetadata().endEntandoPlugin()
                 .addNewEntandoAppPluginLink().withNewMetadata().withName("some-link").endMetadata().endEntandoAppPluginLink()
@@ -141,9 +136,6 @@ public abstract class AbstractEntandoCompositeAppTest implements CustomResourceT
                         .withTlsSecretNameOverride(MY_TLS_SECRET)
                         .withComponents(
                                 new EntandoKeycloakServerBuilder().withNewMetadata().withName(MY_KEYCLOAK).endMetadata().build(),
-                                new EntandoClusterInfrastructureBuilder().withNewMetadata().withName(MY_CLUSTER_INFRASTRUCTURE)
-                                        .endMetadata()
-                                        .build(),
                                 new EntandoAppBuilder().withNewMetadata().withName(MY_APP).endMetadata().build(),
                                 new EntandoPluginBuilder().withNewMetadata().withName(MY_PLUGIN).endMetadata().build(),
                                 new EntandoAppPluginLinkBuilder().withNewMetadata().withName(MY_APP_PLUGIN_LINK).endMetadata().build(),
@@ -186,7 +178,7 @@ public abstract class AbstractEntandoCompositeAppTest implements CustomResourceT
         assertThat("the status reflects", actual.getStatus().forServerQualifiedBy("some-other-qualifier").isPresent());
         assertThat("the status reflects", actual.getStatus().forDbQualifiedBy("another-qualifier").isPresent());
         assertThat(actual.getStatus().getObservedGeneration(), is(5L));
-        assertThat(actual.getStatus().getEntandoDeploymentPhase(), is(EntandoDeploymentPhase.STARTED));
+        assertThat(actual.getStatus().getPhase(), is(EntandoDeploymentPhase.STARTED));
 
     }
 

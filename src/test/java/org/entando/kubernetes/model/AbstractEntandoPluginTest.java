@@ -214,7 +214,7 @@ public abstract class AbstractEntandoPluginTest implements CustomResourceTestUti
         assertThat("the status reflects", actual.getStatus().forServerQualifiedBy("some-other-qualifier").isPresent());
         assertThat("the status reflects", actual.getStatus().forDbQualifiedBy("another-qualifier").isPresent());
         assertThat(actual.getStatus().getObservedGeneration(), is(5L));
-        assertThat(actual.getStatus().getEntandoDeploymentPhase(), is(EntandoDeploymentPhase.STARTED));
+        assertThat(actual.getStatus().getPhase(), is(EntandoDeploymentPhase.STARTED));
     }
 
     protected MixedOperation<EntandoPlugin, KubernetesResourceList<EntandoPlugin>, Resource<EntandoPlugin>> entandoPlugins() {

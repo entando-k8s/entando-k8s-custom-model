@@ -38,9 +38,6 @@ import org.entando.kubernetes.model.debundle.EntandoDeBundleBuilder;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseService;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseServiceBuilder;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseServiceFluent;
-import org.entando.kubernetes.model.infrastructure.EntandoClusterInfrastructure;
-import org.entando.kubernetes.model.infrastructure.EntandoClusterInfrastructureBuilder;
-import org.entando.kubernetes.model.infrastructure.EntandoClusterInfrastructureFluent;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServer;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServerBuilder;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServerFluent;
@@ -86,7 +83,6 @@ public abstract class EntandoCompositeAppSpecFluent<F extends EntandoCompositeAp
         Map<Class<? extends EntandoBaseCustomResource<? extends Serializable, EntandoCustomResourceStatus>>,
                 Class<? extends EntandoFluent<?>>> result = new ConcurrentHashMap<>();
         result.put(EntandoKeycloakServer.class, EntandoKeycloakServerBuilder.class);
-        result.put(EntandoClusterInfrastructure.class, EntandoClusterInfrastructureBuilder.class);
         result.put(EntandoApp.class, EntandoAppBuilder.class);
         result.put(EntandoPlugin.class, EntandoPluginBuilder.class);
         result.put(EntandoAppPluginLink.class, EntandoAppPluginLinkBuilder.class);
@@ -157,15 +153,6 @@ public abstract class EntandoCompositeAppSpecFluent<F extends EntandoCompositeAp
 
     public F addToEntandoApps(EntandoApp item) {
         this.components.add(new EntandoAppBuilder(item));
-        return thisAsF();
-    }
-
-    public EntandoClusterInfrastructureNested<F> addNewEntandoClusterInfrastructure() {
-        return new EntandoClusterInfrastructureNested<>(thisAsF());
-    }
-
-    public F addToEntandoClusterInfrastructures(EntandoClusterInfrastructure item) {
-        this.components.add(new EntandoClusterInfrastructureBuilder(item));
         return thisAsF();
     }
 
@@ -244,25 +231,6 @@ public abstract class EntandoCompositeAppSpecFluent<F extends EntandoCompositeAp
         }
     }
 
-    public static class EntandoClusterInfrastructureNested<N extends EntandoCompositeAppSpecFluent<N>> extends
-            EntandoClusterInfrastructureFluent<EntandoClusterInfrastructureNested<N>> implements Nested<N> {
-
-        private final N parentBuilder;
-
-        public EntandoClusterInfrastructureNested(N parentBuilder) {
-            super();
-            this.parentBuilder = parentBuilder;
-        }
-
-        public N and() {
-            return parentBuilder
-                    .addToEntandoClusterInfrastructures(new EntandoClusterInfrastructure(super.metadata.build(), super.spec.build()));
-        }
-
-        public N endEntandoClusterInfrastructure() {
-            return and();
-        }
-    }
 
     public static class EntandoPluginNested<N extends EntandoCompositeAppSpecFluent<N>> extends
             EntandoPluginFluent<EntandoPluginNested<N>> implements Nested<N> {

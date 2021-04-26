@@ -37,7 +37,6 @@ import java.io.Serializable;
 import org.entando.kubernetes.model.app.EntandoApp;
 import org.entando.kubernetes.model.compositeapp.EntandoCustomResourceReference;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseService;
-import org.entando.kubernetes.model.infrastructure.EntandoClusterInfrastructure;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServer;
 import org.entando.kubernetes.model.link.EntandoAppPluginLink;
 import org.entando.kubernetes.model.plugin.EntandoPlugin;
@@ -57,7 +56,6 @@ import org.entando.kubernetes.model.plugin.EntandoPlugin;
 )
 @JsonSubTypes({
         @Type(value = EntandoKeycloakServer.class, name = "EntandoKeycloakServer"),
-        @Type(value = EntandoClusterInfrastructure.class, name = "EntandoClusterInfrastructure"),
         @Type(value = EntandoApp.class, name = "EntandoApp"),
         @Type(value = EntandoPlugin.class, name = "EntandoPlugin"),
         @Type(value = EntandoAppPluginLink.class, name = "EntandoAppPluginLink"),
