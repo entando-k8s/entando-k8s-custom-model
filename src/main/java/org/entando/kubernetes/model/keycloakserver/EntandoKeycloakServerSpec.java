@@ -29,9 +29,9 @@ import io.fabric8.kubernetes.api.model.EnvVar;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.util.List;
 import java.util.Optional;
-import org.entando.kubernetes.model.DbmsVendor;
-import org.entando.kubernetes.model.EntandoIngressingDeploymentSpec;
-import org.entando.kubernetes.model.EntandoResourceRequirements;
+import org.entando.kubernetes.model.common.DbmsVendor;
+import org.entando.kubernetes.model.common.EntandoIngressingDeploymentSpec;
+import org.entando.kubernetes.model.common.EntandoResourceRequirements;
 
 @JsonInclude(Include.NON_NULL)
 @JsonSerialize

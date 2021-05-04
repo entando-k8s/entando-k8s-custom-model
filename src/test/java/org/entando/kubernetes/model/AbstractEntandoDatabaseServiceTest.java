@@ -20,10 +20,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-import io.fabric8.kubernetes.client.CustomResourceList;
-import io.fabric8.kubernetes.client.dsl.internal.CustomResourceOperationsImpl;
 import java.util.Collections;
-import org.entando.kubernetes.model.externaldatabase.DoneableEntandoDatabaseService;
+import org.entando.kubernetes.model.common.DbServerStatus;
+import org.entando.kubernetes.model.common.DbmsVendor;
+import org.entando.kubernetes.model.common.EntandoDeploymentPhase;
+import org.entando.kubernetes.model.common.WebServerStatus;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseService;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseServiceBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,12 +44,10 @@ public abstract class AbstractEntandoDatabaseServiceTest implements CustomResour
     private static final int PORT_1521 = 1521;
     private static final String MY_DB_SECRET = "my-db-secret";
     private static final String MY_STORAGE_CLASS = "my-storage-class";
-    private EntandoResourceOperationsRegistry registry;
 
     @BeforeEach
     public void deleteEntandoDatabaseService() {
-        registry = new EntandoResourceOperationsRegistry(getClient());
-        prepareNamespace(externalDatabases(), MY_NAMESPACE);
+        prepareNamespace(getClient().customResources(EntandoDatabaseService.class), MY_NAMESPACE);
     }
 
     @Test
@@ -70,10 +69,10 @@ public abstract class AbstractEntandoDatabaseServiceTest implements CustomResour
                 .withCreateDeployment(true)
                 .endSpec()
                 .build();
-        externalDatabases().inNamespace(MY_NAMESPACE).createNew().withMetadata(externalDatabase.getMetadata())
-                .withSpec(externalDatabase.getSpec()).done();
+        getClient().customResources(EntandoDatabaseService.class).inNamespace(MY_NAMESPACE).create(externalDatabase);
         //When
-        EntandoDatabaseService actual = externalDatabases().inNamespace(MY_NAMESPACE).withName(MY_EXTERNAL_DATABASE).get();
+        EntandoDatabaseService actual = getClient().customResources(EntandoDatabaseService.class).inNamespace(MY_NAMESPACE)
+                .withName(MY_EXTERNAL_DATABASE).get();
         //Then
         assertThat(actual.getSpec().getDatabaseName().get(), is(MY_DB));
         assertThat(actual.getSpec().getHost().get(), is(MYHOST_COM));
@@ -107,25 +106,25 @@ public abstract class AbstractEntandoDatabaseServiceTest implements CustomResour
                 .endSpec()
                 .build();
         //When
-        //We are not using the mock server here because of a known bug
-        externalDatabases().inNamespace(MY_NAMESPACE).create(externalDatabase);
-        DoneableEntandoDatabaseService doneableEntandoDatabaseService = externalDatabases().inNamespace(MY_NAMESPACE)
-                .withName(MY_EXTERNAL_DATABASE).edit();
-        EntandoDatabaseService actual = doneableEntandoDatabaseService
-                .editMetadata().addToLabels("my-label", "my-value")
-                .endMetadata()
-                .editSpec()
-                .withDatabaseName(MY_DB)
-                .withHost(MYHOST_COM)
-                .withPort(PORT_1521)
-                .withStorageClass(MY_STORAGE_CLASS)
-                .withTablespace(MY_TABLESPACE)
-                .withJdbcParameters(Collections.singletonMap(MY_PARAM, MY_PARAM_VALUE))
-                .withSecretName(MY_DB_SECRET)
-                .withCreateDeployment(true)
-                .withDbms(DbmsVendor.ORACLE)
-                .endSpec()
-                .done();
+        final EntandoDatabaseServiceBuilder toEdit = new EntandoDatabaseServiceBuilder(
+                getClient().customResources(EntandoDatabaseService.class).inNamespace(MY_NAMESPACE).create(externalDatabase));
+        EntandoDatabaseService actual = getClient().customResources(EntandoDatabaseService.class).inNamespace(MY_NAMESPACE)
+                .withName(MY_EXTERNAL_DATABASE).patch(
+                        toEdit
+                                .editMetadata().addToLabels("my-label", "my-value")
+                                .endMetadata()
+                                .editSpec()
+                                .withDatabaseName(MY_DB)
+                                .withHost(MYHOST_COM)
+                                .withPort(PORT_1521)
+                                .withTablespace(MY_TABLESPACE)
+                                .withJdbcParameters(Collections.singletonMap(MY_PARAM, MY_PARAM_VALUE))
+                                .withStorageClass(MY_STORAGE_CLASS)
+                                .withSecretName(MY_DB_SECRET)
+                                .withCreateDeployment(true)
+                                .withDbms(DbmsVendor.ORACLE)
+                                .endSpec()
+                                .build());
         actual.getStatus().putServerStatus(new WebServerStatus("some-qualifier"));
         actual.getStatus().putServerStatus(new WebServerStatus("some-other-qualifier"));
         actual.getStatus().putServerStatus(new WebServerStatus("some-qualifier"));
@@ -148,10 +147,4 @@ public abstract class AbstractEntandoDatabaseServiceTest implements CustomResour
         assertThat("the status reflects", actual.getStatus().forDbQualifiedBy("another-qualifier").isPresent());
     }
 
-    protected CustomResourceOperationsImpl<
-            EntandoDatabaseService,
-            CustomResourceList<EntandoDatabaseService>,
-            DoneableEntandoDatabaseService> externalDatabases() {
-        return registry.getOperations(EntandoDatabaseService.class);
-    }
 }

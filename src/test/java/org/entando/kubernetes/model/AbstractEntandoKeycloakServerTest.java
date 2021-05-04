@@ -19,9 +19,10 @@ package org.entando.kubernetes.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import io.fabric8.kubernetes.client.CustomResourceList;
-import io.fabric8.kubernetes.client.dsl.internal.CustomResourceOperationsImpl;
-import org.entando.kubernetes.model.keycloakserver.DoneableEntandoKeycloakServer;
+import org.entando.kubernetes.model.common.DbServerStatus;
+import org.entando.kubernetes.model.common.DbmsVendor;
+import org.entando.kubernetes.model.common.EntandoDeploymentPhase;
+import org.entando.kubernetes.model.common.WebServerStatus;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServer;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServerBuilder;
 import org.entando.kubernetes.model.keycloakserver.StandardKeycloakImage;
@@ -38,12 +39,10 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
     private static final String MYHOST_COM = "myhost.com";
     private static final String MY_TLS_SECRET = "my-tls-secret";
     public static final String HTTP_MY_FRONTEND_URL = "http://my.frontend/url";
-    private EntandoResourceOperationsRegistry registry;
 
     @BeforeEach
     public void deleteEntandoKeycloakServer() {
-        registry = new EntandoResourceOperationsRegistry(getClient());
-        prepareNamespace(keycloakServers(), MY_NAMESPACE);
+        prepareNamespace(getClient().customResources(EntandoKeycloakServer.class), MY_NAMESPACE);
     }
 
     @Test
@@ -64,10 +63,10 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
                 .withTlsSecretName(MY_TLS_SECRET)
                 .endSpec()
                 .build();
-        keycloakServers().inNamespace(MY_NAMESPACE).createNew().withMetadata(keycloakServer.getMetadata())
-                .withSpec(keycloakServer.getSpec()).done();
+        getClient().customResources(EntandoKeycloakServer.class).inNamespace(MY_NAMESPACE).create(keycloakServer);
         //When
-        EntandoKeycloakServer actual = keycloakServers().inNamespace(MY_NAMESPACE).withName(MY_KEYCLOAK).get();
+        EntandoKeycloakServer actual = getClient().customResources(EntandoKeycloakServer.class).inNamespace(MY_NAMESPACE)
+                .withName(MY_KEYCLOAK).get();
 
         //Then
         assertThat(actual.getSpec().getDbms().get(), is(DbmsVendor.MYSQL));
@@ -102,27 +101,31 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
                 .build();
 
         //When
-        //We are not using the mock server here because of a known bug
-        EntandoKeycloakServer actual = editEntandoKeycloakServer(keycloakServer)
-                .editMetadata().addToLabels("my-label", "my-value")
-                .endMetadata()
-                .editSpec()
-                .withDbms(DbmsVendor.MYSQL)
-                .withCustomImage(ENTANDO_SOMEKEYCLOAK)
-                .withStandardImage(StandardKeycloakImage.REDHAT_SSO)
-                .withFrontEndUrl(HTTP_MY_FRONTEND_URL)
-                .withIngressHostName(MYHOST_COM)
-                .withReplicas(5)
-                .withDefault(true)
-                .withTlsSecretName(MY_TLS_SECRET)
-                .endSpec()
-                .done();
+        final EntandoKeycloakServerBuilder toEdit = new EntandoKeycloakServerBuilder(
+                getClient().customResources(EntandoKeycloakServer.class).inNamespace(MY_NAMESPACE).create(keycloakServer));
+        EntandoKeycloakServer actual = getClient().customResources(EntandoKeycloakServer.class).inNamespace(MY_NAMESPACE)
+                .withName(MY_KEYCLOAK)
+                .patch(toEdit
+                        .editMetadata().addToLabels("my-label", "my-value")
+                        .endMetadata()
+                        .editSpec()
+                        .withDbms(DbmsVendor.MYSQL)
+                        .withCustomImage(ENTANDO_SOMEKEYCLOAK)
+                        .withStandardImage(StandardKeycloakImage.REDHAT_SSO)
+                        .withFrontEndUrl(HTTP_MY_FRONTEND_URL)
+                        .withIngressHostName(MYHOST_COM)
+                        .withReplicas(5)
+                        .withDefault(true)
+                        .withTlsSecretName(MY_TLS_SECRET)
+                        .endSpec()
+                        .build());
         actual.getStatus().putServerStatus(new WebServerStatus("some-qualifier"));
         actual.getStatus().putServerStatus(new WebServerStatus("some-other-qualifier"));
         actual.getStatus().putServerStatus(new WebServerStatus("some-qualifier"));
         actual.getStatus().putServerStatus(new DbServerStatus("another-qualifier"));
         actual.getStatus().updateDeploymentPhase(EntandoDeploymentPhase.STARTED, 5L);
-        actual = keycloakServers().inNamespace(actual.getMetadata().getNamespace()).updateStatus(actual);
+        actual = getClient().customResources(EntandoKeycloakServer.class).inNamespace(actual.getMetadata().getNamespace())
+                .updateStatus(actual);
         //Then
         assertThat(actual.getSpec().getDbms().get(), is(DbmsVendor.MYSQL));
         assertThat(actual.getSpec().getFrontEndUrl().get(), is(HTTP_MY_FRONTEND_URL));
@@ -138,19 +141,8 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
         assertThat("the status reflects", actual.getStatus().forServerQualifiedBy("some-qualifier").isPresent());
         assertThat("the status reflects", actual.getStatus().forServerQualifiedBy("some-other-qualifier").isPresent());
         assertThat("the status reflects", actual.getStatus().forDbQualifiedBy("another-qualifier").isPresent());
-        assertThat(actual.getStatus().getEntandoDeploymentPhase(), is(EntandoDeploymentPhase.STARTED));
+        assertThat(actual.getStatus().getPhase(), is(EntandoDeploymentPhase.STARTED));
         assertThat(actual.getStatus().getObservedGeneration(), is(5L));
     }
 
-    protected final DoneableEntandoKeycloakServer editEntandoKeycloakServer(EntandoKeycloakServer keycloakServer) {
-        keycloakServers().inNamespace(MY_NAMESPACE).create(keycloakServer);
-        return keycloakServers().inNamespace(MY_NAMESPACE).withName(MY_KEYCLOAK).edit();
-    }
-
-    protected CustomResourceOperationsImpl<
-            EntandoKeycloakServer,
-            CustomResourceList<EntandoKeycloakServer>,
-            DoneableEntandoKeycloakServer> keycloakServers() {
-        return registry.getOperations(EntandoKeycloakServer.class);
-    }
 }

@@ -16,13 +16,13 @@
 
 package org.entando.kubernetes.model.externaldatabase;
 
-import static org.entando.kubernetes.model.Coalescence.coalesce;
+import static org.entando.kubernetes.model.common.Coalescence.coalesce;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.entando.kubernetes.model.DbmsVendor;
-import org.entando.kubernetes.model.EntandoDeploymentSpecFluent;
-import org.entando.kubernetes.model.EntandoIngressingDeploymentSpecBaseFluent;
+import org.entando.kubernetes.model.common.DbmsVendor;
+import org.entando.kubernetes.model.common.EntandoDeploymentSpecFluent;
+import org.entando.kubernetes.model.common.EntandoIngressingDeploymentSpecBaseFluent;
 
 public abstract class EntandoDatabaseServiceSpecFluent<F extends EntandoDatabaseServiceSpecFluent<F>>
         extends EntandoDeploymentSpecFluent<F>
