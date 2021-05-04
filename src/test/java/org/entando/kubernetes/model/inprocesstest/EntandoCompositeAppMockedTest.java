@@ -40,13 +40,5 @@ class EntandoCompositeAppMockedTest extends AbstractEntandoCompositeAppTest {
         return server.getClient();
     }
 
-    @Test
-    void testOverriddenEqualsMethods() {
-        //The ObjectMetaBuilder's equals method is broken. There is no way to fix it.
-        // These tests just verify that inequality corresponds with hashcode
-        EntandoAppBuilder builder = new EntandoAppBuilder().editMetadata().withNamespace("ns").withName("name").endMetadata();
-        assertNotEquals(builder.editMetadata(), builder.editMetadata());
-        assertNotEquals(builder.editMetadata().hashCode(), builder.editMetadata().hashCode());
-    }
 
 }

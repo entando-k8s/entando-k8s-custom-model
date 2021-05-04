@@ -42,7 +42,6 @@ public abstract class AbstractEntandoCompositeAppTest implements CustomResourceT
 
     public static final String MY_COMPOSITE_APP = "my-comnposite-app";
     public static final String MY_KEYCLOAK = "my-keycloak";
-    public static final String MY_CLUSTER_INFRASTRUCTURE = "my-cluster-infrastructure";
     public static final String MY_APP = "my-app";
     public static final String MY_PLUGIN = "my-plugin";
     public static final String MY_APP_PLUGIN_LINK = "my-app-plugin-link";
@@ -94,13 +93,12 @@ public abstract class AbstractEntandoCompositeAppTest implements CustomResourceT
         assertThat(actual.getSpec().getIngressHostNameOverride().get(), is(MY_HOSTNAME));
         assertThat(actual.getSpec().getTlsSecretNameOverride().get(), is(MY_TLS_SECRET));
         assertThat(actual.getSpec().getComponents().get(0).getMetadata().getName(), is(MY_KEYCLOAK));
-        assertThat(actual.getSpec().getComponents().get(1).getMetadata().getName(), is(MY_CLUSTER_INFRASTRUCTURE));
-        assertThat(actual.getSpec().getComponents().get(2).getMetadata().getName(), is(MY_APP));
-        assertThat(actual.getSpec().getComponents().get(3).getMetadata().getName(), is(MY_PLUGIN));
-        assertThat(actual.getSpec().getComponents().get(4).getMetadata().getName(), is(MY_APP_PLUGIN_LINK));
-        assertThat(actual.getSpec().getComponents().get(5).getMetadata().getName(), is(MY_DATABASE_SERVICE));
-        assertThat(actual.getSpec().getComponents().get(6).getMetadata().getName(), is(MY_PLUGIN_REF));
-        EntandoCustomResourceReference ref = (EntandoCustomResourceReference) actual.getSpec().getComponents().get(6);
+        assertThat(actual.getSpec().getComponents().get(1).getMetadata().getName(), is(MY_APP));
+        assertThat(actual.getSpec().getComponents().get(2).getMetadata().getName(), is(MY_PLUGIN));
+        assertThat(actual.getSpec().getComponents().get(3).getMetadata().getName(), is(MY_APP_PLUGIN_LINK));
+        assertThat(actual.getSpec().getComponents().get(4).getMetadata().getName(), is(MY_DATABASE_SERVICE));
+        assertThat(actual.getSpec().getComponents().get(5).getMetadata().getName(), is(MY_PLUGIN_REF));
+        EntandoCustomResourceReference ref = (EntandoCustomResourceReference) actual.getSpec().getComponents().get(5);
         assertThat(ref.getSpec().getTargetKind(), is("EntandoPlugin"));
         assertThat(ref.getSpec().getTargetName(), is(MY_PLUGIN));
         assertThat(ref.getSpec().getTargetNamespace().get(), is(MY_NAMESPACE));
@@ -175,13 +173,12 @@ public abstract class AbstractEntandoCompositeAppTest implements CustomResourceT
 
         assertThat(actual.getSpec().getIngressHostNameOverride().get(), is(MY_HOSTNAME));
         assertThat(actual.getSpec().getComponents().get(0).getMetadata().getName(), is(MY_KEYCLOAK));
-        assertThat(actual.getSpec().getComponents().get(1).getMetadata().getName(), is(MY_CLUSTER_INFRASTRUCTURE));
-        assertThat(actual.getSpec().getComponents().get(2).getMetadata().getName(), is(MY_APP));
-        assertThat(actual.getSpec().getComponents().get(3).getMetadata().getName(), is(MY_PLUGIN));
-        assertThat(actual.getSpec().getComponents().get(4).getMetadata().getName(), is(MY_APP_PLUGIN_LINK));
-        assertThat(actual.getSpec().getComponents().get(5).getMetadata().getName(), is(MY_DATABASE_SERVICE));
-        assertThat(actual.getSpec().getComponents().get(6).getMetadata().getName(), is(MY_PLUGIN_REF));
-        EntandoCustomResourceReference ref = (EntandoCustomResourceReference) actual.getSpec().getComponents().get(6);
+        assertThat(actual.getSpec().getComponents().get(1).getMetadata().getName(), is(MY_APP));
+        assertThat(actual.getSpec().getComponents().get(2).getMetadata().getName(), is(MY_PLUGIN));
+        assertThat(actual.getSpec().getComponents().get(3).getMetadata().getName(), is(MY_APP_PLUGIN_LINK));
+        assertThat(actual.getSpec().getComponents().get(4).getMetadata().getName(), is(MY_DATABASE_SERVICE));
+        assertThat(actual.getSpec().getComponents().get(5).getMetadata().getName(), is(MY_PLUGIN_REF));
+        EntandoCustomResourceReference ref = (EntandoCustomResourceReference) actual.getSpec().getComponents().get(5);
         assertThat(ref.getSpec().getTargetKind(), is("EntandoPlugin"));
         assertThat(ref.getSpec().getTargetName(), is(MY_PLUGIN));
         assertThat(ref.getSpec().getTargetNamespace().get(), is(MY_NAMESPACE));
