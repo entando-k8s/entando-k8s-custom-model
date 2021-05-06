@@ -2,8 +2,16 @@ apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   name: entandoapps.entando.org
+  labels:
+    entando.org/kind: EntandoApp
 spec:
   group: entando.org
+  names:
+    kind: EntandoApp
+    plural: entandoapps
+    shortNames:
+      - enap
+  scope: Namespaced
   versions:
     - name: v1
       served: true
@@ -274,9 +282,3 @@ spec:
             serverStatuses:
               type: object
               x-kubernetes-preserve-unknown-fields: true
-  names:
-    kind: EntandoApp
-    plural: entandoapps
-    shortNames:
-      - enap
-  scope: Namespaced
