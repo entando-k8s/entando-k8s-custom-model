@@ -34,7 +34,7 @@ EntandoApp custom resource, and then to resolve the correct CustomResourceOperat
             client.customResourceDefinitions().create(entandoAppCrd);
         }
         return (CustomResourceOperationsImpl<EntandoApp, EntandoAppList, DoneableEntandoApp>) client
-            .customResources(entandoAppCrd, EntandoApp.class, EntandoAppList.class, DoneableEntandoApp.class);
+            .customResources(EntandoApp.class);
 
 ```
 
