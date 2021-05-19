@@ -25,10 +25,12 @@ public class CapabilityRequirementFluent<N extends CapabilityRequirementFluent<N
     private StandardCapabilityImplementation implementation;
     private CapabilityScope capabilityRequirementScope;
     private CapabilityProvisioningStrategy provisioningStrategy;
-    private Map<String, String> additionalLabelsToMatch;
+    private Map<String, String> selector;
     private Map<String, String> capabilityParameters;
     private ResourceReference specifiedCapability;
     private ExternallyProvidedService externallyProvidedService;
+    private String preferredHostName;
+    private String preferredTlsSecretName;
 
     public CapabilityRequirementFluent() {
 
@@ -39,10 +41,13 @@ public class CapabilityRequirementFluent<N extends CapabilityRequirementFluent<N
         this.implementation = spec.getImplementation().orElse(null);
         this.capabilityRequirementScope = spec.getScope().orElse(null);
         this.provisioningStrategy = spec.getProvisioningStrategy().orElse(null);
-        this.additionalLabelsToMatch = spec.getSelector();
+        this.selector = spec.getSelector();
         this.capabilityParameters = spec.getCapabilityParameters();
         this.specifiedCapability = spec.getSpecifiedCapability().orElse(null);
         this.externallyProvidedService = spec.getExternallyProvisionedService().orElse(null);
+        this.preferredHostName = spec.getPreferredHostName().orElse(null);
+        this.preferredTlsSecretName = spec.getPreferredTlsSecretName().orElse(null);
+
     }
 
     public N withCapability(StandardCapability capability) {
@@ -60,8 +65,8 @@ public class CapabilityRequirementFluent<N extends CapabilityRequirementFluent<N
         return thisAsN();
     }
 
-    public N withAdditionalLabelsToMatch(Map<String, String> additionalLabelsToMatch) {
-        this.additionalLabelsToMatch = additionalLabelsToMatch;
+    public N withSelector(Map<String, String> selector) {
+        this.selector = selector;
         return thisAsN();
     }
 
@@ -80,8 +85,18 @@ public class CapabilityRequirementFluent<N extends CapabilityRequirementFluent<N
         return thisAsN();
     }
 
-    public N withExternallyProvisionedService(String host, Integer port, String adminSecretName) {
-        this.externallyProvidedService = new ExternallyProvidedService(host, port, adminSecretName);
+    public N withExternallyProvidedService(ExternallyProvidedService externallyProvisionedService) {
+        this.externallyProvidedService = externallyProvisionedService;
+        return thisAsN();
+    }
+
+    public N withPreferredTlsSecretName(String preferredTlsSecretName) {
+        this.preferredTlsSecretName = preferredTlsSecretName;
+        return thisAsN();
+    }
+
+    public N withPreferredHostName(String preferredHostName) {
+        this.preferredHostName = preferredHostName;
         return thisAsN();
     }
 
@@ -92,7 +107,34 @@ public class CapabilityRequirementFluent<N extends CapabilityRequirementFluent<N
 
     public CapabilityRequirement build() {
         return new CapabilityRequirement(this.capability, this.implementation, this.capabilityRequirementScope, this.provisioningStrategy,
-                this.additionalLabelsToMatch, this.capabilityParameters, this.specifiedCapability, this.externallyProvidedService);
+                this.selector, this.capabilityParameters, this.specifiedCapability, this.externallyProvidedService,
+                this.preferredHostName, this.preferredTlsSecretName);
+    }
+
+    public ExternallyProvidedServiceNested withNewExternallyProvidedService() {
+        return new ExternallyProvidedServiceNested(thisAsN());
+    }
+
+    public ExternallyProvidedServiceNested editExternallyProvidedService() {
+        return new ExternallyProvidedServiceNested(thisAsN(), externallyProvidedService);
+    }
+
+    public class ExternallyProvidedServiceNested extends ExternallyProvidedServiceFluent<ExternallyProvidedServiceNested> {
+
+        private final N parentBuilder;
+
+        public ExternallyProvidedServiceNested(N parentBuilder, ExternallyProvidedService keycloakToUse) {
+            super(keycloakToUse);
+            this.parentBuilder = parentBuilder;
+        }
+
+        public ExternallyProvidedServiceNested(N parentBuilder) {
+            this.parentBuilder = parentBuilder;
+        }
+
+        public N endExternallyProvidedService() {
+            return parentBuilder.withExternallyProvidedService(super.build());
+        }
     }
 
 }

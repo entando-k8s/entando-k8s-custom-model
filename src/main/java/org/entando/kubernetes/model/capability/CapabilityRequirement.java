@@ -48,6 +48,8 @@ public class CapabilityRequirement {
     private Map<String, String> capabilityParameters;
     private ResourceReference specifiedCapability;
     private ExternallyProvidedService externallyProvidedService;
+    private String preferredHostName;
+    private String preferredTlsSecretName;
 
     public CapabilityRequirement() {
     }
@@ -57,18 +59,23 @@ public class CapabilityRequirement {
             @JsonProperty("implementation") StandardCapabilityImplementation implementation,
             @JsonProperty("capabilityRequirementScope") CapabilityScope scope,
             @JsonProperty("provisioningStrategy") CapabilityProvisioningStrategy provisioningStrategy,
-            @JsonProperty("labelsToMatch") Map<String, String> labelsToMatch,
+            @JsonProperty("selector") Map<String, String> selector,
             @JsonProperty("capabilityParameters") Map<String, String> capabilityParameters,
             @JsonProperty("specifiedCapability") ResourceReference specifiedCapability,
-            @JsonProperty("externallyProvisionedService") ExternallyProvidedService externallyProvidedService) {
+            @JsonProperty("externallyProvisionedService") ExternallyProvidedService externallyProvidedService,
+            @JsonProperty("preferredHostName") String preferredHostName,
+            @JsonProperty("preferredTlsSecretName") String preferredTlsSecretName
+    ) {
         this.capability = capability;
         this.implementation = implementation;
         this.scope = scope;
         this.provisioningStrategy = provisioningStrategy;
-        this.selector = labelsToMatch;
+        this.selector = selector;
         this.capabilityParameters = capabilityParameters;
         this.specifiedCapability = specifiedCapability;
         this.externallyProvidedService = externallyProvidedService;
+        this.preferredHostName = preferredHostName;
+        this.preferredTlsSecretName = preferredTlsSecretName;
     }
 
     public StandardCapability getCapability() {
@@ -77,6 +84,14 @@ public class CapabilityRequirement {
 
     public Optional<StandardCapabilityImplementation> getImplementation() {
         return Optional.ofNullable(implementation);
+    }
+
+    public Optional<String> getPreferredHostName() {
+        return Optional.ofNullable(preferredHostName);
+    }
+
+    public Optional<String> getPreferredTlsSecretName() {
+        return Optional.ofNullable(preferredTlsSecretName);
     }
 
     public Optional<CapabilityScope> getScope() {

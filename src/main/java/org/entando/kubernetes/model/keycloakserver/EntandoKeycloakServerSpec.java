@@ -29,6 +29,8 @@ import io.fabric8.kubernetes.api.model.EnvVar;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.util.List;
 import java.util.Optional;
+import org.entando.kubernetes.model.capability.CapabilityProvisioningStrategy;
+import org.entando.kubernetes.model.capability.CapabilityScope;
 import org.entando.kubernetes.model.common.DbmsVendor;
 import org.entando.kubernetes.model.common.EntandoIngressingDeploymentSpec;
 import org.entando.kubernetes.model.common.EntandoResourceRequirements;
@@ -46,6 +48,9 @@ public class EntandoKeycloakServerSpec extends EntandoIngressingDeploymentSpec {
     private StandardKeycloakImage standardImage;
     private boolean isDefault;
     private String frontEndUrl;
+    private CapabilityProvisioningStrategy provisioningStrategy;
+    private String adminSecretName;
+    private CapabilityScope providedCapabilityScope;
 
     public EntandoKeycloakServerSpec() {
         super();
@@ -56,6 +61,8 @@ public class EntandoKeycloakServerSpec extends EntandoIngressingDeploymentSpec {
             @JsonProperty("customName") String customImage,
             @JsonProperty("standardImage") StandardKeycloakImage standardImage,
             @JsonProperty("frontEndUrl") String frontEndUrl,
+            @JsonProperty("provisioningStrategy") CapabilityProvisioningStrategy provisioningStrategy,
+            @JsonProperty("adminSecretName") String adminSecretName,
             @JsonProperty("dbms") DbmsVendor dbms,
             @JsonProperty("ingressHostName") String ingressHostName,
             @JsonProperty("tlsSecretName") String tlsSecretName,
@@ -64,13 +71,21 @@ public class EntandoKeycloakServerSpec extends EntandoIngressingDeploymentSpec {
             @JsonProperty("serviceAccountToUse") String serviceAccountToUse,
             @JsonProperty("environmentVariables") List<EnvVar> environmentVariables,
             @JsonProperty("resourceRequirements") EntandoResourceRequirements resourceRequirements,
-            @JsonProperty("storageClass") String storageClass) {
+            @JsonProperty("storageClass") String storageClass,
+            @JsonProperty("providedCapabilityScope")CapabilityScope providedCapabilityScope) {
         super(ingressHostName, tlsSecretName, replicas, dbms, serviceAccountToUse, environmentVariables, resourceRequirements,
                 storageClass);
         this.customImage = customImage;
         this.standardImage = standardImage;
         this.frontEndUrl = frontEndUrl;
+        this.provisioningStrategy = provisioningStrategy;
+        this.adminSecretName = adminSecretName;
         this.isDefault = Boolean.TRUE.equals(isDefault);
+        this.providedCapabilityScope = providedCapabilityScope;
+    }
+
+    public Optional<CapabilityScope> getProvidedCapabilityScope() {
+        return Optional.ofNullable(providedCapabilityScope);
     }
 
     public Optional<String> getCustomImage() {
@@ -83,6 +98,14 @@ public class EntandoKeycloakServerSpec extends EntandoIngressingDeploymentSpec {
 
     public Optional<StandardKeycloakImage> getStandardImage() {
         return Optional.ofNullable(standardImage);
+    }
+
+    public Optional<String> getAdminSecretName() {
+        return Optional.ofNullable(adminSecretName);
+    }
+
+    public Optional<CapabilityProvisioningStrategy> getProvisioningStrategy() {
+        return Optional.ofNullable(provisioningStrategy);
     }
 
     public boolean isDefault() {

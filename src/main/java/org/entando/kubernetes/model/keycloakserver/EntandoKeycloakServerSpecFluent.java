@@ -16,6 +16,8 @@
 
 package org.entando.kubernetes.model.keycloakserver;
 
+import org.entando.kubernetes.model.capability.CapabilityProvisioningStrategy;
+import org.entando.kubernetes.model.capability.CapabilityScope;
 import org.entando.kubernetes.model.common.EntandoIngressingDeploymentSpecFluent;
 
 public class EntandoKeycloakServerSpecFluent<N extends EntandoKeycloakServerSpecFluent<N>>
@@ -25,6 +27,9 @@ public class EntandoKeycloakServerSpecFluent<N extends EntandoKeycloakServerSpec
     protected boolean isDefault;
     private StandardKeycloakImage standardImage;
     private String frontEndUrl;
+    private CapabilityProvisioningStrategy provisioningStrategy;
+    private String adminSecretName;
+    private CapabilityScope providedCapabilityScope;
 
     public EntandoKeycloakServerSpecFluent(EntandoKeycloakServerSpec spec) {
         super(spec);
@@ -32,6 +37,9 @@ public class EntandoKeycloakServerSpecFluent<N extends EntandoKeycloakServerSpec
         this.customImage = spec.getCustomImage().orElse(null);
         this.standardImage = spec.getStandardImage().orElse(null);
         this.frontEndUrl = spec.getFrontEndUrl().orElse(null);
+        this.adminSecretName = spec.getAdminSecretName().orElse(null);
+        this.provisioningStrategy = spec.getProvisioningStrategy().orElse(null);
+        this.providedCapabilityScope = spec.getProvidedCapabilityScope().orElse(null);
     }
 
     public EntandoKeycloakServerSpecFluent() {
@@ -48,8 +56,23 @@ public class EntandoKeycloakServerSpecFluent<N extends EntandoKeycloakServerSpec
         return thisAsF();
     }
 
+    public N withAdminSecretName(String adminSecretName) {
+        this.adminSecretName = adminSecretName;
+        return thisAsF();
+    }
+
+    public N withProvisioningStrategy(CapabilityProvisioningStrategy provisioningStrategy) {
+        this.provisioningStrategy = provisioningStrategy;
+        return thisAsF();
+    }
+
     public N withFrontEndUrl(String frontEndUrl) {
         this.frontEndUrl = frontEndUrl;
+        return thisAsF();
+    }
+
+    public N withProvidedCapabilityScope(CapabilityScope providedCapabilityScope) {
+        this.providedCapabilityScope = providedCapabilityScope;
         return thisAsF();
     }
 
@@ -59,9 +82,8 @@ public class EntandoKeycloakServerSpecFluent<N extends EntandoKeycloakServerSpec
     }
 
     public EntandoKeycloakServerSpec build() {
-        return new EntandoKeycloakServerSpec(customImage, standardImage, frontEndUrl, dbms, ingressHostName, tlsSecretName, replicas,
-                isDefault,
-                serviceAccountToUse, environmentVariables, resourceRequirements,
-                storageClass);
+        return new EntandoKeycloakServerSpec(customImage, standardImage, frontEndUrl, provisioningStrategy, adminSecretName, dbms,
+                ingressHostName, tlsSecretName, replicas, isDefault,
+                serviceAccountToUse, environmentVariables, resourceRequirements, storageClass, providedCapabilityScope);
     }
 }

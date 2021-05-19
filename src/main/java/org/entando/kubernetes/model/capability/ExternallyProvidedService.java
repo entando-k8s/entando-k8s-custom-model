@@ -35,16 +35,23 @@ import java.util.Optional;
         setterVisibility = Visibility.NONE
 )
 public class ExternallyProvidedService {
+
     private final String host;
     private final Integer port;
     private final String adminSecretName;
+    private final String path;
+    private final Boolean requiresDirectConnection;
 
     public ExternallyProvidedService(@JsonProperty("host") String host,
             @JsonProperty("port") Integer port,
-            @JsonProperty("adminSecretName")String adminSecretName) {
+            @JsonProperty("adminSecretName") String adminSecretName,
+            @JsonProperty("path") String path,
+            @JsonProperty("requiresDirectConnection") Boolean requiresDirectConnection) {
         this.host = host;
         this.port = port;
         this.adminSecretName = adminSecretName;
+        this.path = path;
+        this.requiresDirectConnection = requiresDirectConnection;
     }
 
     public String getHost() {
@@ -53,6 +60,14 @@ public class ExternallyProvidedService {
 
     public Optional<Integer> getPort() {
         return Optional.ofNullable(port);
+    }
+
+    public Optional<String> getPath() {
+        return Optional.ofNullable(path);
+    }
+
+    public Optional<Boolean> getRequiresDirectConnection() {
+        return Optional.ofNullable(requiresDirectConnection);
     }
 
     public String getAdminSecretName() {

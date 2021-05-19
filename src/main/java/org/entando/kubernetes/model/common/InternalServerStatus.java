@@ -32,13 +32,13 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
         setterVisibility = Visibility.NONE)
 @RegisterForReflection
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DbServerStatus extends AbstractServerStatus {
+public class InternalServerStatus extends AbstractServerStatus {
 
-    public DbServerStatus() {
+    public InternalServerStatus() {
         super();
     }
 
-    public DbServerStatus(String qualifier) {
+    public InternalServerStatus(String qualifier) {
         super(qualifier);
     }
 }

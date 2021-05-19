@@ -31,8 +31,8 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.util.Optional;
 import org.entando.kubernetes.model.common.EntandoCustomResource;
 import org.entando.kubernetes.model.common.EntandoCustomResourceStatus;
+import org.entando.kubernetes.model.common.ExposedServerStatus;
 import org.entando.kubernetes.model.common.ResourceReference;
-import org.entando.kubernetes.model.common.WebServerStatus;
 
 @JsonSerialize
 @JsonDeserialize
@@ -72,17 +72,12 @@ public class ProvidedCapability extends CustomResource<CapabilityRequirement, En
 
     public Optional<ResourceReference> getIngressReference() {
         return getStatus().findCurrentServerStatus()
-                .filter(WebServerStatus.class::isInstance)
-                .flatMap(s -> Optional.of(new ResourceReference(getMetadata().getNamespace(), ((WebServerStatus) s).getIngressName())));
+                .filter(ExposedServerStatus.class::isInstance)
+                .flatMap(s -> Optional.of(new ResourceReference(getMetadata().getNamespace(), ((ExposedServerStatus) s).getIngressName())));
     }
 
     public ResourceReference getServiceReference() {
         return getStatus().findCurrentServerStatus().map(s -> new ResourceReference(getMetadata().getNamespace(), s.getServiceName()))
-                .orElse(null);
-    }
-
-    public ResourceReference getAdminSecretReference() {
-        return getStatus().findCurrentServerStatus().map(s -> new ResourceReference(getMetadata().getNamespace(), s.getAdminSecretName()))
                 .orElse(null);
     }
 

@@ -21,10 +21,11 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 import java.util.Collections;
-import org.entando.kubernetes.model.common.DbServerStatus;
+import org.entando.kubernetes.model.capability.CapabilityScope;
 import org.entando.kubernetes.model.common.DbmsVendor;
 import org.entando.kubernetes.model.common.EntandoDeploymentPhase;
-import org.entando.kubernetes.model.common.WebServerStatus;
+import org.entando.kubernetes.model.common.ExposedServerStatus;
+import org.entando.kubernetes.model.common.InternalServerStatus;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseService;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseServiceBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,6 +68,7 @@ public abstract class AbstractEntandoDatabaseServiceTest implements CustomResour
                 .addToJdbcParameters(MY_PARAM, MY_PARAM_VALUE)
                 .withDbms(DbmsVendor.ORACLE)
                 .withCreateDeployment(true)
+                .withProvidedCapabilityScope(CapabilityScope.CLUSTER)
                 .endSpec()
                 .build();
         getClient().customResources(EntandoDatabaseService.class).inNamespace(MY_NAMESPACE).create(externalDatabase);
@@ -77,11 +79,12 @@ public abstract class AbstractEntandoDatabaseServiceTest implements CustomResour
         assertThat(actual.getSpec().getDatabaseName().get(), is(MY_DB));
         assertThat(actual.getSpec().getHost().get(), is(MYHOST_COM));
         assertThat(actual.getSpec().getPort().get(), is(PORT_1521));
-        assertThat(actual.getSpec().getDbms(), is(DbmsVendor.ORACLE));
+        assertThat(actual.getSpec().getDbms().get(), is(DbmsVendor.ORACLE));
         assertThat(actual.getSpec().getCreateDeployment().get(), is(true));
         assertThat(actual.getSpec().getTablespace().get(), is(MY_TABLESPACE));
         assertThat(actual.getSpec().getSecretName().get(), is(MY_DB_SECRET));
         assertThat(actual.getSpec().getStorageClass().get(), is(MY_STORAGE_CLASS));
+        assertThat(actual.getSpec().getProvidedCapabilityScope().get(), is(CapabilityScope.CLUSTER));
         assertThat(actual.getSpec().getJdbcParameters().get(MY_PARAM), is(MY_PARAM_VALUE));
         assertThat(actual.getMetadata().getName(), is(MY_EXTERNAL_DATABASE));
     }
@@ -101,6 +104,7 @@ public abstract class AbstractEntandoDatabaseServiceTest implements CustomResour
                 .withJdbcParameters(Collections.singletonMap("asdfasdf", "afafafaf"))
                 .withPort(5555)
                 .withSecretName("othersecret")
+                .withProvidedCapabilityScope(CapabilityScope.NAMESPACE)
                 .withDbms(DbmsVendor.POSTGRESQL)
                 .withCreateDeployment(false)
                 .endSpec()
@@ -122,26 +126,28 @@ public abstract class AbstractEntandoDatabaseServiceTest implements CustomResour
                                 .withStorageClass(MY_STORAGE_CLASS)
                                 .withSecretName(MY_DB_SECRET)
                                 .withCreateDeployment(true)
+                                .withProvidedCapabilityScope(CapabilityScope.CLUSTER)
                                 .withDbms(DbmsVendor.ORACLE)
                                 .endSpec()
                                 .build());
-        actual.getStatus().putServerStatus(new WebServerStatus("some-qualifier"));
-        actual.getStatus().putServerStatus(new WebServerStatus("some-other-qualifier"));
-        actual.getStatus().putServerStatus(new WebServerStatus("some-qualifier"));
-        actual.getStatus().putServerStatus(new DbServerStatus("another-qualifier"));
+        actual.getStatus().putServerStatus(new ExposedServerStatus("some-qualifier"));
+        actual.getStatus().putServerStatus(new ExposedServerStatus("some-other-qualifier"));
+        actual.getStatus().putServerStatus(new ExposedServerStatus("some-qualifier"));
+        actual.getStatus().putServerStatus(new InternalServerStatus("another-qualifier"));
         actual.getStatus().updateDeploymentPhase(EntandoDeploymentPhase.STARTED, actual.getMetadata().getGeneration());
 
         //Then
         assertThat(actual.getSpec().getDatabaseName().get(), is(MY_DB));
         assertThat(actual.getSpec().getHost().get(), is(MYHOST_COM));
         assertThat(actual.getSpec().getPort().get(), is(PORT_1521));
-        assertThat(actual.getSpec().getDbms(), is(DbmsVendor.ORACLE));
+        assertThat(actual.getSpec().getDbms().get(), is(DbmsVendor.ORACLE));
         assertThat(actual.getSpec().getCreateDeployment().get(), is(true));
         assertThat(actual.getSpec().getJdbcParameters().get(MY_PARAM), is(MY_PARAM_VALUE));
         assertThat(actual.getSpec().getJdbcParameters().get("asdfasdf"), is(nullValue()));
         assertThat(actual.getSpec().getSecretName().get(), is(MY_DB_SECRET));
         assertThat(actual.getSpec().getStorageClass().get(), is(MY_STORAGE_CLASS));
         assertThat(actual.getSpec().getTablespace().get(), is(MY_TABLESPACE));
+        assertThat(actual.getSpec().getProvidedCapabilityScope().get(), is(CapabilityScope.CLUSTER));
         assertThat(actual.getMetadata().getLabels().get("my-label"), is("my-value"));
         assertThat("the status reflects", actual.getStatus().forServerQualifiedBy("some-qualifier").isPresent());
         assertThat("the status reflects", actual.getStatus().forDbQualifiedBy("another-qualifier").isPresent());

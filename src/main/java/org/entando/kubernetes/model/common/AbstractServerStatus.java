@@ -29,14 +29,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.fabric8.kubernetes.api.model.PersistentVolumeClaimStatus;
-import io.fabric8.kubernetes.api.model.PodStatus;
-import io.fabric8.kubernetes.api.model.ServiceStatus;
-import io.fabric8.kubernetes.api.model.apps.DeploymentStatus;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @JsonSerialize
 @JsonDeserialize
@@ -47,8 +45,8 @@ import java.util.List;
 
 )
 @JsonSubTypes({
-        @Type(value = WebServerStatus.class, name = "WebServerStatus"),
-        @Type(value = DbServerStatus.class, name = "DbServerStatus"),
+        @Type(value = ExposedServerStatus.class, name = "ExposedServerStatus"),
+        @Type(value = InternalServerStatus.class, name = "InternalServerStatus"),
 })
 @JsonInclude(Include.NON_NULL)
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, isGetterVisibility = Visibility.NONE, getterVisibility = Visibility.NONE,
@@ -64,14 +62,12 @@ public abstract class AbstractServerStatus implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "GMT")
     private Date finished;
     private String serviceName;
-    private ServiceStatus serviceStatus;
     private String deploymentName;
-    private DeploymentStatus deploymentStatus;
     private String adminSecretName;
-    private PodStatus podStatus;
+    private Map<String, String> podPhases;
+    private Map<String, String> persistentVolumeClaimPhases;
+    private Map<String, String> derivedDeploymentParameters;
     private EntandoControllerFailure entandoControllerFailure;
-    private List<PersistentVolumeClaimStatus> persistentVolumeClaimStatuses;
-    private PodStatus initPodStatus;
 
     protected AbstractServerStatus() {
         //For json deserialization
@@ -91,30 +87,6 @@ public abstract class AbstractServerStatus implements Serializable {
 
     public Date getFinished() {
         return finished;
-    }
-
-    public ServiceStatus getServiceStatus() {
-        return serviceStatus;
-    }
-
-    public void setServiceStatus(ServiceStatus serviceStatus) {
-        this.serviceStatus = serviceStatus;
-    }
-
-    public DeploymentStatus getDeploymentStatus() {
-        return deploymentStatus;
-    }
-
-    public void setDeploymentStatus(DeploymentStatus deploymentStatus) {
-        this.deploymentStatus = deploymentStatus;
-    }
-
-    public PodStatus getPodStatus() {
-        return podStatus;
-    }
-
-    public void setPodStatus(PodStatus podStatus) {
-        this.podStatus = podStatus;
     }
 
     public EntandoControllerFailure getEntandoControllerFailure() {
@@ -137,22 +109,6 @@ public abstract class AbstractServerStatus implements Serializable {
 
     public void setQualifier(String qualifier) {
         this.qualifier = qualifier;
-    }
-
-    public List<PersistentVolumeClaimStatus> getPersistentVolumeClaimStatuses() {
-        return persistentVolumeClaimStatuses;
-    }
-
-    public void setPersistentVolumeClaimStatuses(List<PersistentVolumeClaimStatus> persistentVolumeClaimStatuses) {
-        this.persistentVolumeClaimStatuses = persistentVolumeClaimStatuses;
-    }
-
-    public PodStatus getInitPodStatus() {
-        return initPodStatus;
-    }
-
-    public void setInitPodStatus(PodStatus initPodStatus) {
-        this.initPodStatus = initPodStatus;
     }
 
     public String getType() {
@@ -179,16 +135,49 @@ public abstract class AbstractServerStatus implements Serializable {
         this.deploymentName = deploymentName;
     }
 
-    public String getAdminSecretName() {
-        return adminSecretName;
+    public Map<String, String> getDerivedDeploymentParameters() {
+        return derivedDeploymentParameters;
     }
 
-    public void setAdminSecretName(String adminSecretName) {
-        this.adminSecretName = adminSecretName;
+    public void putDerivedDeploymentParameter(String parameterName, String parameterValue) {
+        if (derivedDeploymentParameters == null) {
+            derivedDeploymentParameters = new HashMap<>();
+        }
+        derivedDeploymentParameters.put(parameterName, parameterValue);
+    }
+
+    public Map<String, String> getPersistentVolumeClaimPhases() {
+        return persistentVolumeClaimPhases;
+    }
+
+    public void putPersistentVolumeClaimPhase(String pvcName, String pvcPhase) {
+        if (persistentVolumeClaimPhases == null) {
+            persistentVolumeClaimPhases = new HashMap<>();
+        }
+        persistentVolumeClaimPhases.put(pvcName, pvcPhase);
+    }
+
+    public Map<String, String> getPodPhases() {
+        return podPhases;
+    }
+
+    public void putPodPhase(String podName, String podPhase) {
+        if (podPhases == null) {
+            podPhases = new HashMap<>();
+        }
+        podPhases.put(podName, podPhase);
     }
 
     public void finishWith(EntandoControllerFailure failure) {
         finish();
         setEntandoControllerFailure(failure);
+    }
+
+    public Optional<String> getAdminSecretName() {
+        return Optional.ofNullable(adminSecretName);
+    }
+
+    public void setAdminSecretName(String adminSecretName) {
+        this.adminSecretName = adminSecretName;
     }
 }

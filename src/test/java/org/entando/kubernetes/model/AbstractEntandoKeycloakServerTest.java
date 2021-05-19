@@ -19,10 +19,12 @@ package org.entando.kubernetes.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import org.entando.kubernetes.model.common.DbServerStatus;
+import org.entando.kubernetes.model.capability.CapabilityProvisioningStrategy;
+import org.entando.kubernetes.model.capability.CapabilityScope;
 import org.entando.kubernetes.model.common.DbmsVendor;
 import org.entando.kubernetes.model.common.EntandoDeploymentPhase;
-import org.entando.kubernetes.model.common.WebServerStatus;
+import org.entando.kubernetes.model.common.ExposedServerStatus;
+import org.entando.kubernetes.model.common.InternalServerStatus;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServer;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServerBuilder;
 import org.entando.kubernetes.model.keycloakserver.StandardKeycloakImage;
@@ -39,6 +41,7 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
     private static final String MYHOST_COM = "myhost.com";
     private static final String MY_TLS_SECRET = "my-tls-secret";
     public static final String HTTP_MY_FRONTEND_URL = "http://my.frontend/url";
+    public static final String MY_ADMIN_SECRET = "my-admin-secret";
 
     @BeforeEach
     public void deleteEntandoKeycloakServer() {
@@ -58,6 +61,8 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
                 .withReplicas(5)
                 .withStandardImage(StandardKeycloakImage.REDHAT_SSO)
                 .withFrontEndUrl(HTTP_MY_FRONTEND_URL)
+                .withAdminSecretName(MY_ADMIN_SECRET)
+                .withProvisioningStrategy(CapabilityProvisioningStrategy.USE_EXTERNAL)
                 .withDefault(true)
                 .withIngressHostName(MYHOST_COM)
                 .withTlsSecretName(MY_TLS_SECRET)
@@ -71,6 +76,8 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
         //Then
         assertThat(actual.getSpec().getDbms().get(), is(DbmsVendor.MYSQL));
         assertThat(actual.getSpec().getFrontEndUrl().get(), is(HTTP_MY_FRONTEND_URL));
+        assertThat(actual.getSpec().getAdminSecretName().get(), is(MY_ADMIN_SECRET));
+        assertThat(actual.getSpec().getProvisioningStrategy().get(), is(CapabilityProvisioningStrategy.USE_EXTERNAL));
         assertThat(actual.getSpec().getStandardImage().get(), is(StandardKeycloakImage.REDHAT_SSO));
         assertThat(actual.getSpec().getCustomImage().get(), is(ENTANDO_SOMEKEYCLOAK));
         assertThat(actual.getSpec().getIngressHostName().get(), is(MYHOST_COM));
@@ -90,10 +97,13 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
                 .endMetadata()
                 .withNewSpec()
                 .withDbms(DbmsVendor.POSTGRESQL)
+                .withAdminSecretName("some-other-secret")
+                .withProvisioningStrategy(CapabilityProvisioningStrategy.DELEGATE_TO_OPERATOR)
                 .withIngressHostName("some.other.host.com")
                 .withFrontEndUrl("http://other.frontend/url")
                 .withStandardImage(StandardKeycloakImage.KEYCLOAK)
                 .withCustomImage("entando/anotherkeycloak")
+                .withProvidedCapabilityScope(CapabilityScope.LABELED)
                 .withReplicas(3)
                 .withTlsSecretName("some-othersecret")
                 .withDefault(false)
@@ -113,16 +123,19 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
                         .withCustomImage(ENTANDO_SOMEKEYCLOAK)
                         .withStandardImage(StandardKeycloakImage.REDHAT_SSO)
                         .withFrontEndUrl(HTTP_MY_FRONTEND_URL)
+                        .withAdminSecretName(MY_ADMIN_SECRET)
+                        .withProvisioningStrategy(CapabilityProvisioningStrategy.USE_EXTERNAL)
                         .withIngressHostName(MYHOST_COM)
                         .withReplicas(5)
+                        .withProvidedCapabilityScope(CapabilityScope.CLUSTER)
                         .withDefault(true)
                         .withTlsSecretName(MY_TLS_SECRET)
                         .endSpec()
                         .build());
-        actual.getStatus().putServerStatus(new WebServerStatus("some-qualifier"));
-        actual.getStatus().putServerStatus(new WebServerStatus("some-other-qualifier"));
-        actual.getStatus().putServerStatus(new WebServerStatus("some-qualifier"));
-        actual.getStatus().putServerStatus(new DbServerStatus("another-qualifier"));
+        actual.getStatus().putServerStatus(new ExposedServerStatus("some-qualifier"));
+        actual.getStatus().putServerStatus(new ExposedServerStatus("some-other-qualifier"));
+        actual.getStatus().putServerStatus(new ExposedServerStatus("some-qualifier"));
+        actual.getStatus().putServerStatus(new InternalServerStatus("another-qualifier"));
         actual.getStatus().updateDeploymentPhase(EntandoDeploymentPhase.STARTED, 5L);
         actual = getClient().customResources(EntandoKeycloakServer.class).inNamespace(actual.getMetadata().getNamespace())
                 .updateStatus(actual);
@@ -130,12 +143,15 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
         assertThat(actual.getSpec().getDbms().get(), is(DbmsVendor.MYSQL));
         assertThat(actual.getSpec().getFrontEndUrl().get(), is(HTTP_MY_FRONTEND_URL));
         assertThat(actual.getSpec().getStandardImage().get(), is(StandardKeycloakImage.REDHAT_SSO));
+        assertThat(actual.getSpec().getAdminSecretName().get(), is(MY_ADMIN_SECRET));
+        assertThat(actual.getSpec().getProvisioningStrategy().get(), is(CapabilityProvisioningStrategy.USE_EXTERNAL));
         assertThat(actual.getSpec().getCustomImage().get(), is(ENTANDO_SOMEKEYCLOAK));
         assertThat(actual.getSpec().getFrontEndUrl().get(), is(HTTP_MY_FRONTEND_URL));
         assertThat(actual.getSpec().getStandardImage().get(), is(StandardKeycloakImage.REDHAT_SSO));
         assertThat(actual.getSpec().getIngressHostName().get(), is(MYHOST_COM));
         assertThat(actual.getSpec().getReplicas().get(), is(5));
         assertThat(actual.getSpec().getTlsSecretName().get(), is(MY_TLS_SECRET));
+        assertThat(actual.getSpec().getProvidedCapabilityScope().get(), is(CapabilityScope.CLUSTER));
         assertThat(actual.getSpec().isDefault(), is(true));
         assertThat(actual.getMetadata().getName(), is(MY_KEYCLOAK));
         assertThat("the status reflects", actual.getStatus().forServerQualifiedBy("some-qualifier").isPresent());

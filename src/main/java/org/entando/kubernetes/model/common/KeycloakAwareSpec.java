@@ -42,7 +42,8 @@ public abstract class KeycloakAwareSpec extends EntandoIngressingDeploymentSpec 
             EntandoResourceRequirements resourceRequirements,
             KeycloakToUse keycloakToUse,
             String storageClass) {
-        super(ingressHostName, tlsSecretName, replicas, dbms, serviceAccountToUse, environmentVariables, resourceRequirements,storageClass);
+        super(ingressHostName, tlsSecretName, replicas, dbms, serviceAccountToUse, environmentVariables, resourceRequirements,
+                storageClass);
         this.keycloakToUse = keycloakToUse;
     }
 

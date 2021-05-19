@@ -16,17 +16,12 @@
 
 package org.entando.kubernetes.model.inprocesstest;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
-import org.entando.kubernetes.model.AbstractEntandoAppTest;
 import org.entando.kubernetes.model.AbstractProvidedCapabilityTest;
-import org.entando.kubernetes.model.app.EntandoAppBuilder;
 import org.junit.Rule;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 
 @Tags({@Tag("in-process"), @Tag("pre-deployment")})
@@ -40,6 +35,5 @@ class ProvidedCapabilityMockedTest extends AbstractProvidedCapabilityTest {
     public KubernetesClient getClient() {
         return server.getClient();
     }
-
 
 }

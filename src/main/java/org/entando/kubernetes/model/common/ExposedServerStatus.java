@@ -23,7 +23,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.fabric8.kubernetes.api.model.extensions.IngressStatus;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @JsonSerialize
@@ -33,16 +32,16 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
         setterVisibility = Visibility.NONE)
 @RegisterForReflection
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class WebServerStatus extends AbstractServerStatus {
+public class ExposedServerStatus extends AbstractServerStatus {
 
     private String ingressName;
-    private IngressStatus ingressStatus;
+    private String externalBaseUrl;
 
-    public WebServerStatus() {
+    public ExposedServerStatus() {
         super();
     }
 
-    public WebServerStatus(String qualifier) {
+    public ExposedServerStatus(String qualifier) {
         super(qualifier);
     }
 
@@ -50,15 +49,16 @@ public class WebServerStatus extends AbstractServerStatus {
         return ingressName;
     }
 
+    public void setExternalBaseUrl(String externalBaseUrl) {
+        this.externalBaseUrl = externalBaseUrl;
+    }
+
+    public String getExternalBaseUrl() {
+        return externalBaseUrl;
+    }
+
     public void setIngressName(String ingressName) {
         this.ingressName = ingressName;
     }
 
-    public IngressStatus getIngressStatus() {
-        return ingressStatus;
-    }
-
-    public void setIngressStatus(IngressStatus ingressStatus) {
-        this.ingressStatus = ingressStatus;
-    }
 }
