@@ -14,7 +14,7 @@
  *
  */
 
-package org.entando.kubernetes.model.common;
+package org.entando.kubernetes.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.entando.kubernetes.model.common.EntandoCustomResource;
 
 public final class SampleWriter {
 
