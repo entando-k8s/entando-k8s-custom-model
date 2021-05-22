@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: entandodatabaseservices.entando.org
   labels:
-    entando.org/kind: EntandoDatabaseService
+    entando.org/crd-of-interest: EntandoDatabaseService
 spec:
   group: entando.org
   names:

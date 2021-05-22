@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: entandocompositeapps.entando.org
   labels:
-    entando.org/kind: EntandoCompositeApp
+    entando.org/crd-of-interest: EntandoCompositeApp
 spec:
   group: entando.org
   names:

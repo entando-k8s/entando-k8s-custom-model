@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: entandodebundles.entando.org
   labels:
-    entando.org/kind: EntandoDeBundle
+    entando.org/crd-of-interest: EntandoDeBundle
 spec:
   group: entando.org
   scope: Namespaced

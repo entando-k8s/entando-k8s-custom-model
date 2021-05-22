@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: entandokeycloakservers.entando.org
   labels:
-    entando.org/kind: EntandoKeycloakServer
+    entando.org/crd-of-interest: EntandoKeycloakServer
 spec:
   group: entando.org
   names:
