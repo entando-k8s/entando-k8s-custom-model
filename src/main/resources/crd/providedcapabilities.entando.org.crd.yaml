@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: providedcapabilities.entando.org
   labels:
-    entando.org/crd-of-interest: EntandoPlugin
+    entando.org/crd-of-interest: ProvidedCapability
 spec:
   group: entando.org
   names:
