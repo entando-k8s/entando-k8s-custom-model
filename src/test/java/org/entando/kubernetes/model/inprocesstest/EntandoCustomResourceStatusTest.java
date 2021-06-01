@@ -97,7 +97,7 @@ class EntandoCustomResourceStatusTest {
         keycloakServer.getStatus().putServerStatus(zebServerStatus);
         Path sample = SampleWriter.writeSample(Paths.get("target"), keycloakServer);
         EntandoKeycloakServer actual = SampleWriter.readSample(sample, EntandoKeycloakServer.class);
-        assertThat(actual.getStatus().forDbQualifiedBy("db").get().getDeploymentName(), is("my-deployment"));
+        assertThat(actual.getStatus().getServerStatus("db").get().getDeploymentName(), is("my-deployment"));
         ExposedServerStatus actualFinalStatus = (ExposedServerStatus) actual.getStatus().findCurrentServerStatus().get();
         assertThat(actualFinalStatus.getQualifier(), is("web"));
         assertThat(actualFinalStatus.getFinished(), is(notNullValue()));

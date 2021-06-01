@@ -65,12 +65,8 @@ public class EntandoCustomResourceStatus implements Serializable {
         serverStatuses.put(status.getQualifier(), status);
     }
 
-    public Optional<InternalServerStatus> forDbQualifiedBy(String qualifier) {
-        return Optional.ofNullable((InternalServerStatus) serverStatuses.get(qualifier));
-    }
-
-    public Optional<ExposedServerStatus> forServerQualifiedBy(String qualifier) {
-        return Optional.ofNullable((ExposedServerStatus) serverStatuses.get(qualifier));
+    public Optional<AbstractServerStatus> getServerStatus(String qualifier) {
+        return Optional.ofNullable(serverStatuses.get(qualifier));
     }
 
     public Optional<AbstractServerStatus> findCurrentServerStatus() {

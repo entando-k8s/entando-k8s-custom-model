@@ -209,9 +209,9 @@ public abstract class AbstractEntandoPluginTest implements CustomResourceTestUti
         assertThat(findParameter(actual.getSpec(), PARAMETER_NAME).get().getValue(), is(PARAMETER_VALUE));
         assertThat(actual.getSpec().getReplicas().get(), is(5));
         assertThat(actual.getMetadata().getName(), is(MY_PLUGIN));
-        assertThat("the status reflects", actual.getStatus().forServerQualifiedBy("some-qualifier").isPresent());
-        assertThat("the status reflects", actual.getStatus().forServerQualifiedBy("some-other-qualifier").isPresent());
-        assertThat("the status reflects", actual.getStatus().forDbQualifiedBy("another-qualifier").isPresent());
+        assertThat("the status reflects", actual.getStatus().getServerStatus("some-qualifier").isPresent());
+        assertThat("the status reflects", actual.getStatus().getServerStatus("some-other-qualifier").isPresent());
+        assertThat("the status reflects", actual.getStatus().getServerStatus("another-qualifier").isPresent());
         assertThat(actual.getStatus().getObservedGeneration(), is(5L));
         assertThat(actual.getStatus().getPhase(), is(EntandoDeploymentPhase.STARTED));
     }

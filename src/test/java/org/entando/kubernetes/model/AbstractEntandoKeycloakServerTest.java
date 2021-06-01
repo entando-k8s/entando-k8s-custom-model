@@ -154,9 +154,9 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
         assertThat(actual.getSpec().getProvidedCapabilityScope().get(), is(CapabilityScope.CLUSTER));
         assertThat(actual.getSpec().isDefault(), is(true));
         assertThat(actual.getMetadata().getName(), is(MY_KEYCLOAK));
-        assertThat("the status reflects", actual.getStatus().forServerQualifiedBy("some-qualifier").isPresent());
-        assertThat("the status reflects", actual.getStatus().forServerQualifiedBy("some-other-qualifier").isPresent());
-        assertThat("the status reflects", actual.getStatus().forDbQualifiedBy("another-qualifier").isPresent());
+        assertThat("the status reflects", actual.getStatus().getServerStatus("some-qualifier").isPresent());
+        assertThat("the status reflects", actual.getStatus().getServerStatus("some-other-qualifier").isPresent());
+        assertThat("the status reflects", actual.getStatus().getServerStatus("another-qualifier").isPresent());
         assertThat(actual.getStatus().getPhase(), is(EntandoDeploymentPhase.STARTED));
         assertThat(actual.getStatus().getObservedGeneration(), is(5L));
     }

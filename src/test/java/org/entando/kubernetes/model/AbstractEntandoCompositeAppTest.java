@@ -183,9 +183,9 @@ public abstract class AbstractEntandoCompositeAppTest implements CustomResourceT
         assertThat(ref.getSpec().getTargetName(), is(MY_PLUGIN));
         assertThat(ref.getSpec().getTargetNamespace().get(), is(MY_NAMESPACE));
         assertThat(actual.getStatus(), is(notNullValue()));
-        assertThat("the status reflects", actual.getStatus().forServerQualifiedBy("some-qualifier").isPresent());
-        assertThat("the status reflects", actual.getStatus().forServerQualifiedBy("some-other-qualifier").isPresent());
-        assertThat("the status reflects", actual.getStatus().forDbQualifiedBy("another-qualifier").isPresent());
+        assertThat("the status reflects", actual.getStatus().getServerStatus("some-qualifier").isPresent());
+        assertThat("the status reflects", actual.getStatus().getServerStatus("some-other-qualifier").isPresent());
+        assertThat("the status reflects", actual.getStatus().getServerStatus("another-qualifier").isPresent());
         assertThat(actual.getStatus().getObservedGeneration(), is(5L));
         assertThat(actual.getStatus().getPhase(), is(EntandoDeploymentPhase.STARTED));
 

@@ -149,8 +149,8 @@ public abstract class AbstractEntandoDatabaseServiceTest implements CustomResour
         assertThat(actual.getSpec().getTablespace().get(), is(MY_TABLESPACE));
         assertThat(actual.getSpec().getProvidedCapabilityScope().get(), is(CapabilityScope.CLUSTER));
         assertThat(actual.getMetadata().getLabels().get("my-label"), is("my-value"));
-        assertThat("the status reflects", actual.getStatus().forServerQualifiedBy("some-qualifier").isPresent());
-        assertThat("the status reflects", actual.getStatus().forDbQualifiedBy("another-qualifier").isPresent());
+        assertThat("the status reflects", actual.getStatus().getServerStatus("some-qualifier").isPresent());
+        assertThat("the status reflects", actual.getStatus().getServerStatus("another-qualifier").isPresent());
     }
 
 }
