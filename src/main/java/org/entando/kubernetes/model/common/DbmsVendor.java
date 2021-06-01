@@ -36,7 +36,7 @@ public enum DbmsVendor {
     }
 
     @JsonCreator
-    public DbmsVendor fromValue(String value) {
+    public static DbmsVendor fromValue(String value) {
         if (Strings.isNullOrEmpty(value)) {
             return null;
         }

@@ -16,21 +16,24 @@
 
 package org.entando.kubernetes.model.capability;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import org.entando.kubernetes.model.common.DbmsVendor;
 import org.entando.kubernetes.model.common.ResourceReference;
 
 public class CapabilityRequirementFluent<N extends CapabilityRequirementFluent<N>> {
 
     private StandardCapability capability;
     private StandardCapabilityImplementation implementation;
-    private CapabilityScope capabilityRequirementScope;
+    private List<CapabilityScope> resolutionScopePreference;
     private CapabilityProvisioningStrategy provisioningStrategy;
     private Map<String, String> selector;
     private Map<String, String> capabilityParameters;
     private ResourceReference specifiedCapability;
     private ExternallyProvidedService externallyProvidedService;
-    private String preferredHostName;
-    private String preferredTlsSecretName;
 
     public CapabilityRequirementFluent() {
 
@@ -39,14 +42,12 @@ public class CapabilityRequirementFluent<N extends CapabilityRequirementFluent<N
     public CapabilityRequirementFluent(CapabilityRequirement spec) {
         this.capability = spec.getCapability();
         this.implementation = spec.getImplementation().orElse(null);
-        this.capabilityRequirementScope = spec.getScope().orElse(null);
+        this.resolutionScopePreference = spec.getResolutionScopePreference();
         this.provisioningStrategy = spec.getProvisioningStrategy().orElse(null);
         this.selector = spec.getSelector();
         this.capabilityParameters = spec.getCapabilityParameters();
         this.specifiedCapability = spec.getSpecifiedCapability().orElse(null);
         this.externallyProvidedService = spec.getExternallyProvisionedService().orElse(null);
-        this.preferredHostName = spec.getPreferredHostName().orElse(null);
-        this.preferredTlsSecretName = spec.getPreferredTlsSecretName().orElse(null);
 
     }
 
@@ -60,8 +61,8 @@ public class CapabilityRequirementFluent<N extends CapabilityRequirementFluent<N
         return thisAsN();
     }
 
-    public N withCapabilityRequirementScope(CapabilityScope capabilityRequirementScope) {
-        this.capabilityRequirementScope = capabilityRequirementScope;
+    public N withResolutionScopePreference(CapabilityScope... resolutionScopePreference) {
+        this.resolutionScopePreference = Arrays.asList(resolutionScopePreference);
         return thisAsN();
     }
 
@@ -70,8 +71,8 @@ public class CapabilityRequirementFluent<N extends CapabilityRequirementFluent<N
         return thisAsN();
     }
 
-    public N withCapabilityParameters(Map<String, String> capabilityParameters) {
-        this.capabilityParameters = capabilityParameters;
+    public N addAllToCapabilityParameters(Map<String, String> capabilityParameters) {
+        getCapabilityParameters().putAll(capabilityParameters);
         return thisAsN();
     }
 
@@ -90,13 +91,24 @@ public class CapabilityRequirementFluent<N extends CapabilityRequirementFluent<N
         return thisAsN();
     }
 
+    protected Map<String, String> getCapabilityParameters() {
+        this.capabilityParameters = Objects.requireNonNullElseGet(this.capabilityParameters, HashMap::new);
+        return this.capabilityParameters;
+
+    }
+
     public N withPreferredTlsSecretName(String preferredTlsSecretName) {
-        this.preferredTlsSecretName = preferredTlsSecretName;
+        getCapabilityParameters().put(CapabilityRequirement.PREFERRED_TLS_SECRET_NAME, preferredTlsSecretName);
         return thisAsN();
     }
 
-    public N withPreferredHostName(String preferredHostName) {
-        this.preferredHostName = preferredHostName;
+    public N withPreferredIngressHostName(String preferredHostName) {
+        getCapabilityParameters().put(CapabilityRequirement.PREFERRED_INGRESS_HOST_NAME, preferredHostName);
+        return thisAsN();
+    }
+
+    public N withPreferredDbms(DbmsVendor dbms) {
+        getCapabilityParameters().put(CapabilityRequirement.PREFERRED_DBMS, dbms.toValue());
         return thisAsN();
     }
 
@@ -106,9 +118,8 @@ public class CapabilityRequirementFluent<N extends CapabilityRequirementFluent<N
     }
 
     public CapabilityRequirement build() {
-        return new CapabilityRequirement(this.capability, this.implementation, this.capabilityRequirementScope, this.provisioningStrategy,
-                this.selector, this.capabilityParameters, this.specifiedCapability, this.externallyProvidedService,
-                this.preferredHostName, this.preferredTlsSecretName);
+        return new CapabilityRequirement(this.capability, this.implementation, this.resolutionScopePreference, this.provisioningStrategy,
+                this.selector, this.capabilityParameters, this.specifiedCapability, this.externallyProvidedService);
     }
 
     public ExternallyProvidedServiceNested withNewExternallyProvidedService() {

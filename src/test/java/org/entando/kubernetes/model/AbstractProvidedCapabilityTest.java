@@ -26,6 +26,7 @@ import org.entando.kubernetes.model.capability.ProvidedCapability;
 import org.entando.kubernetes.model.capability.ProvidedCapabilityBuilder;
 import org.entando.kubernetes.model.capability.StandardCapability;
 import org.entando.kubernetes.model.capability.StandardCapabilityImplementation;
+import org.entando.kubernetes.model.common.DbmsVendor;
 import org.entando.kubernetes.model.common.ResourceReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,15 +56,16 @@ public abstract class AbstractProvidedCapabilityTest implements CustomResourceTe
                 .withNewSpec()
                 .withCapability(StandardCapability.SSO)
                 .withImplementation(StandardCapabilityImplementation.KEYCLOAK)
-                .withCapabilityRequirementScope(CapabilityScope.CLUSTER)
+                .withResolutionScopePreference(CapabilityScope.NAMESPACE, CapabilityScope.CLUSTER)
                 .withProvisioningStrategy(CapabilityProvisioningStrategy.USE_EXTERNAL)
-                .withPreferredHostName("myhost.com")
+                .withPreferredDbms(DbmsVendor.MYSQL)
+                .withPreferredIngressHostName("myhost.com")
                 .withPreferredTlsSecretName("my-secret")
                 .withNewExternallyProvidedService()
                 .withHost("keycloak.host.com").withPort(80).withAdminSecretName(MY_ADMIN_SECRET).withRequiresDirectConnection(true)
                 .endExternallyProvidedService()
                 .withSpecifiedCapability(new ResourceReference(MY_NAMESPACE, "my-keycloak"))
-                .withCapabilityParameters(Collections.singletonMap("frontendUrl", "http://somehost.com/auth"))
+                .addAllToCapabilityParameters(Collections.singletonMap("frontendUrl", "http://somehost.com/auth"))
                 .withSelector(Collections.singletonMap("my-label", "my-label-value"))
 
                 .endSpec()
@@ -79,10 +81,12 @@ public abstract class AbstractProvidedCapabilityTest implements CustomResourceTe
                 .get();
         //Then
         assertThat(actual.getSpec().getCapability(), is(StandardCapability.SSO));
-        assertThat(actual.getSpec().getPreferredHostName().get(), is("myhost.com"));
+        assertThat(actual.getSpec().getPreferredDbms().get(), is(DbmsVendor.MYSQL));
+        assertThat(actual.getSpec().getPreferredIngressHostName().get(), is("myhost.com"));
         assertThat(actual.getSpec().getPreferredTlsSecretName().get(), is("my-secret"));
         assertThat(actual.getSpec().getImplementation().get(), is(StandardCapabilityImplementation.KEYCLOAK));
-        assertThat(actual.getSpec().getScope().get(), is(CapabilityScope.CLUSTER));
+        assertThat(actual.getSpec().getResolutionScopePreference().get(0), is(CapabilityScope.NAMESPACE));
+        assertThat(actual.getSpec().getResolutionScopePreference().get(1), is(CapabilityScope.CLUSTER));
         assertThat(actual.getSpec().getProvisioningStrategy().get(), is(CapabilityProvisioningStrategy.USE_EXTERNAL));
         assertThat(actual.getSpec().getExternallyProvisionedService().get().getHost(), is("keycloak.host.com"));
         assertThat(actual.getSpec().getExternallyProvisionedService().get().getPort().get(), is(80));
@@ -104,7 +108,7 @@ public abstract class AbstractProvidedCapabilityTest implements CustomResourceTe
                 .withNewSpec()
                 .withCapability(StandardCapability.DBMS)
                 .withImplementation(StandardCapabilityImplementation.MYSQL)
-                .withCapabilityRequirementScope(CapabilityScope.NAMESPACE)
+                .withResolutionScopePreference(CapabilityScope.LABELED)
                 .withProvisioningStrategy(CapabilityProvisioningStrategy.DELEGATE_TO_OPERATOR)
                 .withNewExternallyProvidedService()
                 .withHost("other.host.com").withPath("/other").withPort(81).withAdminSecretName("other-secret")
@@ -112,7 +116,7 @@ public abstract class AbstractProvidedCapabilityTest implements CustomResourceTe
 
                 .endExternallyProvidedService()
                 .withSpecifiedCapability(new ResourceReference("some-namespace", "some-keycloak"))
-                .withCapabilityParameters(Collections.singletonMap("frontendUrl", "http://somehost.com/auth"))
+                .addAllToCapabilityParameters(Collections.singletonMap("frontendUrl", "http://somehost.com/auth"))
 
                 .endSpec()
                 .build();
@@ -130,21 +134,22 @@ public abstract class AbstractProvidedCapabilityTest implements CustomResourceTe
                         .editSpec()
                         .withCapability(StandardCapability.SSO)
                         .withImplementation(StandardCapabilityImplementation.KEYCLOAK)
-                        .withCapabilityRequirementScope(CapabilityScope.CLUSTER)
+                        .withResolutionScopePreference(CapabilityScope.NAMESPACE, CapabilityScope.CLUSTER)
                         .withProvisioningStrategy(CapabilityProvisioningStrategy.USE_EXTERNAL)
                         .withNewExternallyProvidedService()
                         .withHost("keycloak.host.com").withPath("/auth").withPort(80).withAdminSecretName(MY_ADMIN_SECRET)
                         .withRequiresDirectConnection(true)
                         .endExternallyProvidedService()
                         .withSpecifiedCapability(new ResourceReference(MY_NAMESPACE, "my-keycloak"))
-                        .withCapabilityParameters(Collections.singletonMap("frontendUrl", "http://somehost.com/auth"))
+                        .addAllToCapabilityParameters(Collections.singletonMap("frontendUrl", "http://somehost.com/auth"))
                         .endSpec()
                         .build());
         //Then
         //Then
         assertThat(actual.getSpec().getCapability(), is(StandardCapability.SSO));
         assertThat(actual.getSpec().getImplementation().get(), is(StandardCapabilityImplementation.KEYCLOAK));
-        assertThat(actual.getSpec().getScope().get(), is(CapabilityScope.CLUSTER));
+        assertThat(actual.getSpec().getResolutionScopePreference().get(0), is(CapabilityScope.NAMESPACE));
+        assertThat(actual.getSpec().getResolutionScopePreference().get(1), is(CapabilityScope.CLUSTER));
         assertThat(actual.getSpec().getProvisioningStrategy().get(), is(CapabilityProvisioningStrategy.USE_EXTERNAL));
         assertThat(actual.getSpec().getExternallyProvisionedService().get().getHost(), is("keycloak.host.com"));
         assertThat(actual.getSpec().getExternallyProvisionedService().get().getPath().get(), is("/auth"));

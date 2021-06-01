@@ -52,10 +52,7 @@ import org.entando.kubernetes.model.common.ResourceReference;
 public class ProvidedCapability extends CustomResource<CapabilityRequirement, EntandoCustomResourceStatus> implements
         EntandoCustomResource {
 
-    public static final String CAPABILITY_LABEL_NAME = "capability";
-    public static final String IMPLEMENTATION_LABEL_NAME = "implementation";
-    public static final String CAPABILITY_PROVISION_SCOPE_LABEL_NAME = "capabilityProvisionScope";
-    public static final String CRD_NAME = "providedcapability.entando.org";
+    public static final String CRD_NAME = "providedcapabilities.entando.org";
 
     public ProvidedCapability() {
     }

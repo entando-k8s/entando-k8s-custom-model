@@ -19,14 +19,18 @@ package org.entando.kubernetes.model.capability;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import org.entando.kubernetes.model.common.DbmsVendor;
 import org.entando.kubernetes.model.common.ResourceReference;
 
 @JsonSerialize
@@ -38,18 +42,24 @@ import org.entando.kubernetes.model.common.ResourceReference;
         getterVisibility = Visibility.NONE,
         setterVisibility = Visibility.NONE
 )
+@JsonIgnoreProperties(
+        ignoreUnknown = true
+)
+
 public class CapabilityRequirement {
+
+    public static String PREFERRED_DBMS = "preferredDbms";
+    public static String PREFERRED_INGRESS_HOST_NAME = "preferredIngressHostName";
+    public static String PREFERRED_TLS_SECRET_NAME = "preferredTlsSecretName";
 
     private StandardCapability capability;
     private StandardCapabilityImplementation implementation;
-    private CapabilityScope scope;
+    private List<CapabilityScope> resolutionScopePreference;
     private CapabilityProvisioningStrategy provisioningStrategy;
     private Map<String, String> selector;
     private Map<String, String> capabilityParameters;
     private ResourceReference specifiedCapability;
     private ExternallyProvidedService externallyProvidedService;
-    private String preferredHostName;
-    private String preferredTlsSecretName;
 
     public CapabilityRequirement() {
     }
@@ -57,25 +67,21 @@ public class CapabilityRequirement {
     @JsonCreator
     public CapabilityRequirement(@JsonProperty("capability") StandardCapability capability,
             @JsonProperty("implementation") StandardCapabilityImplementation implementation,
-            @JsonProperty("capabilityRequirementScope") CapabilityScope scope,
+            @JsonProperty("resolutionScopePreference") List<CapabilityScope> resolutionScopePreference,
             @JsonProperty("provisioningStrategy") CapabilityProvisioningStrategy provisioningStrategy,
             @JsonProperty("selector") Map<String, String> selector,
             @JsonProperty("capabilityParameters") Map<String, String> capabilityParameters,
             @JsonProperty("specifiedCapability") ResourceReference specifiedCapability,
-            @JsonProperty("externallyProvisionedService") ExternallyProvidedService externallyProvidedService,
-            @JsonProperty("preferredHostName") String preferredHostName,
-            @JsonProperty("preferredTlsSecretName") String preferredTlsSecretName
+            @JsonProperty("externallyProvisionedService") ExternallyProvidedService externallyProvidedService
     ) {
         this.capability = capability;
         this.implementation = implementation;
-        this.scope = scope;
+        this.resolutionScopePreference = resolutionScopePreference;
         this.provisioningStrategy = provisioningStrategy;
         this.selector = selector;
         this.capabilityParameters = capabilityParameters;
         this.specifiedCapability = specifiedCapability;
         this.externallyProvidedService = externallyProvidedService;
-        this.preferredHostName = preferredHostName;
-        this.preferredTlsSecretName = preferredTlsSecretName;
     }
 
     public StandardCapability getCapability() {
@@ -86,16 +92,20 @@ public class CapabilityRequirement {
         return Optional.ofNullable(implementation);
     }
 
-    public Optional<String> getPreferredHostName() {
-        return Optional.ofNullable(preferredHostName);
+    public Optional<String> getPreferredIngressHostName() {
+        return Optional.ofNullable(getCapabilityParameters().get(PREFERRED_INGRESS_HOST_NAME));
+    }
+
+    public Optional<DbmsVendor> getPreferredDbms() {
+        return Optional.ofNullable(getCapabilityParameters().get(PREFERRED_DBMS)).map(DbmsVendor::fromValue);
     }
 
     public Optional<String> getPreferredTlsSecretName() {
-        return Optional.ofNullable(preferredTlsSecretName);
+        return Optional.ofNullable(getCapabilityParameters().get(PREFERRED_TLS_SECRET_NAME));
     }
 
-    public Optional<CapabilityScope> getScope() {
-        return Optional.ofNullable(scope);
+    public List<CapabilityScope> getResolutionScopePreference() {
+        return resolutionScopePreference;
     }
 
     public Map<String, String> getSelector() {
@@ -103,6 +113,7 @@ public class CapabilityRequirement {
     }
 
     public Map<String, String> getCapabilityParameters() {
+        capabilityParameters = Objects.requireNonNullElseGet(capabilityParameters, HashMap::new);
         return capabilityParameters;
     }
 
@@ -118,11 +129,4 @@ public class CapabilityRequirement {
         return Optional.ofNullable(externallyProvidedService);
     }
 
-    public Map<String, String> getCapabilityLabels() {
-        Map<String, String> result = new HashMap<>();
-        result.put(ProvidedCapability.CAPABILITY_LABEL_NAME, capability.getCamelCaseName());
-        result.put(ProvidedCapability.IMPLEMENTATION_LABEL_NAME, implementation.getCamelCaseName());
-        result.put(ProvidedCapability.CAPABILITY_PROVISION_SCOPE_LABEL_NAME, scope.getCamelCaseName());
-        return result;
-    }
 }
