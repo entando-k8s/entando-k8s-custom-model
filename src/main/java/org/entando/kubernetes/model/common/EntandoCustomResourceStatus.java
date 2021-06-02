@@ -25,6 +25,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,7 +60,15 @@ public class EntandoCustomResourceStatus implements Serializable {
     }
 
     public boolean hasFailed() {
-        return serverStatuses.values().stream().anyMatch(AbstractServerStatus::hasFailed);
+        return findFailedServerStatus().isPresent();
+    }
+
+    public Optional<AbstractServerStatus> findFailedServerStatus() {
+        return serverStatuses.values().stream().filter(AbstractServerStatus::hasFailed).findFirst();
+    }
+
+    public Collection<AbstractServerStatus> getServerStatuses() {
+        return Collections.unmodifiableCollection(this.serverStatuses.values());
     }
 
     public void putServerStatus(AbstractServerStatus status) {

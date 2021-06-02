@@ -115,6 +115,7 @@ class EntandoCustomResourceStatusTest {
         assertThat(actualFinalStatus.getEntandoControllerFailure().getDetailMessage(),
                 containsString("io.fabric8.kubernetes.client.KubernetesClientException"));
         assertThat(actual.getStatus().calculateFinalPhase(), is(EntandoDeploymentPhase.FAILED));
+        assertThat(actual.getStatus().getServerStatuses().size(), is(3));
 
     }
 }
