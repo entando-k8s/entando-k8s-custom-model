@@ -35,8 +35,10 @@ import java.util.List;
 import java.util.Optional;
 import org.entando.kubernetes.model.common.DbmsVendor;
 import org.entando.kubernetes.model.common.EntandoResourceRequirements;
+import org.entando.kubernetes.model.common.ExpectedRole;
 import org.entando.kubernetes.model.common.KeycloakAwareSpec;
 import org.entando.kubernetes.model.common.KeycloakToUse;
+import org.entando.kubernetes.model.common.Permission;
 
 @JsonSerialize
 @JsonDeserialize

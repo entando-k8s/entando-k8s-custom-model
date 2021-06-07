@@ -29,12 +29,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import org.entando.kubernetes.model.common.DbmsVendor;
 import org.entando.kubernetes.model.common.EntandoDeploymentPhase;
+import org.entando.kubernetes.model.common.ExpectedRole;
 import org.entando.kubernetes.model.common.ExposedServerStatus;
 import org.entando.kubernetes.model.common.InternalServerStatus;
+import org.entando.kubernetes.model.common.Permission;
 import org.entando.kubernetes.model.plugin.EntandoPlugin;
 import org.entando.kubernetes.model.plugin.EntandoPluginBuilder;
-import org.entando.kubernetes.model.plugin.ExpectedRole;
-import org.entando.kubernetes.model.plugin.Permission;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

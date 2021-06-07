@@ -18,7 +18,9 @@ package org.entando.kubernetes.model.plugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.entando.kubernetes.model.common.ExpectedRole;
 import org.entando.kubernetes.model.common.KeycloakAwareSpecFluent;
+import org.entando.kubernetes.model.common.Permission;
 
 public class EntandoPluginSpecFluent<N extends EntandoPluginSpecFluent<N>> extends KeycloakAwareSpecFluent<N> {
 

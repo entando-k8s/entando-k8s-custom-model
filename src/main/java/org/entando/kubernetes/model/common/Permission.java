@@ -14,7 +14,7 @@
  *
  */
 
-package org.entando.kubernetes.model.plugin;
+package org.entando.kubernetes.model.common;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -31,39 +31,34 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, isGetterVisibility = Visibility.NONE, getterVisibility = Visibility.NONE,
         setterVisibility = Visibility.NONE)
 @RegisterForReflection
-public class ExpectedRole implements KubernetesResource {
+public class Permission implements KubernetesResource {
 
-    private String code;
-    private String name;
+    private String clientId;
+    private String role;
 
-    public ExpectedRole() {
-        super();
+    public Permission() {
+        //Needed for JSON Deserialization
     }
 
-    public ExpectedRole(final String code) {
+    public Permission(final String clientId, final String role) {
         this();
-        this.setCode(code);
+        this.clientId = clientId;
+        this.role = role;
     }
 
-    public ExpectedRole(String code, String name) {
-        this(code);
-        setName(name);
+    public String getClientId() {
+        return clientId;
     }
 
-    public String getName() {
-        return name;
+    public void setClientId(final String clientId) {
+        this.clientId = clientId;
     }
 
-    public final void setName(String name) {
-        this.name = name;
+    public String getRole() {
+        return role;
     }
 
-    public String getCode() {
-        return code;
+    public void setRole(final String role) {
+        this.role = role;
     }
-
-    public final void setCode(String code) {
-        this.code = code;
-    }
-
 }
