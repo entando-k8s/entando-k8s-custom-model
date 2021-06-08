@@ -51,6 +51,7 @@ public class EntandoKeycloakServerSpec extends EntandoIngressingDeploymentSpec {
     private CapabilityProvisioningStrategy provisioningStrategy;
     private String adminSecretName;
     private CapabilityScope providedCapabilityScope;
+    private String defaultRealm;
 
     public EntandoKeycloakServerSpec() {
         super();
@@ -72,7 +73,8 @@ public class EntandoKeycloakServerSpec extends EntandoIngressingDeploymentSpec {
             @JsonProperty("environmentVariables") List<EnvVar> environmentVariables,
             @JsonProperty("resourceRequirements") EntandoResourceRequirements resourceRequirements,
             @JsonProperty("storageClass") String storageClass,
-            @JsonProperty("providedCapabilityScope") CapabilityScope providedCapabilityScope) {
+            @JsonProperty("providedCapabilityScope") CapabilityScope providedCapabilityScope,
+            @JsonProperty("defaultRealm") String defaultRealm) {
         super(ingressHostName, tlsSecretName, replicas, dbms, serviceAccountToUse, environmentVariables, resourceRequirements,
                 storageClass);
         this.customImage = customImage;
@@ -82,6 +84,7 @@ public class EntandoKeycloakServerSpec extends EntandoIngressingDeploymentSpec {
         this.adminSecretName = adminSecretName;
         this.isDefault = Boolean.TRUE.equals(isDefault);
         this.providedCapabilityScope = providedCapabilityScope;
+        this.defaultRealm = defaultRealm;
     }
 
     public Optional<CapabilityScope> getProvidedCapabilityScope() {
@@ -102,6 +105,10 @@ public class EntandoKeycloakServerSpec extends EntandoIngressingDeploymentSpec {
 
     public Optional<String> getAdminSecretName() {
         return Optional.ofNullable(adminSecretName);
+    }
+
+    public Optional<String> getDefaultRealm() {
+        return Optional.ofNullable(defaultRealm);
     }
 
     public Optional<CapabilityProvisioningStrategy> getProvisioningStrategy() {

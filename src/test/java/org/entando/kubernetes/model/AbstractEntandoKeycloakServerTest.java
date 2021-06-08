@@ -42,6 +42,7 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
     private static final String MY_TLS_SECRET = "my-tls-secret";
     public static final String HTTP_MY_FRONTEND_URL = "http://my.frontend/url";
     public static final String MY_ADMIN_SECRET = "my-admin-secret";
+    public static final String MY_REALM = "my-realm";
 
     @BeforeEach
     public void deleteEntandoKeycloakServer() {
@@ -105,6 +106,7 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
                 .withCustomImage("entando/anotherkeycloak")
                 .withProvidedCapabilityScope(CapabilityScope.LABELED)
                 .withReplicas(3)
+                .withDefaultRealm("some-realm")
                 .withTlsSecretName("some-othersecret")
                 .withDefault(false)
                 .endSpec()
@@ -123,6 +125,7 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
                         .withCustomImage(ENTANDO_SOMEKEYCLOAK)
                         .withStandardImage(StandardKeycloakImage.REDHAT_SSO)
                         .withFrontEndUrl(HTTP_MY_FRONTEND_URL)
+                        .withDefaultRealm(MY_REALM)
                         .withAdminSecretName(MY_ADMIN_SECRET)
                         .withProvisioningStrategy(CapabilityProvisioningStrategy.USE_EXTERNAL)
                         .withIngressHostName(MYHOST_COM)
@@ -152,6 +155,7 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
         assertThat(actual.getSpec().getReplicas().get(), is(5));
         assertThat(actual.getSpec().getTlsSecretName().get(), is(MY_TLS_SECRET));
         assertThat(actual.getSpec().getProvidedCapabilityScope().get(), is(CapabilityScope.CLUSTER));
+        assertThat(actual.getSpec().getDefaultRealm().get(), is(MY_REALM));
         assertThat(actual.getSpec().isDefault(), is(true));
         assertThat(actual.getMetadata().getName(), is(MY_KEYCLOAK));
         assertThat("the status reflects", actual.getStatus().getServerStatus("some-qualifier").isPresent());

@@ -18,8 +18,6 @@ package org.entando.kubernetes.model.capability;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.google.common.base.Strings;
-import java.util.Arrays;
 import java.util.Locale;
 import org.entando.kubernetes.model.common.NamedEnum;
 
@@ -47,10 +45,6 @@ public enum StandardCapabilityImplementation implements NamedEnum {
 
     @JsonCreator
     public static StandardCapabilityImplementation forValue(String value) {
-        if (Strings.isNullOrEmpty(value)) {
-            return null;
-        }
-        return Arrays.stream(values()).filter(c -> c.name().toLowerCase(Locale.ROOT).equals(value)).findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+        return NamedEnum.resolve(values(), value);
     }
 }

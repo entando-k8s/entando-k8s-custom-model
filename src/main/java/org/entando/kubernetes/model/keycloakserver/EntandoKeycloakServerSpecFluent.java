@@ -30,6 +30,7 @@ public class EntandoKeycloakServerSpecFluent<N extends EntandoKeycloakServerSpec
     private CapabilityProvisioningStrategy provisioningStrategy;
     private String adminSecretName;
     private CapabilityScope providedCapabilityScope;
+    private String defaultRealm;
 
     public EntandoKeycloakServerSpecFluent(EntandoKeycloakServerSpec spec) {
         super(spec);
@@ -40,6 +41,7 @@ public class EntandoKeycloakServerSpecFluent<N extends EntandoKeycloakServerSpec
         this.adminSecretName = spec.getAdminSecretName().orElse(null);
         this.provisioningStrategy = spec.getProvisioningStrategy().orElse(null);
         this.providedCapabilityScope = spec.getProvidedCapabilityScope().orElse(null);
+        this.defaultRealm = spec.getDefaultRealm().orElse(null);
     }
 
     public EntandoKeycloakServerSpecFluent() {
@@ -84,6 +86,11 @@ public class EntandoKeycloakServerSpecFluent<N extends EntandoKeycloakServerSpec
     public EntandoKeycloakServerSpec build() {
         return new EntandoKeycloakServerSpec(customImage, standardImage, frontEndUrl, provisioningStrategy, adminSecretName, dbms,
                 ingressHostName, tlsSecretName, replicas, isDefault,
-                serviceAccountToUse, environmentVariables, resourceRequirements, storageClass, providedCapabilityScope);
+                serviceAccountToUse, environmentVariables, resourceRequirements, storageClass, providedCapabilityScope, defaultRealm);
+    }
+
+    public N withDefaultRealm(String defaultRealm) {
+        this.defaultRealm = defaultRealm;
+        return thisAsF();
     }
 }

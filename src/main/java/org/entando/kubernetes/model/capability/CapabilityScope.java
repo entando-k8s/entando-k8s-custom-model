@@ -18,8 +18,6 @@ package org.entando.kubernetes.model.capability;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.google.common.base.Strings;
-import java.util.Arrays;
 import org.entando.kubernetes.model.common.NamedEnum;
 
 public enum CapabilityScope implements NamedEnum {
@@ -41,10 +39,6 @@ public enum CapabilityScope implements NamedEnum {
 
     @JsonCreator
     public static CapabilityScope forValue(String value) {
-        if (Strings.isNullOrEmpty(value)) {
-            return null;
-        }
-        return Arrays.stream(values()).filter(c -> c.getCamelCaseName().equals(value)).findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+        return NamedEnum.resolve(values(), value);
     }
 }

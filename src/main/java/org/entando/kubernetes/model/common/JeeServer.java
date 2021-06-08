@@ -18,12 +18,11 @@ package org.entando.kubernetes.model.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.fabric8.zjsonpatch.internal.guava.Strings;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.util.Locale;
 
 @RegisterForReflection
-public enum JeeServer {
+public enum JeeServer implements NamedEnum {
     WILDFLY("entando/entando-de-app-wildfly"),
     EAP("entando/entando-de-app-eap"),
     TOMCAT("entando/entando-de-app-tomcat"),
@@ -37,10 +36,7 @@ public enum JeeServer {
 
     @JsonCreator
     public static JeeServer forValue(String value) {
-        if (Strings.isNullOrEmpty(value)) {
-            return null;
-        }
-        return JeeServer.valueOf(value.toUpperCase(Locale.getDefault()));
+        return NamedEnum.resolve(values(), value);
     }
 
     @JsonValue

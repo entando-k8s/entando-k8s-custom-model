@@ -18,20 +18,16 @@ package org.entando.kubernetes.model.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.fabric8.zjsonpatch.internal.guava.Strings;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.util.Locale;
 
 @RegisterForReflection
-public enum EntandoDeploymentPhase {
+public enum EntandoDeploymentPhase implements NamedEnum {
     REQUESTED, STARTED, SUCCESSFUL, FAILED, IGNORED;
 
     @JsonCreator
     public static EntandoDeploymentPhase forValue(String value) {
-        if (Strings.isNullOrEmpty(value)) {
-            return null;
-        }
-        return EntandoDeploymentPhase.valueOf(value.toUpperCase(Locale.getDefault()));
+        return NamedEnum.resolve(values(), value);
     }
 
     @JsonValue

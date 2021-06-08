@@ -26,20 +26,16 @@ import io.fabric8.kubernetes.api.model.StatusBuilder;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import org.entando.kubernetes.model.SampleWriter;
-import org.entando.kubernetes.model.capability.CapabilityScope;
 import org.entando.kubernetes.model.common.AbstractServerStatus;
 import org.entando.kubernetes.model.common.DbmsVendor;
 import org.entando.kubernetes.model.common.EntandoControllerFailureBuilder;
 import org.entando.kubernetes.model.common.EntandoCustomResourceStatus;
 import org.entando.kubernetes.model.common.EntandoDeploymentPhase;
-import org.entando.kubernetes.model.common.EntandoResourceRequirements;
 import org.entando.kubernetes.model.common.ExposedServerStatus;
 import org.entando.kubernetes.model.common.InternalServerStatus;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServer;
-import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServerSpec;
-import org.entando.kubernetes.model.keycloakserver.StandardKeycloakImage;
+import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServerSpecBuilder;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
@@ -86,10 +82,7 @@ class EntandoCustomResourceStatusTest {
         keycloakServer.getMetadata().setGeneration(3L);
         keycloakServer
                 .setSpec(
-                        new EntandoKeycloakServerSpec(null, StandardKeycloakImage.KEYCLOAK, null, null, null, DbmsVendor.ORACLE, null, null,
-                                1, true,
-                                "my-service-account",
-                                Collections.emptyList(), new EntandoResourceRequirements(), null, CapabilityScope.CLUSTER));
+                        new EntandoKeycloakServerSpecBuilder().withDbms(DbmsVendor.ORACLE).build());
         keycloakServer.getMetadata().setName("test-keycloak");
         keycloakServer.setStatus(new EntandoCustomResourceStatus());
         keycloakServer.getStatus().putServerStatus(internalServerStatus);

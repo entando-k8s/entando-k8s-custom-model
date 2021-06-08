@@ -3,8 +3,8 @@ kind: CustomResourceDefinition
 metadata:
   name: entandodatabaseservices.entando.org
   annotations:
-    entando.org/controller-image: entando-k8s-app-controller
-    entando.org/supported-capabilities: mysql.dbms,oracle.dbms,postgresql.dbms
+    entando.org/controller-image: entando-k8s-database-service-controller
+    entando.org/supported-capabilities: mysql.dbms,oracle.dbms,postgresql.dbms,dbms
   labels:
     entando.org/crd-of-interest: EntandoDatabaseService
 spec:

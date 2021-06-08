@@ -17,6 +17,7 @@
 package org.entando.kubernetes.model.common;
 
 import com.google.common.base.CaseFormat;
+import java.util.Locale;
 
 public interface NamedEnum {
 
@@ -26,7 +27,21 @@ public interface NamedEnum {
         return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, name());
     }
 
-    default String getHypenatedName() {
+    default String getHyphenatedName() {
         return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.LOWER_HYPHEN, name());
     }
+
+    static <T extends NamedEnum> T resolve(T[] values, String name) {
+        if (name == null) {
+            return null;
+        }
+        String nameToMatch = name.toLowerCase(Locale.ROOT).replaceAll("[^a-z\\d]", "");
+        for (T value : values) {
+            if (nameToMatch.equals(value.name().toLowerCase(Locale.ROOT).replaceAll("[^a-z\\d]", ""))) {
+                return value;
+            }
+        }
+        return null;
+    }
+
 }

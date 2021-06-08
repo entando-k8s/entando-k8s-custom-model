@@ -18,12 +18,10 @@ package org.entando.kubernetes.model.common;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.fabric8.zjsonpatch.internal.guava.Strings;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import java.util.Locale;
 
 @RegisterForReflection
-public enum DbmsVendor {
+public enum DbmsVendor implements NamedEnum {
     MYSQL,
     POSTGRESQL,
     ORACLE,
@@ -37,9 +35,6 @@ public enum DbmsVendor {
 
     @JsonCreator
     public static DbmsVendor fromValue(String value) {
-        if (Strings.isNullOrEmpty(value)) {
-            return null;
-        }
-        return valueOf(value.toUpperCase(Locale.getDefault()));
+        return NamedEnum.resolve(values(), value);
     }
 }
