@@ -47,7 +47,7 @@ public class EntandoCustomResourceStatus implements Serializable {
     private EntandoDeploymentPhase phase;
 
     public EntandoCustomResourceStatus() {
-        phase = EntandoDeploymentPhase.REQUESTED;
+
     }
 
     public EntandoDeploymentPhase getPhase() {
