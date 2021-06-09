@@ -32,10 +32,6 @@ public enum PluginSecurityLevel implements NamedEnum {
 
     }
 
-    private static PluginSecurityLevel resolve(String s) {
-        return PluginSecurityLevel.valueOf(s.toUpperCase(Locale.getDefault()));
-    }
-
     @JsonValue
     public String toName() {
         return name().toLowerCase(Locale.getDefault());

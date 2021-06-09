@@ -48,9 +48,9 @@ import org.entando.kubernetes.model.common.ResourceReference;
 
 public class CapabilityRequirement {
 
-    public static String PREFERRED_DBMS = "preferredDbms";
-    public static String PREFERRED_INGRESS_HOST_NAME = "preferredIngressHostName";
-    public static String PREFERRED_TLS_SECRET_NAME = "preferredTlsSecretName";
+    public static final String PREFERRED_DBMS = "preferredDbms";
+    public static final String PREFERRED_INGRESS_HOST_NAME = "preferredIngressHostName";
+    public static final String PREFERRED_TLS_SECRET_NAME = "preferredTlsSecretName";
 
     private StandardCapability capability;
     private StandardCapabilityImplementation implementation;
