@@ -34,6 +34,7 @@ import org.entando.kubernetes.model.common.EntandoCustomResourceStatus;
 import org.entando.kubernetes.model.common.EntandoDeploymentPhase;
 import org.entando.kubernetes.model.common.ExposedServerStatus;
 import org.entando.kubernetes.model.common.InternalServerStatus;
+import org.entando.kubernetes.model.common.ResourceReference;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServer;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServerSpecBuilder;
 import org.junit.jupiter.api.Tag;
@@ -51,6 +52,7 @@ class EntandoCustomResourceStatusTest {
         serverStatus.putPodPhase("initPod1", "Completed");
         serverStatus.putPodPhase("pod1", "Running");
         serverStatus.putPersistentVolumeClaimPhase("pvc1", "Bound");
+        serverStatus.setProvidedCapability(new ResourceReference("my-namespace", "my-capability"));
         serverStatus.finish();
     }
 
@@ -107,6 +109,11 @@ class EntandoCustomResourceStatusTest {
         assertThat(actualFinalStatus.getEntandoControllerFailure().getMessage(), is("Ingress failed"));
         assertThat(actualFinalStatus.getEntandoControllerFailure().getDetailMessage(),
                 containsString("io.fabric8.kubernetes.client.KubernetesClientException"));
+        assertThat(actualFinalStatus.getProvidedCapability().getNamespace().get(),
+                is("my-namespace"));
+        assertThat(actualFinalStatus.getProvidedCapability().getName(),
+                is("my-capability"));
+
         assertThat(actual.getStatus().calculateFinalPhase(), is(EntandoDeploymentPhase.FAILED));
         assertThat(actual.getStatus().getServerStatuses().size(), is(3));
 

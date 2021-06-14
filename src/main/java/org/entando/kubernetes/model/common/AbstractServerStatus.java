@@ -68,6 +68,7 @@ public abstract class AbstractServerStatus implements Serializable {
     private Map<String, String> persistentVolumeClaimPhases;
     private Map<String, String> derivedDeploymentParameters;
     private EntandoControllerFailure entandoControllerFailure;
+    private ResourceReference providedCapability;
 
     protected AbstractServerStatus() {
         //For json deserialization
@@ -179,5 +180,13 @@ public abstract class AbstractServerStatus implements Serializable {
 
     public void setAdminSecretName(String adminSecretName) {
         this.adminSecretName = adminSecretName;
+    }
+
+    public ResourceReference getProvidedCapability() {
+        return providedCapability;
+    }
+
+    public void setProvidedCapability(ResourceReference providedCapability) {
+        this.providedCapability = providedCapability;
     }
 }
