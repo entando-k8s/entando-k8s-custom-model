@@ -24,8 +24,7 @@ import java.util.Collections;
 import org.entando.kubernetes.model.capability.CapabilityScope;
 import org.entando.kubernetes.model.common.DbmsVendor;
 import org.entando.kubernetes.model.common.EntandoDeploymentPhase;
-import org.entando.kubernetes.model.common.ExposedServerStatus;
-import org.entando.kubernetes.model.common.InternalServerStatus;
+import org.entando.kubernetes.model.common.ServerStatus;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseService;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseServiceBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -130,10 +129,10 @@ public abstract class AbstractEntandoDatabaseServiceTest implements CustomResour
                                 .withDbms(DbmsVendor.ORACLE)
                                 .endSpec()
                                 .build());
-        actual.getStatus().putServerStatus(new ExposedServerStatus("some-qualifier"));
-        actual.getStatus().putServerStatus(new ExposedServerStatus("some-other-qualifier"));
-        actual.getStatus().putServerStatus(new ExposedServerStatus("some-qualifier"));
-        actual.getStatus().putServerStatus(new InternalServerStatus("another-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("some-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("some-other-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("some-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("another-qualifier"));
         actual.getStatus().updateDeploymentPhase(EntandoDeploymentPhase.STARTED, actual.getMetadata().getGeneration());
 
         //Then

@@ -16,25 +16,24 @@
 
 package org.entando.kubernetes.model.common;
 
-import static java.lang.String.format;
-
-import io.fabric8.kubernetes.client.KubernetesClientException;
-import java.io.CharArrayWriter;
-import java.io.PrintWriter;
+import io.fabric8.kubernetes.api.model.HasMetadata;
 
 public class EntandoControllerFailureBuilder {
 
-    private String failedObjectType;
+    private String failedObjectApiVersion;
+    private String failedObjectKind;
+    private String failedObjectNamespace;
     private String failedObjectName;
     private String message;
     private String detailMessage;
 
     public EntandoControllerFailure build() {
-        return new EntandoControllerFailure(failedObjectType, failedObjectName, message, detailMessage);
+        return new EntandoControllerFailure(failedObjectApiVersion, failedObjectKind, failedObjectNamespace, failedObjectName, message,
+                detailMessage);
     }
 
-    public EntandoControllerFailureBuilder withFailedObjectType(String failedObjectType) {
-        this.failedObjectType = failedObjectType;
+    public EntandoControllerFailureBuilder withFailedObjectKind(String failedObjectKind) {
+        this.failedObjectKind = failedObjectKind;
         return this;
     }
 
@@ -43,8 +42,8 @@ public class EntandoControllerFailureBuilder {
         return this;
     }
 
-    public EntandoControllerFailureBuilder withFailedObjectName(String namespace, String failedObjectName) {
-        this.failedObjectName = format("%s/%s", namespace, failedObjectName);
+    public EntandoControllerFailureBuilder withFailedObjectNamespace(String failedObjectNamespace) {
+        this.failedObjectNamespace = failedObjectNamespace;
         return this;
     }
 
@@ -53,25 +52,20 @@ public class EntandoControllerFailureBuilder {
         return this;
     }
 
-    public EntandoControllerFailureBuilder withException(Exception exception) {
-        if (exception instanceof KubernetesClientException) {
-            KubernetesClientException kce = (KubernetesClientException) exception;
-            if (kce.getStatus() == null) {
-                withMessage(exception.getMessage());
-            } else {
-                withMessage(kce.getStatus().getMessage());
-                if (kce.getStatus().getDetails() != null) {
-                    withFailedObjectType(kce.getStatus().getDetails().getKind());
-                    withFailedObjectName(kce.getStatus().getDetails().getName());
-                }
-            }
-        } else {
-            withMessage(exception.getMessage());
-        }
-        CharArrayWriter charArrayWriter = new CharArrayWriter();
-        exception.printStackTrace(new PrintWriter(charArrayWriter));
-        this.detailMessage = charArrayWriter.toString();
+    public EntandoControllerFailureBuilder withDetailMessage(String detailMessage) {
+        this.detailMessage = detailMessage;
         return this;
     }
 
+    public EntandoControllerFailureBuilder withFailedObjectApiVersion(String failedObjectApiVersion) {
+        this.failedObjectApiVersion = failedObjectApiVersion;
+        return this;
+    }
+
+    public EntandoControllerFailureBuilder withFailedObject(HasMetadata failedObject) {
+        return withFailedObjectApiVersion(failedObject.getApiVersion())
+                .withFailedObjectKind(failedObject.getKind())
+                .withFailedObjectNamespace(failedObject.getMetadata().getNamespace())
+                .withFailedObjectName(failedObject.getMetadata().getName());
+    }
 }

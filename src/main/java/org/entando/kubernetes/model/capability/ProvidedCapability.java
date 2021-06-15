@@ -28,11 +28,8 @@ import io.fabric8.kubernetes.client.CustomResource;
 import io.fabric8.kubernetes.model.annotation.Group;
 import io.fabric8.kubernetes.model.annotation.Version;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-import java.util.Optional;
 import org.entando.kubernetes.model.common.EntandoCustomResource;
 import org.entando.kubernetes.model.common.EntandoCustomResourceStatus;
-import org.entando.kubernetes.model.common.ExposedServerStatus;
-import org.entando.kubernetes.model.common.ResourceReference;
 
 @JsonSerialize
 @JsonDeserialize
@@ -65,17 +62,6 @@ public class ProvidedCapability extends CustomResource<CapabilityRequirement, En
     @Override
     protected EntandoCustomResourceStatus initStatus() {
         return new EntandoCustomResourceStatus();
-    }
-
-    public Optional<ResourceReference> getIngressReference() {
-        return getStatus().findCurrentServerStatus()
-                .filter(ExposedServerStatus.class::isInstance)
-                .flatMap(s -> Optional.of(new ResourceReference(getMetadata().getNamespace(), ((ExposedServerStatus) s).getIngressName())));
-    }
-
-    public ResourceReference getServiceReference() {
-        return getStatus().findCurrentServerStatus().map(s -> new ResourceReference(getMetadata().getNamespace(), s.getServiceName()))
-                .orElse(null);
     }
 
     @Override

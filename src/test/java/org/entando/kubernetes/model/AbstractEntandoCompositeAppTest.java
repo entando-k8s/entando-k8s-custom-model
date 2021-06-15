@@ -23,8 +23,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import org.entando.kubernetes.model.app.EntandoAppBuilder;
 import org.entando.kubernetes.model.common.DbmsVendor;
 import org.entando.kubernetes.model.common.EntandoDeploymentPhase;
-import org.entando.kubernetes.model.common.ExposedServerStatus;
-import org.entando.kubernetes.model.common.InternalServerStatus;
+import org.entando.kubernetes.model.common.ServerStatus;
 import org.entando.kubernetes.model.compositeapp.EntandoCompositeApp;
 import org.entando.kubernetes.model.compositeapp.EntandoCompositeAppBuilder;
 import org.entando.kubernetes.model.compositeapp.EntandoCustomResourceReference;
@@ -158,10 +157,10 @@ public abstract class AbstractEntandoCompositeAppTest implements CustomResourceT
                                 )
                                 .endSpec()
                                 .build());
-        actual.getStatus().putServerStatus(new ExposedServerStatus("some-qualifier"));
-        actual.getStatus().putServerStatus(new ExposedServerStatus("some-other-qualifier"));
-        actual.getStatus().putServerStatus(new ExposedServerStatus("some-qualifier"));
-        actual.getStatus().putServerStatus(new InternalServerStatus("another-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("some-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("some-other-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("some-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("another-qualifier"));
         actual.getStatus().updateDeploymentPhase(EntandoDeploymentPhase.STARTED, 5L);
 
         actual = getClient().customResources(EntandoCompositeApp.class).inNamespace(actual.getMetadata().getNamespace())

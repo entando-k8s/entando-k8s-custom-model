@@ -129,7 +129,7 @@ public abstract class EntandoCompositeAppSpecFluent<F extends EntandoCompositeAp
     }
 
     //Sonar's solution gives compilation errors
-    @SuppressWarnings("java:S1612")
+    @SuppressWarnings({"java:S1612", "unchecked"})
     public EntandoCompositeAppSpec build() {
         return new EntandoCompositeAppSpec(this.components.stream()
                 .map(Builder.class::cast)

@@ -35,7 +35,9 @@ import java.io.Serializable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EntandoControllerFailure implements Serializable {
 
-    private String failedObjectType;
+    private String failedObjectApiVersion;
+    private String failedObjectKind;
+    private String failedObjectNamespace;
     private String failedObjectName;
     private String message;
     private String detailMessage;
@@ -44,15 +46,27 @@ public class EntandoControllerFailure implements Serializable {
         //For json
     }
 
-    public EntandoControllerFailure(String failedObjectType, String failedObjectName, String errorMessage, String detailMessage) {
-        this.failedObjectType = failedObjectType;
+    public EntandoControllerFailure(String failedObjectApiVersion, String failedObjectKind, String failedObjectNamespace,
+            String failedObjectName, String errorMessage,
+            String detailMessage) {
+        this.failedObjectApiVersion = failedObjectApiVersion;
+        this.failedObjectKind = failedObjectKind;
+        this.failedObjectNamespace = failedObjectNamespace;
         this.failedObjectName = failedObjectName;
         this.message = errorMessage;
         this.detailMessage = detailMessage;
     }
 
-    public String getFailedObjectType() {
-        return failedObjectType;
+    public String getFailedObjectApiVersion() {
+        return failedObjectApiVersion;
+    }
+
+    public String getFailedObjectKind() {
+        return failedObjectKind;
+    }
+
+    public String getFailedObjectNamespace() {
+        return failedObjectNamespace;
     }
 
     public String getFailedObjectName() {

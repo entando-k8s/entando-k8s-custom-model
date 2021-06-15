@@ -23,8 +23,7 @@ import org.entando.kubernetes.model.capability.CapabilityProvisioningStrategy;
 import org.entando.kubernetes.model.capability.CapabilityScope;
 import org.entando.kubernetes.model.common.DbmsVendor;
 import org.entando.kubernetes.model.common.EntandoDeploymentPhase;
-import org.entando.kubernetes.model.common.ExposedServerStatus;
-import org.entando.kubernetes.model.common.InternalServerStatus;
+import org.entando.kubernetes.model.common.ServerStatus;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServer;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServerBuilder;
 import org.entando.kubernetes.model.keycloakserver.StandardKeycloakImage;
@@ -135,10 +134,10 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
                         .withTlsSecretName(MY_TLS_SECRET)
                         .endSpec()
                         .build());
-        actual.getStatus().putServerStatus(new ExposedServerStatus("some-qualifier"));
-        actual.getStatus().putServerStatus(new ExposedServerStatus("some-other-qualifier"));
-        actual.getStatus().putServerStatus(new ExposedServerStatus("some-qualifier"));
-        actual.getStatus().putServerStatus(new InternalServerStatus("another-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("some-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("some-other-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("some-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("another-qualifier"));
         actual.getStatus().updateDeploymentPhase(EntandoDeploymentPhase.STARTED, 5L);
         actual = getClient().customResources(EntandoKeycloakServer.class).inNamespace(actual.getMetadata().getNamespace())
                 .updateStatus(actual);

@@ -30,9 +30,8 @@ import java.util.Collections;
 import org.entando.kubernetes.model.common.DbmsVendor;
 import org.entando.kubernetes.model.common.EntandoDeploymentPhase;
 import org.entando.kubernetes.model.common.ExpectedRole;
-import org.entando.kubernetes.model.common.ExposedServerStatus;
-import org.entando.kubernetes.model.common.InternalServerStatus;
 import org.entando.kubernetes.model.common.Permission;
+import org.entando.kubernetes.model.common.ServerStatus;
 import org.entando.kubernetes.model.plugin.EntandoPlugin;
 import org.entando.kubernetes.model.plugin.EntandoPluginBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -184,10 +183,10 @@ public abstract class AbstractEntandoPluginTest implements CustomResourceTestUti
                 .endKeycloakToUse()
                 .endSpec()
                 .build());
-        actual.getStatus().putServerStatus(new ExposedServerStatus("some-qualifier"));
-        actual.getStatus().putServerStatus(new ExposedServerStatus("some-other-qualifier"));
-        actual.getStatus().putServerStatus(new ExposedServerStatus("some-qualifier"));
-        actual.getStatus().putServerStatus(new InternalServerStatus("another-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("some-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("some-other-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("some-qualifier"));
+        actual.getStatus().putServerStatus(new ServerStatus("another-qualifier"));
         actual.getStatus().updateDeploymentPhase(EntandoDeploymentPhase.STARTED, 5L);
         actual = entandoPlugins().inNamespace(actual.getMetadata().getNamespace()).updateStatus(actual);
 

@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EntandoCustomResourceStatus implements Serializable {
 
-    private Map<String, AbstractServerStatus> serverStatuses = new ConcurrentHashMap<>();
+    private Map<String, ServerStatus> serverStatuses = new ConcurrentHashMap<>();
 
     private Long observedGeneration;
 
@@ -59,30 +59,20 @@ public class EntandoCustomResourceStatus implements Serializable {
         return findFailedServerStatus().isPresent();
     }
 
-    public Optional<AbstractServerStatus> findFailedServerStatus() {
-        return serverStatuses.values().stream().filter(AbstractServerStatus::hasFailed).findFirst();
+    public Optional<ServerStatus> findFailedServerStatus() {
+        return serverStatuses.values().stream().filter(ServerStatus::hasFailed).findFirst();
     }
 
-    public Collection<AbstractServerStatus> getServerStatuses() {
+    public Collection<ServerStatus> getServerStatuses() {
         return Collections.unmodifiableCollection(this.serverStatuses.values());
     }
 
-    public void putServerStatus(AbstractServerStatus status) {
+    public void putServerStatus(ServerStatus status) {
         serverStatuses.put(status.getQualifier(), status);
     }
 
-    public Optional<AbstractServerStatus> getServerStatus(String qualifier) {
+    public Optional<ServerStatus> getServerStatus(String qualifier) {
         return Optional.ofNullable(serverStatuses.get(qualifier));
-    }
-
-    public Optional<AbstractServerStatus> findCurrentServerStatus() {
-        return this.serverStatuses.values().stream().reduce((abstractServerStatus, abstractServerStatus2) -> {
-            if (abstractServerStatus.getStarted().before(abstractServerStatus2.getStarted())) {
-                return abstractServerStatus2;
-            } else {
-                return abstractServerStatus;
-            }
-        });
     }
 
     public EntandoDeploymentPhase calculateFinalPhase() {

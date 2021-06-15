@@ -20,6 +20,7 @@ import static java.util.Optional.ofNullable;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -38,6 +39,7 @@ public class ResourceReference implements Serializable {
     protected String namespace;
     protected String name;
 
+    @JsonCreator
     public ResourceReference(
             @JsonProperty("namespace") String namespace,
             @JsonProperty("name") String name) {

@@ -32,13 +32,12 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.entando.kubernetes.model.app.EntandoApp;
 import org.entando.kubernetes.model.app.EntandoAppBuilder;
-import org.entando.kubernetes.model.common.AbstractServerStatus;
 import org.entando.kubernetes.model.common.DbmsVendor;
-import org.entando.kubernetes.model.common.EntandoControllerFailure;
+import org.entando.kubernetes.model.common.EntandoControllerFailureBuilder;
 import org.entando.kubernetes.model.common.EntandoCustomResource;
 import org.entando.kubernetes.model.common.EntandoDeploymentPhase;
-import org.entando.kubernetes.model.common.InternalServerStatus;
 import org.entando.kubernetes.model.common.JeeServer;
+import org.entando.kubernetes.model.common.ServerStatus;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseService;
 import org.entando.kubernetes.model.externaldatabase.EntandoDatabaseServiceBuilder;
 import org.entando.kubernetes.model.keycloakserver.EntandoKeycloakServer;
@@ -233,13 +232,15 @@ class DummyBean {
         assertThat(actual.getMetadata().getName(), is(MY_APP));
 
         //Test statuses
-        InternalServerStatus db = new InternalServerStatus("db");
-        db.setEntandoControllerFailure(new EntandoControllerFailure("app", MY_APP, "Failed", "Failedmiserably"));
+        ServerStatus db = new ServerStatus("db");
+        db.setEntandoControllerFailure(
+                new EntandoControllerFailureBuilder().withFailedObjectKind("app").withFailedObjectName(MY_APP).withMessage("Failed")
+                        .withDetailMessage("Failedmiserably").build());
         actual = getClient().customResources(EntandoApp.class).inNamespace(MY_NAMESPACE).withName(MY_APP).fromServer()
                 .get();
-        AbstractServerStatus db1 = actual.getStatus().getServerStatus("db").get();
-        assertThat(db1.getEntandoControllerFailure().getMessage(), "Failed");
-        assertThat(db1.getEntandoControllerFailure().getDetailMessage(), "Failedmiserably");
+        ServerStatus db1 = actual.getStatus().getServerStatus("db").get();
+        assertThat(db1.getEntandoControllerFailure().get().getMessage(), "Failed");
+        assertThat(db1.getEntandoControllerFailure().get().getDetailMessage(), "Failedmiserably");
         assertThat(actual.getStatus().getPhase(), is(EntandoDeploymentPhase.STARTED));
     }
 
