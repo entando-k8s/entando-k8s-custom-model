@@ -24,9 +24,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.fabric8.kubernetes.api.model.HasMetadata;
@@ -41,12 +38,6 @@ import java.util.Optional;
 
 @JsonSerialize
 @JsonDeserialize
-@JsonTypeInfo(
-        use = Id.NAME,
-        include = As.EXISTING_PROPERTY,
-        property = "type"
-
-)
 @JsonInclude(Include.NON_NULL)
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, isGetterVisibility = Visibility.NONE, getterVisibility = Visibility.NONE,
         setterVisibility = Visibility.NONE)
@@ -55,7 +46,6 @@ import java.util.Optional;
 public class ServerStatus implements Serializable {
 
     private String qualifier;
-    private String type = getClass().getSimpleName();
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "GMT")
     private Date started = new Date();
     private CustomResourceReference originatingCustomResource;
@@ -83,7 +73,6 @@ public class ServerStatus implements Serializable {
 
     public ServerStatus(String newQualifier, ServerStatus original) {
         this.qualifier = newQualifier;
-        this.type = getClass().getSimpleName();
         this.started = original.started;
         this.originatingCustomResource = original.originatingCustomResource;
         this.originatingControllerPod = original.originatingControllerPod;
@@ -101,10 +90,6 @@ public class ServerStatus implements Serializable {
 
     public String getQualifier() {
         return qualifier;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public ResourceReference getOriginatingCustomResource() {
