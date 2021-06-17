@@ -50,6 +50,7 @@ class EntandoCustomResourceStatusTest {
         serverStatus.withOriginatingCustomResource(
                 new EntandoKeycloakServer(new ObjectMetaBuilder().withNamespace("my-namespace").withName("my-capability").build(), null));
         serverStatus.withOriginatingControllerPod("controller-namespace", "my-pod");
+        serverStatus.setSsoClientId("my-client");
         serverStatus.finish();
     }
 
@@ -91,6 +92,7 @@ class EntandoCustomResourceStatusTest {
         assertThat(actualFinalStatus.getExternalBaseUrl().get(), is("http://myhost.com/path"));
         assertThat(actualFinalStatus.getPodPhases().get("initPod1"), is("Completed"));
         assertThat(actualFinalStatus.getPodPhases().get("pod1"), is("Running"));
+        assertThat(actualFinalStatus.getSsoClientId().get(), is("my-client"));
         assertThat(actualFinalStatus.getPersistentVolumeClaimPhases().get("pvc1"), is("Bound"));
         assertThat(actualFinalStatus.getDerivedDeploymentParameters().get("database-name"), is("my-database"));
         assertThat(actualFinalStatus.getEntandoControllerFailure().get().getFailedObjectKind(), is("Ingress"));

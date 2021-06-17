@@ -57,6 +57,7 @@ public class ServerStatus implements Serializable {
     private String deploymentName;
     private String adminSecretName;
     private Map<String, String> podPhases;
+    private String ssoClientId;
     private Map<String, String> persistentVolumeClaimPhases;
     private Map<String, String> derivedDeploymentParameters;
     private EntandoControllerFailure entandoControllerFailure;
@@ -86,6 +87,7 @@ public class ServerStatus implements Serializable {
         this.entandoControllerFailure = original.entandoControllerFailure;
         this.ingressName = original.ingressName;
         this.externalBaseUrl = original.externalBaseUrl;
+        this.ssoClientId = original.ssoClientId;
     }
 
     public String getQualifier() {
@@ -209,4 +211,11 @@ public class ServerStatus implements Serializable {
         this.adminSecretName = adminSecretName;
     }
 
+    public Optional<String> getSsoClientId() {
+        return Optional.ofNullable(ssoClientId);
+    }
+
+    public void setSsoClientId(String ssoClientId) {
+        this.ssoClientId = ssoClientId;
+    }
 }
