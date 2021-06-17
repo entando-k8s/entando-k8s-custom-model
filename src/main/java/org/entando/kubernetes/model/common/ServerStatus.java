@@ -56,6 +56,7 @@ public class ServerStatus implements Serializable {
     private String serviceName;
     private String deploymentName;
     private String adminSecretName;
+    private String ssoRealm;
     private Map<String, String> podPhases;
     private Map<String, String> ssoClientIds;
     private Map<String, String> persistentVolumeClaimPhases;
@@ -88,7 +89,7 @@ public class ServerStatus implements Serializable {
         this.ingressName = original.ingressName;
         this.externalBaseUrl = original.externalBaseUrl;
         this.ssoClientIds = ofNullable(original.ssoClientIds).map(HashMap::new).orElse(null);
-        ;
+        this.ssoRealm = original.ssoRealm;
     }
 
     public String getQualifier() {
@@ -215,6 +216,14 @@ public class ServerStatus implements Serializable {
     public void putSsoClientId(String qualifier, String clientId) {
         this.ssoClientIds = Objects.requireNonNullElseGet(this.ssoClientIds, HashMap::new);
         this.ssoClientIds.put(qualifier, clientId);
+    }
+
+    public Optional<String> getSsoRealm() {
+        return Optional.ofNullable(ssoRealm);
+    }
+
+    public void setSsoRealm(String ssoRealm) {
+        this.ssoRealm = ssoRealm;
     }
 
     public Map<String, String> getSsoClientIds() {
