@@ -57,7 +57,7 @@ public class ServerStatus implements Serializable {
     private String deploymentName;
     private String adminSecretName;
     private Map<String, String> podPhases;
-    private String ssoClientId;
+    private Map<String, String> ssoClientIds;
     private Map<String, String> persistentVolumeClaimPhases;
     private Map<String, String> derivedDeploymentParameters;
     private EntandoControllerFailure entandoControllerFailure;
@@ -87,7 +87,8 @@ public class ServerStatus implements Serializable {
         this.entandoControllerFailure = original.entandoControllerFailure;
         this.ingressName = original.ingressName;
         this.externalBaseUrl = original.externalBaseUrl;
-        this.ssoClientId = original.ssoClientId;
+        this.ssoClientIds = ofNullable(original.ssoClientIds).map(HashMap::new).orElse(null);
+        ;
     }
 
     public String getQualifier() {
@@ -211,11 +212,12 @@ public class ServerStatus implements Serializable {
         this.adminSecretName = adminSecretName;
     }
 
-    public Optional<String> getSsoClientId() {
-        return Optional.ofNullable(ssoClientId);
+    public void putSsoClientId(String qualifier, String clientId) {
+        this.ssoClientIds = Objects.requireNonNullElseGet(this.ssoClientIds, HashMap::new);
+        this.ssoClientIds.put(qualifier, clientId);
     }
 
-    public void setSsoClientId(String ssoClientId) {
-        this.ssoClientId = ssoClientId;
+    public Map<String, String> getSsoClientIds() {
+        return ofNullable(ssoClientIds).map(Collections::unmodifiableMap).orElseGet(Collections::emptyMap);
     }
 }
