@@ -48,11 +48,12 @@ class EntandoCustomResourceStatusTest {
         serverStatus.putPodPhase("pod1", "Running");
         serverStatus.putPersistentVolumeClaimPhase("pvc1", "Bound");
         serverStatus.withOriginatingCustomResource(
-                new EntandoKeycloakServer(new ObjectMetaBuilder().withNamespace("my-namespace").withName("my-capability").build(), null));
-        serverStatus.withOriginatingControllerPod("controller-namespace", "my-pod");
-        serverStatus.putSsoClientId("server", "my-client");
-        serverStatus.setSsoRealm("my-realm");
-        serverStatus.finish();
+                new EntandoKeycloakServer(new ObjectMetaBuilder().withNamespace("my-namespace").withName("my-capability").build(), null))
+                .withOriginatingControllerPod("controller-namespace", "my-pod")
+                .addToWebContexts("server", "/my-path")
+                .withSsoRealm("my-realm")
+                .withSsoClientId("my-client")
+                .finish();
     }
 
     @Test
@@ -93,8 +94,9 @@ class EntandoCustomResourceStatusTest {
         assertThat(actualFinalStatus.getExternalBaseUrl().get(), is("http://myhost.com/path"));
         assertThat(actualFinalStatus.getPodPhases().get("initPod1"), is("Completed"));
         assertThat(actualFinalStatus.getPodPhases().get("pod1"), is("Running"));
+        assertThat(actualFinalStatus.getWebContexts().get("server"), is("/my-path"));
         assertThat(actualFinalStatus.getSsoRealm().get(), is("my-realm"));
-        assertThat(actualFinalStatus.getSsoClientIds().get("server"), is("my-client"));
+        assertThat(actualFinalStatus.getSsoClientId().get(), is("my-client"));
         assertThat(actualFinalStatus.getPersistentVolumeClaimPhases().get("pvc1"), is("Bound"));
         assertThat(actualFinalStatus.getDerivedDeploymentParameters().get("database-name"), is("my-database"));
         assertThat(actualFinalStatus.getEntandoControllerFailure().get().getFailedObjectKind(), is("Ingress"));

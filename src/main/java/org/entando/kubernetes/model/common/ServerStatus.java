@@ -57,8 +57,9 @@ public class ServerStatus implements Serializable {
     private String deploymentName;
     private String adminSecretName;
     private String ssoRealm;
+    private String ssoClientId;
+    private Map<String, String> webContexts;
     private Map<String, String> podPhases;
-    private Map<String, String> ssoClientIds;
     private Map<String, String> persistentVolumeClaimPhases;
     private Map<String, String> derivedDeploymentParameters;
     private EntandoControllerFailure entandoControllerFailure;
@@ -85,10 +86,11 @@ public class ServerStatus implements Serializable {
         this.podPhases = ofNullable(original.podPhases).map(HashMap::new).orElse(null);
         this.persistentVolumeClaimPhases = ofNullable(original.persistentVolumeClaimPhases).map(HashMap::new).orElse(null);
         this.derivedDeploymentParameters = ofNullable(original.derivedDeploymentParameters).map(HashMap::new).orElse(null);
+        this.webContexts = ofNullable(original.webContexts).map(HashMap::new).orElse(null);
         this.entandoControllerFailure = original.entandoControllerFailure;
         this.ingressName = original.ingressName;
         this.externalBaseUrl = original.externalBaseUrl;
-        this.ssoClientIds = ofNullable(original.ssoClientIds).map(HashMap::new).orElse(null);
+        this.ssoClientId = original.ssoClientId;
         this.ssoRealm = original.ssoRealm;
     }
 
@@ -184,6 +186,19 @@ public class ServerStatus implements Serializable {
         podPhases.put(podName, podPhase);
     }
 
+    public void putWebContext(String qualifier, String path) {
+        this.webContexts = Objects.requireNonNullElseGet(this.webContexts, HashMap::new);
+        webContexts.put(qualifier, path);
+    }
+    public ServerStatus addToWebContexts(String qualifier, String path){
+        this.putWebContext(qualifier, path);
+        return this;
+    }
+
+    public Map<String, String> getWebContexts() {
+        return ofNullable(webContexts).map(Collections::unmodifiableMap).orElseGet(Collections::emptyMap);
+    }
+
     public void finishWith(EntandoControllerFailure failure) {
         finish();
         setEntandoControllerFailure(failure);
@@ -213,11 +228,6 @@ public class ServerStatus implements Serializable {
         this.adminSecretName = adminSecretName;
     }
 
-    public void putSsoClientId(String qualifier, String clientId) {
-        this.ssoClientIds = Objects.requireNonNullElseGet(this.ssoClientIds, HashMap::new);
-        this.ssoClientIds.put(qualifier, clientId);
-    }
-
     public Optional<String> getSsoRealm() {
         return Optional.ofNullable(ssoRealm);
     }
@@ -226,7 +236,21 @@ public class ServerStatus implements Serializable {
         this.ssoRealm = ssoRealm;
     }
 
-    public Map<String, String> getSsoClientIds() {
-        return ofNullable(ssoClientIds).map(Collections::unmodifiableMap).orElseGet(Collections::emptyMap);
+    public ServerStatus withSsoRealm(String ssoRealm) {
+        this.setSsoRealm(ssoRealm);
+        return this;
+    }
+
+    public Optional<String> getSsoClientId() {
+        return Optional.ofNullable(ssoClientId);
+    }
+
+    public void setSsoClientId(String ssoClientId) {
+        this.ssoClientId = ssoClientId;
+    }
+
+    public ServerStatus withSsoClientId(String ssoClientId) {
+        this.setSsoClientId(ssoClientId);
+        return this;
     }
 }
