@@ -190,7 +190,8 @@ public class ServerStatus implements Serializable {
         this.webContexts = Objects.requireNonNullElseGet(this.webContexts, HashMap::new);
         webContexts.put(qualifier, path);
     }
-    public ServerStatus addToWebContexts(String qualifier, String path){
+
+    public ServerStatus addToWebContexts(String qualifier, String path) {
         this.putWebContext(qualifier, path);
         return this;
     }
