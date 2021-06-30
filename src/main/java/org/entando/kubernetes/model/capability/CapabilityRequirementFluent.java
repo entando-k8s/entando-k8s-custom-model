@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import org.entando.kubernetes.model.common.DbmsVendor;
 import org.entando.kubernetes.model.common.ResourceReference;
 
@@ -45,8 +44,8 @@ public class CapabilityRequirementFluent<N extends CapabilityRequirementFluent<N
         this.implementation = spec.getImplementation().orElse(null);
         this.resolutionScopePreference = spec.getResolutionScopePreference();
         this.provisioningStrategy = spec.getProvisioningStrategy().orElse(null);
-        this.selector = new ConcurrentHashMap<>(spec.getSelector());
-        this.capabilityParameters = new ConcurrentHashMap<>(spec.getCapabilityParameters());
+        this.selector = new HashMap<>(spec.getSelector());
+        this.capabilityParameters = new HashMap<>(spec.getCapabilityParameters());
         this.specifiedCapability = spec.getSpecifiedCapability().orElse(null);
         this.externallyProvidedService = spec.getExternallyProvisionedService().orElse(null);
 
