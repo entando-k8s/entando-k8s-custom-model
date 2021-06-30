@@ -256,7 +256,7 @@ spec:
                 to one of COMMUNITY or REDHAT
               type: string
               pattern: ^(keycloak|redhat-sso)$
-            capabilityScope:
+            providedCapabilityScope:
               description: >
                 The scope inside the Kubernetes cluster that this
                 EntandoKeycloakServer instance can be shared.
@@ -264,13 +264,13 @@ spec:
                 and 'cluster'. Please refer to our documentation
                 pertaining to shared capabilities for more information.
               type: string
-              pattern: ^(dedicated|specified|namespace|labeled|cluster)$
+              pattern: ^(Dedicated|Specified|Namespace|Labeled|Cluster)$
             provisioningStrategy:
               description: >
                 The strategy that will be used to make this EntandoKeycloakServer
                 available to its consumers. Valid values are
               type: string
-              pattern: ^(Dedicated|Specified|Namespace|Labeled|Cluster)$
+              pattern: ^(UseExternal|DeployDirectly|DelegateToOperator)$
             adminSecretName:
               description: >
                 The name of an Opaque secret that contains the 'username' and

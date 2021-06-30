@@ -27,6 +27,7 @@ import java.util.Collections;
 import org.entando.kubernetes.model.app.EntandoApp;
 import org.entando.kubernetes.model.app.EntandoAppBuilder;
 import org.entando.kubernetes.model.common.DbmsVendor;
+import org.entando.kubernetes.model.common.EntandoDeploymentPhase;
 import org.entando.kubernetes.model.common.JeeServer;
 import org.entando.kubernetes.model.common.ResourceReference;
 import org.junit.jupiter.api.BeforeEach;

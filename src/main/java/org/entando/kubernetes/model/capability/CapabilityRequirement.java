@@ -25,11 +25,11 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import org.entando.kubernetes.model.common.DbmsVendor;
 import org.entando.kubernetes.model.common.ResourceReference;
 
@@ -109,11 +109,12 @@ public class CapabilityRequirement {
     }
 
     public Map<String, String> getSelector() {
+        selector = Objects.requireNonNullElseGet(selector, ConcurrentHashMap::new);
         return selector;
     }
 
     public Map<String, String> getCapabilityParameters() {
-        capabilityParameters = Objects.requireNonNullElseGet(capabilityParameters, HashMap::new);
+        capabilityParameters = Objects.requireNonNullElseGet(capabilityParameters, ConcurrentHashMap::new);
         return capabilityParameters;
     }
 
