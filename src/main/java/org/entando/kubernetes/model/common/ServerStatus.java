@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.quarkus.runtime.annotations.RegisterForReflection;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
@@ -45,6 +46,7 @@ import java.util.Optional;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ServerStatus implements Serializable {
 
+    private final String type = "WebServerStatus";//for backward compatibility
     private String qualifier;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssZ", timezone = "GMT")
     private Date started = new Date();
@@ -253,5 +255,9 @@ public class ServerStatus implements Serializable {
     public ServerStatus withSsoClientId(String ssoClientId) {
         this.setSsoClientId(ssoClientId);
         return this;
+    }
+
+    public String getType() {
+        return type;
     }
 }
