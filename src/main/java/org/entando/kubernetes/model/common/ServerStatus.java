@@ -28,7 +28,6 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.fabric8.kubernetes.api.model.HasMetadata;
 import io.quarkus.runtime.annotations.RegisterForReflection;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;

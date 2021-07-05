@@ -16,6 +16,8 @@
 
 package org.entando.kubernetes.model.common;
 
+import static java.util.Optional.ofNullable;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -31,6 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+
 @JsonSerialize
 @JsonDeserialize
 @JsonInclude(Include.NON_NULL)
@@ -40,18 +43,18 @@ import java.util.concurrent.ConcurrentHashMap;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EntandoCustomResourceStatus implements Serializable {
 
-    private Map<String, ServerStatus> serverStatuses = new ConcurrentHashMap<>();
-
+    private final Map<String, ServerStatus> serverStatuses = new ConcurrentHashMap<>();
     private Long observedGeneration;
-
     private EntandoDeploymentPhase phase;
+    private EntandoDeploymentPhase entandoDeploymentPhase;//for backward compatibility
 
     public EntandoDeploymentPhase getPhase() {
-        return phase;
+        return ofNullable(phase).orElse(entandoDeploymentPhase);
     }
 
     public void updateDeploymentPhase(EntandoDeploymentPhase entandoDeploymentPhase, Long observedGeneration) {
         this.phase = entandoDeploymentPhase;
+        this.entandoDeploymentPhase = entandoDeploymentPhase;
         this.observedGeneration = observedGeneration;
     }
 
@@ -72,7 +75,7 @@ public class EntandoCustomResourceStatus implements Serializable {
     }
 
     public Optional<ServerStatus> getServerStatus(String qualifier) {
-        return Optional.ofNullable(serverStatuses.get(qualifier));
+        return ofNullable(serverStatuses.get(qualifier));
     }
 
     public EntandoDeploymentPhase calculateFinalPhase() {
