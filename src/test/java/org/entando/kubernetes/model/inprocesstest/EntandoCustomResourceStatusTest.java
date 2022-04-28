@@ -28,7 +28,7 @@ import io.fabric8.kubernetes.api.model.PodStatus;
 import io.fabric8.kubernetes.api.model.ServiceStatus;
 import io.fabric8.kubernetes.api.model.StatusBuilder;
 import io.fabric8.kubernetes.api.model.apps.DeploymentStatus;
-import io.fabric8.kubernetes.api.model.extensions.IngressStatus;
+import io.fabric8.kubernetes.api.model.networking.v1.IngressStatus;
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
