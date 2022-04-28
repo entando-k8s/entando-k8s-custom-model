@@ -24,7 +24,7 @@
         <artifactId>entando-quarkus-parent</artifactId>
         <relativePath/>
     </parent>
-    <version>6.3.4</version>
+    <version>6.5.0</version>
     <artifactId>entando-k8s-custom-model</artifactId>
 
     <name>Entando Kubernetes Custom Model</name>
