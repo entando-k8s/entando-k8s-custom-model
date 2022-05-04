@@ -47,11 +47,11 @@ spec:
                   maximum: 10
                 dbms:
                   description: >
-                    The database management system (DBMS) to use for persistence of this EntandoApp. 
-                    Can be any of mysql, oracle  postgresql, embedded or none. When 'embedded' is used, an in-process 
+                    The database management system (DBMS) to use for persistence of this EntandoApp.
+                    Can be any of mysql, oracle  postgresql, embedded or none. When 'embedded' is used, an in-process
                     Derby database will be used and in the folder /entando-data which is where the standard
                     Entando persistent volume is mounted. Since the supporting database files can only be opened by one process at a time,
-                    only 1 replica can be supported when the value is 'embedded'. 
+                    only 1 replica can be supported when the value is 'embedded'.
                     If an EntandoDatabaseService has been
                     deployed in this EntandoApp's namespace, and the DBMS specified on this EntandoDatabaseService
                     is the same as the DBMS specified on this EntandoApp, the Entando Operator will create dedicated
@@ -63,8 +63,8 @@ spec:
                     the Entando Component Manager. If the Port and Serv schemas/databases are empty, the Entando Operator
                     will use the underlying Entando App to populate these datbases with the data backup available in the
                     standard backup path in the WAR deployment.
-                    In scenarios where the EntandoApp needs to connect to an existing database that is fully managed 
-                    by the customer, it is best to setup the standard database connection variables using the 
+                    In scenarios where the EntandoApp needs to connect to an existing database that is fully managed
+                    by the customer, it is best to setup the standard database connection variables using the
                     'spec.environmentVariables' property and set this property to 'none'. This will skip any database
                     preparations steps in the deployment.
                   type: string
@@ -327,5 +327,3 @@ spec:
     shortNames:
       - enap
   scope: Namespaced
-  subresources:
-    status: {}
