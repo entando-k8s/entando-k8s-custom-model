@@ -16,22 +16,27 @@
 
 package org.entando.kubernetes.model.debundle;
 
+import io.fabric8.kubernetes.api.builder.Nested;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import org.entando.kubernetes.model.debundle.EntandoDeBundleSpecFluent.TagNested;
 
 public abstract class EntandoDeBundleDetailsFluent<N extends EntandoDeBundleDetailsFluent<N>> {
 
     private String name;
     private String description;
+    private List<EntandoDeBundleBundleGroupBuilder> bundleGroups;
     private Map<String, Object> distTags;
     private List<String> versions;
     private List<String> keywords;
     private String thumbnail;
 
     protected EntandoDeBundleDetailsFluent() {
+        this.bundleGroups = new ArrayList<>();
         this.distTags = new ConcurrentHashMap<>();
         this.versions = new ArrayList<>();
         this.keywords = new ArrayList<>();
@@ -40,6 +45,8 @@ public abstract class EntandoDeBundleDetailsFluent<N extends EntandoDeBundleDeta
     protected EntandoDeBundleDetailsFluent(EntandoDeBundleDetails details) {
         this.name = details.getName();
         this.description = details.getDescription();
+        this.bundleGroups = createBundleGroupsBuilders(
+                Optional.ofNullable(details.getBundleGroups()).orElse(new ArrayList<>()));
         this.distTags = Optional.ofNullable(details.getDistTags()).orElse(new ConcurrentHashMap<>());
         this.versions = Optional.ofNullable(details.getVersions()).orElse(new ArrayList<>());
         this.keywords = Optional.ofNullable(details.getKeywords()).orElse(new ArrayList<>());
@@ -47,8 +54,17 @@ public abstract class EntandoDeBundleDetailsFluent<N extends EntandoDeBundleDeta
     }
 
     public EntandoDeBundleDetails build() {
-        return new EntandoDeBundleDetails(name, description, distTags, versions, keywords, thumbnail);
+        return new EntandoDeBundleDetails(name, description,
+                this.bundleGroups.stream().map(EntandoDeBundleBundleGroupFluent::build).collect(Collectors.toList()),
+                distTags, versions, keywords, thumbnail);
     }
+
+    private List<EntandoDeBundleBundleGroupBuilder> createBundleGroupsBuilders(
+            List<EntandoDeBundleBundleGroup> bundleGroups) {
+        return new ArrayList<>(
+                bundleGroups.stream().map(EntandoDeBundleBundleGroupBuilder::new).collect(Collectors.toList()));
+    }
+
 
     public N withName(String name) {
         this.name = name;
@@ -95,8 +111,43 @@ public abstract class EntandoDeBundleDetailsFluent<N extends EntandoDeBundleDeta
         return thisAsN();
     }
 
+    public N withBundleGroups(List<EntandoDeBundleBundleGroup> bundleGroups) {
+        this.bundleGroups = createBundleGroupsBuilders(bundleGroups);
+        return thisAsN();
+    }
+
+    public BundleGroupNested<N> addNewBundleGroup() {
+        return new BundleGroupNested<>(thisAsN());
+    }
+
+    public N addToBundleGroup(EntandoDeBundleBundleGroup bundleGroup) {
+        this.bundleGroups.add(new EntandoDeBundleBundleGroupBuilder(bundleGroup));
+        return thisAsN();
+    }
+
     @SuppressWarnings("unchecked")
     protected N thisAsN() {
         return (N) this;
+    }
+
+
+    public static class BundleGroupNested<N extends EntandoDeBundleDetailsFluent> extends
+            EntandoDeBundleBundleGroupFluent<BundleGroupNested<N>> implements Nested<N> {
+
+        private final N parentBuilder;
+
+        public BundleGroupNested(N parentBuilder) {
+            super();
+            this.parentBuilder = parentBuilder;
+        }
+
+        @SuppressWarnings("unchecked")
+        public N and() {
+            return (N) parentBuilder.addToBundleGroup(super.build());
+        }
+
+        public N endBundleGroup() {
+            return and();
+        }
     }
 }

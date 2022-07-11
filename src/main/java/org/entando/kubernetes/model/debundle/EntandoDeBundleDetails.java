@@ -44,6 +44,7 @@ public class EntandoDeBundleDetails implements Serializable {
 
     private String name;
     private String description;
+    private List<EntandoDeBundleBundleGroup> bundleGroups;
     @JsonProperty("dist-tags")
     @SuppressWarnings("java:S1948")//because the values will be serializable
     private Map<String, Object> distTags = new ConcurrentHashMap<>();
@@ -52,10 +53,11 @@ public class EntandoDeBundleDetails implements Serializable {
     private String thumbnail;
 
     @SuppressWarnings("unchecked")
-    public EntandoDeBundleDetails(String name, String description, Map<String, Object> distTags, List<String> versions,
-            List<String> keywords, String thumbnail) {
+    public EntandoDeBundleDetails(String name, String description, List<EntandoDeBundleBundleGroup> bundleGroups,
+            Map<String, Object> distTags, List<String> versions, List<String> keywords, String thumbnail) {
         this.name = name;
         this.description = description;
+        this.bundleGroups = bundleGroups;
         this.distTags = coalesce(distTags, this.distTags);
         this.versions = coalesce(versions, this.versions);
         this.keywords = coalesce(keywords, this.keywords);
@@ -87,5 +89,9 @@ public class EntandoDeBundleDetails implements Serializable {
 
     public String getThumbnail() {
         return thumbnail;
+    }
+
+    public List<EntandoDeBundleBundleGroup> getBundleGroups() {
+        return bundleGroups;
     }
 }

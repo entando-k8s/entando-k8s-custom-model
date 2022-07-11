@@ -17,6 +17,7 @@
 package org.entando.kubernetes.model;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
 import io.fabric8.kubernetes.api.model.KubernetesResourceList;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import org.entando.kubernetes.model.debundle.EntandoDeBundle;
 import org.entando.kubernetes.model.debundle.EntandoDeBundleBuilder;
+import org.entando.kubernetes.model.debundle.EntandoDeBundleBundleGroupBuilder;
 import org.entando.kubernetes.model.debundle.EntandoDeBundleTagBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +38,8 @@ public abstract class AbstractEntandoDeBundleTest implements CustomResourceTestU
 
     public static final String MY_BUNDLE = "my-bundle";
     public static final String MY_DESCRIPTION = "my-description";
+    public static final String MY_BUNDLE_GROUP_NAME = "my-bundle-group";
+    public static final String MY_BUNDLE_GROUP_ORGANIZATION = "my-organization";
     public static final String SOME_TAG = "someTag";
     public static final String SOME_VALUE = "someValue";
     public static final String MY_KEYWORD = "my-keyword";
@@ -62,6 +66,10 @@ public abstract class AbstractEntandoDeBundleTest implements CustomResourceTestU
                 .withNewDetails()
                 .withDescription(MY_DESCRIPTION)
                 .withName(MY_BUNDLE)
+                .withBundleGroups(Collections.singletonList(new EntandoDeBundleBundleGroupBuilder()
+                        .withName(MY_BUNDLE_GROUP_NAME)
+                        .withOrganization(MY_BUNDLE_GROUP_ORGANIZATION)
+                        .build()))
                 .withThumbnail(MY_THUMBNAIL)
                 .addNewKeyword(MY_KEYWORD)
                 .addNewVersion(MY_VERSION)
@@ -82,6 +90,10 @@ public abstract class AbstractEntandoDeBundleTest implements CustomResourceTestU
         //Then
         assertThat(actual.getSpec().getDetails().getName(), is(MY_BUNDLE));
         assertThat(actual.getSpec().getDetails().getDescription(), is(MY_DESCRIPTION));
+        assertThat(actual.getSpec().getDetails().getBundleGroups(), hasSize(1));
+        assertThat(actual.getSpec().getDetails().getBundleGroups().get(0).getName(), is(MY_BUNDLE_GROUP_NAME));
+        assertThat(actual.getSpec().getDetails().getBundleGroups().get(0).getOrganization(),
+                is(MY_BUNDLE_GROUP_ORGANIZATION));
         assertThat(actual.getSpec().getDetails().getThumbnail(), is(MY_THUMBNAIL));
         assertThat(actual.getSpec().getDetails().getDistTags(), is(Collections.singletonMap(SOME_TAG, SOME_VALUE)));
         assertThat(actual.getSpec().getDetails().getKeywords(), is(Collections.singletonList(MY_KEYWORD)));
@@ -105,6 +117,10 @@ public abstract class AbstractEntandoDeBundleTest implements CustomResourceTestU
                 .withNewDetails()
                 .withDescription(MY_DESCRIPTION)
                 .withName(MY_BUNDLE)
+                .addNewBundleGroup()
+                .withName(MY_BUNDLE_GROUP_NAME)
+                .withOrganization(MY_BUNDLE_GROUP_ORGANIZATION)
+                .endBundleGroup()
                 .withThumbnail("H0cFRNTEJt8EZBcL17_iww")
                 .addNewKeyword("another-keyword")
                 .addNewVersion("0.0.2")
@@ -130,6 +146,10 @@ public abstract class AbstractEntandoDeBundleTest implements CustomResourceTestU
                 .withDescription(MY_DESCRIPTION)
                 .withName(MY_BUNDLE)
                 .withThumbnail(MY_THUMBNAIL)
+                .withBundleGroups(Collections.singletonList(new EntandoDeBundleBundleGroupBuilder()
+                        .withName("new name")
+                        .withOrganization("new org")
+                        .build()))
                 .withKeywords(Arrays.asList(MY_KEYWORD))
                 .withVersions(Arrays.asList(MY_VERSION))
                 .withDistTags(Collections.singletonMap(SOME_TAG, SOME_VALUE))
@@ -146,6 +166,9 @@ public abstract class AbstractEntandoDeBundleTest implements CustomResourceTestU
         assertThat(actual.getSpec().getDetails().getName(), is(MY_BUNDLE));
         assertThat(actual.getSpec().getDetails().getDescription(), is(MY_DESCRIPTION));
         assertThat(actual.getSpec().getDetails().getThumbnail(), is(MY_THUMBNAIL));
+        assertThat(actual.getSpec().getDetails().getBundleGroups(), hasSize(1));
+        assertThat(actual.getSpec().getDetails().getBundleGroups().get(0).getName(), is("new name"));
+        assertThat(actual.getSpec().getDetails().getBundleGroups().get(0).getOrganization(), is("new org"));
         assertThat(actual.getSpec().getDetails().getDistTags(), is(Collections.singletonMap(SOME_TAG, SOME_VALUE)));
         assertThat(actual.getSpec().getDetails().getKeywords(), is(Collections.singletonList(MY_KEYWORD)));
         assertThat(actual.getSpec().getDetails().getVersions(), is(Collections.singletonList(MY_VERSION)));
