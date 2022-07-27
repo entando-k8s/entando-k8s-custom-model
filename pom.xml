@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.entando</groupId>
         <artifactId>entando-quarkus-parent</artifactId>
-        <version>7.1.0-ENG-3309-PR-25</version>
+        <version>7.1.0-ENG-4013-PR-33</version>
         <relativePath/>
     </parent>
     <version>7.1.0-SNAPSHOT</version>
@@ -64,7 +64,6 @@
         <tag>HEAD</tag>
     </scm>
     <properties>
-<!--        comment -->
         <github.organization>entando-k8s</github.organization>
         <sonar.projectKey>${github.organization}_${project.artifactId}</sonar.projectKey>
         <sonar.junit.reportPaths>target/surefire-reports</sonar.junit.reportPaths>
