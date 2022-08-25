@@ -24,7 +24,7 @@
         <version>7.1.1-ENG-4147-PR-40</version>
         <relativePath/>
     </parent>
-    <version>7.1.0</version>
+    <version>7.1.1</version>
     <artifactId>entando-k8s-custom-model</artifactId>
 
     <name>Entando Kubernetes Custom Model</name>
