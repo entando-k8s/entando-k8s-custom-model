@@ -28,6 +28,7 @@ public class EntandoPluginSpecFluent<N extends EntandoPluginSpecFluent<N>> exten
     protected final List<ExpectedRole> roles;
     protected final List<Permission> permissions;
     private final List<String> companionContainers;
+    protected String tenantCode;
     protected String image;
     protected String ingressPath;
     protected String customIngressPath;
@@ -40,6 +41,7 @@ public class EntandoPluginSpecFluent<N extends EntandoPluginSpecFluent<N>> exten
         this.customIngressPath = spec.getCustomIngressPath();
         this.healthCheckPath = spec.getHealthCheckPath();
         this.securityLevel = spec.getSecurityLevel().orElse(null);
+        this.tenantCode = spec.getTenantCode();
         this.image = spec.getImage();
         this.permissions = new ArrayList<>(spec.getPermissions());
         this.connectionConfigNames = new ArrayList<>(spec.getConnectionConfigNames());
@@ -67,6 +69,11 @@ public class EntandoPluginSpecFluent<N extends EntandoPluginSpecFluent<N>> exten
 
     public N addNewConnectionConfigName(String name) {
         connectionConfigNames.add(name);
+        return thisAsF();
+    }
+
+    public N withTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
         return thisAsF();
     }
 
@@ -125,7 +132,7 @@ public class EntandoPluginSpecFluent<N extends EntandoPluginSpecFluent<N>> exten
     }
 
     public EntandoPluginSpec build() {
-        return new EntandoPluginSpec(image, dbms, replicas, ingressPath, customIngressPath, keycloakToUse,
+        return new EntandoPluginSpec(tenantCode, image, dbms, replicas, ingressPath, customIngressPath, keycloakToUse,
                 healthCheckPath, securityLevel, tlsSecretName, ingressHostName, roles, permissions,
                 serviceAccountToUse, environmentVariables, connectionConfigNames,
                 companionContainers, resourceRequirements, storageClass);

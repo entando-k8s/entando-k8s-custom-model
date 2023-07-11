@@ -49,6 +49,7 @@ import org.entando.kubernetes.model.common.Permission;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EntandoPluginSpec extends KeycloakAwareSpec {
 
+    private String tenantCode;
     private String image;
     private PluginSecurityLevel securityLevel;
     private List<String> connectionConfigNames = new ArrayList<>();
@@ -69,27 +70,29 @@ public class EntandoPluginSpec extends KeycloakAwareSpec {
 
     @SuppressWarnings("unchecked")
     @JsonCreator()
-    public EntandoPluginSpec(@JsonProperty("image") String image,
-            @JsonProperty("dbms") DbmsVendor dbms,
-            @JsonProperty("replicas") Integer replicas,
-            @JsonProperty("ingressPath") String ingressPath,
-            @JsonProperty("customIngressPath") String customIngressPath,
-            @JsonProperty("keycloakToUse") KeycloakToUse keycloakToUse,
-            @JsonProperty("healthCheckPath") String healthCheckPath,
-            @JsonProperty("securityLevel") PluginSecurityLevel securityLevel,
-            @JsonProperty("tlsSecretName") String tlsSecretName,
-            @JsonProperty("ingressHostName") String ingressHostName,
-            @JsonProperty("roles") List<ExpectedRole> roles,
-            @JsonProperty("permissions") List<Permission> permissions,
-            @JsonProperty("serviceAccountToUse") String serviceAccountToUse,
-            @JsonProperty("environmentVariables") List<EnvVar> environmentVariables,
-            @JsonProperty("connectionConfigNames") List<String> connectionConfigNames,
-            @JsonProperty("companionContainers") List<String> companionContainers,
-            @JsonProperty("resourceRequirements") EntandoResourceRequirements resourceRequirements,
-            @JsonProperty("storageClass") String storageClass
+    public EntandoPluginSpec(@JsonProperty("tenantCode") String tenantCode,
+                             @JsonProperty("image") String image,
+                             @JsonProperty("dbms") DbmsVendor dbms,
+                             @JsonProperty("replicas") Integer replicas,
+                             @JsonProperty("ingressPath") String ingressPath,
+                             @JsonProperty("customIngressPath") String customIngressPath,
+                             @JsonProperty("keycloakToUse") KeycloakToUse keycloakToUse,
+                             @JsonProperty("healthCheckPath") String healthCheckPath,
+                             @JsonProperty("securityLevel") PluginSecurityLevel securityLevel,
+                             @JsonProperty("tlsSecretName") String tlsSecretName,
+                             @JsonProperty("ingressHostName") String ingressHostName,
+                             @JsonProperty("roles") List<ExpectedRole> roles,
+                             @JsonProperty("permissions") List<Permission> permissions,
+                             @JsonProperty("serviceAccountToUse") String serviceAccountToUse,
+                             @JsonProperty("environmentVariables") List<EnvVar> environmentVariables,
+                             @JsonProperty("connectionConfigNames") List<String> connectionConfigNames,
+                             @JsonProperty("companionContainers") List<String> companionContainers,
+                             @JsonProperty("resourceRequirements") EntandoResourceRequirements resourceRequirements,
+                             @JsonProperty("storageClass") String storageClass
     ) {
         super(ingressHostName, tlsSecretName, replicas, dbms, serviceAccountToUse, environmentVariables, resourceRequirements,
                 keycloakToUse, storageClass);
+        this.tenantCode = tenantCode;
         this.image = image;
         this.ingressPath = ingressPath;
         this.customIngressPath = customIngressPath;
@@ -104,6 +107,10 @@ public class EntandoPluginSpec extends KeycloakAwareSpec {
 
     public Optional<PluginSecurityLevel> getSecurityLevel() {
         return ofNullable(securityLevel);
+    }
+
+    public String getTenantCode() {
+        return tenantCode;
     }
 
     public String getImage() {
