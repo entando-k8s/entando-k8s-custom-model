@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.entando.kubernetes.model.AbstractEntandoPluginTest;
 import org.entando.kubernetes.model.app.EntandoApp;
 import org.entando.kubernetes.model.app.EntandoAppBuilder;
 import org.entando.kubernetes.model.common.DbmsVendor;
@@ -143,6 +144,7 @@ class DummyBean {
                 .withNewSpec()
                 .withDbms(DbmsVendor.MYSQL)
                 .withImage(IMAGE)
+                .withTenantCode(null)
                 .addNewConnectionConfigName(SOME_CONNECTION)
                 .withReplicas(5)
                 .withIngressPath(INGRESS_PATH)
@@ -170,6 +172,7 @@ class DummyBean {
         //Then
         assertThat(actual.getSpec().getDbms().get(), is(DbmsVendor.MYSQL));
         assertThat(actual.getSpec().getImage(), is(IMAGE));
+        assertThat(actual.getSpec().getTenantCode(), is(AbstractEntandoPluginTest.PRIMARY_TEST_SPEC));
         assertThat(actual.getSpec().getKeycloakToUse().get().getName(), is(MY_KEYCLOAK_NAME));
         assertThat(actual.getSpec().getKeycloakToUse().get().getNamespace().get(), is(MY_KEYCLOAK_NAME_SPACE));
         assertThat(actual.getSpec().getKeycloakToUse().get().getRealm(), is(MY_KEYCLOAK_REALM));

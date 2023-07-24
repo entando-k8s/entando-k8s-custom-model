@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.entando.kubernetes.model.common.DbmsVendor;
+import org.entando.kubernetes.model.common.EntandoMultiTenancy;
 import org.entando.kubernetes.model.common.EntandoResourceRequirements;
 import org.entando.kubernetes.model.common.ExpectedRole;
 import org.entando.kubernetes.model.common.KeycloakAwareSpec;
@@ -49,6 +50,7 @@ import org.entando.kubernetes.model.common.Permission;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EntandoPluginSpec extends KeycloakAwareSpec {
 
+    private String tenantCode;
     private String image;
     private PluginSecurityLevel securityLevel;
     private List<String> connectionConfigNames = new ArrayList<>();
@@ -69,7 +71,9 @@ public class EntandoPluginSpec extends KeycloakAwareSpec {
 
     @SuppressWarnings("unchecked")
     @JsonCreator()
-    public EntandoPluginSpec(@JsonProperty("image") String image,
+    public EntandoPluginSpec(
+            @JsonProperty("tenantCode") String tenantCode,
+            @JsonProperty("image") String image,
             @JsonProperty("dbms") DbmsVendor dbms,
             @JsonProperty("replicas") Integer replicas,
             @JsonProperty("ingressPath") String ingressPath,
@@ -90,6 +94,7 @@ public class EntandoPluginSpec extends KeycloakAwareSpec {
     ) {
         super(ingressHostName, tlsSecretName, replicas, dbms, serviceAccountToUse, environmentVariables, resourceRequirements,
                 keycloakToUse, storageClass);
+        this.tenantCode = tenantCode;
         this.image = image;
         this.ingressPath = ingressPath;
         this.customIngressPath = customIngressPath;
@@ -104,6 +109,10 @@ public class EntandoPluginSpec extends KeycloakAwareSpec {
 
     public Optional<PluginSecurityLevel> getSecurityLevel() {
         return ofNullable(securityLevel);
+    }
+
+    public String getTenantCode() {
+        return ofNullable(tenantCode).orElse(EntandoMultiTenancy.PRIMARY_TENANT);
     }
 
     public String getImage() {
