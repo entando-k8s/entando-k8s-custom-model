@@ -16,6 +16,8 @@
 
 package org.entando.kubernetes.model.link;
 
+import static java.util.Optional.ofNullable;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -28,6 +30,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.io.Serializable;
 import java.util.Optional;
+import org.entando.kubernetes.model.common.EntandoMultiTenancy;
 
 @JsonSerialize
 @JsonDeserialize
@@ -42,6 +45,7 @@ public class EntandoAppPluginLinkSpec implements Serializable {
     private String entandoAppName;
     private String entandoPluginNamespace;
     private String entandoPluginName;
+    private String tenantCode;
 
     public EntandoAppPluginLinkSpec() {
         //Required for JSON deserialization
@@ -52,11 +56,13 @@ public class EntandoAppPluginLinkSpec implements Serializable {
             @JsonProperty("entandoAppNamespace") String entandoAppNamespace,
             @JsonProperty("entandoAppName") String entandoAppName,
             @JsonProperty("entandoPluginNamespace") String entandoPluginNamespace,
-            @JsonProperty("entandoPluginName") String entandoPluginName) {
+            @JsonProperty("entandoPluginName") String entandoPluginName,
+            @JsonProperty("tenantCode") String tenantCode) {
         this.entandoAppNamespace = entandoAppNamespace;
         this.entandoAppName = entandoAppName;
         this.entandoPluginNamespace = entandoPluginNamespace;
         this.entandoPluginName = entandoPluginName;
+        this.tenantCode = tenantCode;
     }
 
     public String getEntandoAppName() {
@@ -75,4 +81,7 @@ public class EntandoAppPluginLinkSpec implements Serializable {
         return Optional.ofNullable(entandoPluginNamespace);
     }
 
+    public String getTenantCode() {
+        return ofNullable(tenantCode).orElse(EntandoMultiTenancy.PRIMARY_TENANT);
+    }
 }

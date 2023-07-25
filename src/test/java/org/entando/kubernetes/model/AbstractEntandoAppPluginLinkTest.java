@@ -34,6 +34,7 @@ public abstract class AbstractEntandoAppPluginLinkTest implements CustomResource
     protected static final String MY_APP_NAMESPACE = TestConfig.calculateNameSpace("my-app-namespace");
     protected static final String MY_PLUGIN_NAMESPACE = TestConfig.calculateNameSpace("my-plugin-namespace");
     private static final String MY_APP = "my-app";
+    public static final String PRIMARY_TEST_SPEC = "primary";
 
     @BeforeEach
     public void deleteEntandoAppPluginLinks() {
@@ -51,6 +52,7 @@ public abstract class AbstractEntandoAppPluginLinkTest implements CustomResource
                 .withNewSpec()
                 .withEntandoApp(MY_APP_NAMESPACE, MY_APP)
                 .withEntandoPlugin(MY_PLUGIN_NAMESPACE, MY_PLUGIN)
+                .withTenantCode(null)
                 .endSpec()
                 .build();
 
@@ -67,6 +69,7 @@ public abstract class AbstractEntandoAppPluginLinkTest implements CustomResource
         assertThat(actual.getSpec().getEntandoAppNamespace().get(), is(MY_APP_NAMESPACE));
         assertThat(actual.getSpec().getEntandoPluginName(), is(MY_PLUGIN));
         assertThat(actual.getSpec().getEntandoPluginNamespace().get(), is(MY_PLUGIN_NAMESPACE));
+        assertThat(actual.getSpec().getTenantCode(), is(PRIMARY_TEST_SPEC));
         assertThat(actual.getMetadata().getName(), is(MY_APP_PLUGIN_LINK));
     }
 
@@ -98,6 +101,7 @@ public abstract class AbstractEntandoAppPluginLinkTest implements CustomResource
                         .editSpec()
                         .withEntandoApp(MY_APP_NAMESPACE, MY_APP)
                         .withEntandoPlugin(MY_PLUGIN_NAMESPACE, MY_PLUGIN)
+                        .withTenantCode("tenant1")
                         .endSpec()
                         .build());
         //Then
@@ -105,6 +109,7 @@ public abstract class AbstractEntandoAppPluginLinkTest implements CustomResource
         assertThat(actual.getSpec().getEntandoAppNamespace().get(), is(MY_APP_NAMESPACE));
         assertThat(actual.getSpec().getEntandoPluginName(), is(MY_PLUGIN));
         assertThat(actual.getSpec().getEntandoPluginNamespace().get(), is(MY_PLUGIN_NAMESPACE));
+        assertThat(actual.getSpec().getEntandoPluginNamespace().get(), is("tenant1"));
         assertThat(actual.getMetadata().getName(), is(MY_APP_PLUGIN_LINK));
         assertThat(actual.getStatus(), is(notNullValue()));
     }
