@@ -16,19 +16,24 @@
 
 package org.entando.kubernetes.model.link;
 
+import static java.util.Optional.ofNullable;
+
+import org.entando.kubernetes.model.common.EntandoMultiTenancy;
+
 public class EntandoAppPluginLinkSpecFluent<N extends EntandoAppPluginLinkSpecFluent> {
 
     private String entandoAppName;
     private String entandoAppNamespace;
     private String entandoPluginName;
     private String entandoPluginNamespace;
+    private String tenantCode;
 
     public EntandoAppPluginLinkSpecFluent(EntandoAppPluginLinkSpec spec) {
         this.entandoAppNamespace = spec.getEntandoAppNamespace().orElse(null);
         this.entandoAppName = spec.getEntandoAppName();
         this.entandoPluginNamespace = spec.getEntandoPluginNamespace().orElse(null);
         this.entandoPluginName = spec.getEntandoPluginName();
-
+        this.tenantCode = spec.getTenantCode();
     }
 
     public EntandoAppPluginLinkSpecFluent() {
@@ -49,7 +54,12 @@ public class EntandoAppPluginLinkSpecFluent<N extends EntandoAppPluginLinkSpecFl
         return (N) this;
     }
 
+    public N withTenantCode(String tenantCode) {
+        this.tenantCode = ofNullable(tenantCode).orElse(EntandoMultiTenancy.PRIMARY_TENANT);
+        return (N) this;
+    }
+
     public EntandoAppPluginLinkSpec build() {
-        return new EntandoAppPluginLinkSpec(entandoAppNamespace, entandoAppName, entandoPluginNamespace, entandoPluginName);
+        return new EntandoAppPluginLinkSpec(entandoAppNamespace, entandoAppName, entandoPluginNamespace, entandoPluginName, tenantCode);
     }
 }

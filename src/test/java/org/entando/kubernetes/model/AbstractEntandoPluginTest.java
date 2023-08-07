@@ -50,6 +50,7 @@ public abstract class AbstractEntandoPluginTest implements CustomResourceTestUti
     private static final String MYHOST_COM = "myhost.com";
     private static final String MY_TLS_SECRET = "my-tls-secret";
     private static final String IMAGE = "entando/someplugin:1.0.2";
+    public static final String PRIMARY_TEST_SPEC = "primary";
     private static final String SOME_CONNECTION = "some-connection";
     private static final String INGRESS_PATH = "/plugsy";
     private static final String ACTUATOR_HEALTH = "/actuator/health";
@@ -76,6 +77,7 @@ public abstract class AbstractEntandoPluginTest implements CustomResourceTestUti
                 .endMetadata()
                 .withNewSpec()
                 .withDbms(DbmsVendor.MYSQL)
+                .withTenantCode(null)
                 .withImage(IMAGE)
                 .addNewConnectionConfigName(SOME_CONNECTION)
                 .withReplicas(5)
@@ -102,6 +104,7 @@ public abstract class AbstractEntandoPluginTest implements CustomResourceTestUti
         //Then
         assertThat(actual.getSpec().getDbms().get(), is(DbmsVendor.MYSQL));
         assertThat(actual.getSpec().getImage(), is(IMAGE));
+        assertThat(actual.getSpec().getTenantCode(), is(PRIMARY_TEST_SPEC));
         verifyKeycloakToUse(actual);
         assertThat(actual.getSpec().getTlsSecretName().get(), is(MY_TLS_SECRET));
         assertThat(actual.getTlsSecretName().get(), is(MY_TLS_SECRET));
@@ -166,6 +169,7 @@ public abstract class AbstractEntandoPluginTest implements CustomResourceTestUti
                 .editSpec()
                 .withDbms(DbmsVendor.MYSQL)
                 .withImage(IMAGE)
+                .withTenantCode("tenant1")
                 .withConnectionConfigNames(Arrays.asList(SOME_CONNECTION))
                 .withReplicas(5)
                 .withHealthCheckPath(ACTUATOR_HEALTH)
@@ -193,6 +197,7 @@ public abstract class AbstractEntandoPluginTest implements CustomResourceTestUti
         //Then
         assertThat(actual.getSpec().getDbms().get(), is(DbmsVendor.MYSQL));
         assertThat(actual.getSpec().getImage(), is(IMAGE));
+        assertThat(actual.getSpec().getTenantCode(), is("tenant1"));
         verifyKeycloakToUse(actual);
         assertThat(actual.getSpec().getTlsSecretName().get(), is(MY_TLS_SECRET));
         assertThat(actual.getTlsSecretName().get(), is(MY_TLS_SECRET));
