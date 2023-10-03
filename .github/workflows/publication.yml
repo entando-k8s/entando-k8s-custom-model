@@ -104,7 +104,14 @@ jobs:
           username: ${{ secrets.ENTANDO_OPT_DOCKER_USERNAME }}
           password: ${{ secrets.ENTANDO_OPT_DOCKER_PASSWORD }}
 
+      - name: Check for Dockerfile.jvm
+        id: dockerfile
+        uses: andstor/file-existence-action@v2
+        with:
+          files: Dockerfile.jvm
+
       - name: Build and push Docker image
+        if: steps.dockerfile.outputs.files_exists == 'true'
         uses: docker/build-push-action@v4
         with:
           context: ${{ env.DOCKER_IMAGE_CONTEXT }}
