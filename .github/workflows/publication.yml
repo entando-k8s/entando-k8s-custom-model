@@ -73,7 +73,7 @@ jobs:
           gpg_private_key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg_passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
-      - name: Check for Dockerfile.jvm
+      - name: Check for Dockerfile
         id: dockerfile
         uses: andstor/file-existence-action@v2
         with:
