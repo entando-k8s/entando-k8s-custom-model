@@ -18,6 +18,7 @@ package org.entando.kubernetes.model.app;
 
 import static java.util.Optional.ofNullable;
 
+import io.fabric8.kubernetes.api.model.EnvVar;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -33,6 +34,10 @@ public class EntandoAppSpecFluent<N extends EntandoAppSpecFluent<N>> extends Key
     private String entandoAppVersion;
     private List<String> componentRepositoryNamespaces;
 
+    List<EnvVar> environmentVariablesAppEngine;
+    List<EnvVar> environmentVariablesComponentManager;
+    List<EnvVar> environmentVariablesAppBuilder;
+
     public EntandoAppSpecFluent(EntandoAppSpec spec) {
         super(spec);
         this.standardServerImage = spec.getStandardServerImage().orElse(null);
@@ -41,6 +46,9 @@ public class EntandoAppSpecFluent<N extends EntandoAppSpecFluent<N>> extends Key
         this.ecrGitSshSecretName = spec.getEcrGitSshSecretName().orElse(null);
         this.entandoAppVersion = spec.getEntandoAppVersion().orElse(null);
         this.componentRepositoryNamespaces = spec.getComponentRepositoryNamespaces();
+        this.environmentVariablesAppEngine = spec.getEnvironmentVariablesAppEngine();
+        this.environmentVariablesComponentManager = spec.getEnvironmentVariablesComponentManager();
+        this.environmentVariablesAppBuilder = spec.getEnvironmentVariablesAppBuilder();
     }
 
     public EntandoAppSpecFluent() {
@@ -90,11 +98,30 @@ public class EntandoAppSpecFluent<N extends EntandoAppSpecFluent<N>> extends Key
         return thisAsF();
     }
 
+    public N withEnvironmentVariablesAppEngine(List<EnvVar> environmentVariables) {
+        this.environmentVariablesAppEngine = new ArrayList<>(environmentVariables);
+        return thisAsF();
+    }
+
+    public N withEnvironmentVariablesComponentManager(List<EnvVar> environmentVariables) {
+        this.environmentVariablesComponentManager = new ArrayList<>(environmentVariables);
+        return thisAsF();
+    }
+
+    public N withEnvironmentVariablesAppBuilder(List<EnvVar> environmentVariables) {
+        this.environmentVariablesAppBuilder = new ArrayList<>(environmentVariables);
+        return thisAsF();
+    }
+
     public EntandoAppSpec build() {
-        return new EntandoAppSpec(this.standardServerImage, this.customServerImage, this.dbms, this.ingressHostName, this.ingressPath,
+        return new EntandoAppSpec(
+                this.standardServerImage, this.customServerImage, this.dbms, this.ingressHostName, this.ingressPath,
                 this.replicas, this.tlsSecretName, this.keycloakToUse,
                 this.serviceAccountToUse, this.environmentVariables, this.resourceRequirements,
-                this.ecrGitSshSecretName, this.storageClass, this.entandoAppVersion, this.componentRepositoryNamespaces);
+                this.ecrGitSshSecretName, this.storageClass, this.entandoAppVersion, this.componentRepositoryNamespaces,
+                this.environmentVariablesAppEngine, this.environmentVariablesComponentManager,
+                this.environmentVariablesAppBuilder
+        );
     }
 
 }
