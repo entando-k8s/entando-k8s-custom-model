@@ -52,9 +52,24 @@ public class EntandoAppSpec extends KeycloakAwareSpec {
     private String ecrGitSshSecretName;
     private String entandoAppVersion;
     private List<String> componentRepositoryNamespaces;
+    List<EnvVar> environmentVariablesAppEngine;
+    List<EnvVar> environmentVariablesComponentManager;
+    List<EnvVar> environmentVariablesAppBuilder;
 
     public EntandoAppSpec() {
         super();
+    }
+
+    public List<EnvVar> getEnvironmentVariablesAppEngine() {
+        return environmentVariablesAppEngine;
+    }
+
+    public List<EnvVar> getEnvironmentVariablesComponentManager() {
+        return environmentVariablesComponentManager;
+    }
+
+    public List<EnvVar> getEnvironmentVariablesAppBuilder() {
+        return environmentVariablesAppBuilder;
     }
 
     /**
@@ -75,7 +90,10 @@ public class EntandoAppSpec extends KeycloakAwareSpec {
             @JsonProperty("ecrGitSshSecretName") String ecrGitSshSecretName,
             @JsonProperty("storageClass") String storageClass,
             @JsonProperty("entandoAppVersion") String entandoAppVersion,
-            @JsonProperty("componentRepositoryNamespaces") List<String> componentRepositoryNamespaces
+            @JsonProperty("componentRepositoryNamespaces") List<String> componentRepositoryNamespaces,
+            @JsonProperty("environmentVariablesAppEngine") List<EnvVar> environmentVariablesAppEngine,
+            @JsonProperty("environmentVariablesComponentManager") List<EnvVar> environmentVariablesComponentManager,
+            @JsonProperty("environmentVariablesAppBuilder") List<EnvVar> environmentVariablesAppBuilder
     ) {
         super(ingressHostName, tlsSecretName, replicas, dbms, serviceAccountToUse, environmentVariables, resourceRequirements,
                 keycloakToUse, storageClass);
@@ -85,6 +103,9 @@ public class EntandoAppSpec extends KeycloakAwareSpec {
         this.ecrGitSshSecretName = ecrGitSshSecretName;
         this.entandoAppVersion = entandoAppVersion;
         this.componentRepositoryNamespaces = componentRepositoryNamespaces;
+        this.environmentVariablesAppEngine = environmentVariablesAppEngine;
+        this.environmentVariablesComponentManager = environmentVariablesComponentManager;
+        this.environmentVariablesAppBuilder = environmentVariablesAppBuilder;
     }
 
     public List<String> getComponentRepositoryNamespaces() {
