@@ -21,10 +21,10 @@
     <parent>
         <groupId>org.entando</groupId>
         <artifactId>entando-quarkus-parent</artifactId>
-        <version>7.3.0</version>
+        <version>7.3.1-ENG-5551-PR-60</version>
         <relativePath/>
     </parent>
-    <version>7.3.0</version>
+    <version>7.3.1-ESB-513-PR-98</version>
     <artifactId>entando-k8s-custom-model</artifactId>
 
     <name>Entando Kubernetes Custom Model</name>
@@ -75,6 +75,22 @@
     </issueManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-server-mock</artifactId>
+            <version>${fabric8.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Compile-scoped dependencies. -->
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -99,11 +115,6 @@
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>kubernetes-server-mock</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

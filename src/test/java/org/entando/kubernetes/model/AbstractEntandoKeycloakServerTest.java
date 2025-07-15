@@ -45,7 +45,7 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
 
     @BeforeEach
     public void deleteEntandoKeycloakServer() {
-        prepareNamespace(getClient().customResources(EntandoKeycloakServer.class), MY_NAMESPACE);
+        prepareNamespace(getClient().resources(EntandoKeycloakServer.class), MY_NAMESPACE);
     }
 
     @Test
@@ -68,9 +68,9 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
                 .withTlsSecretName(MY_TLS_SECRET)
                 .endSpec()
                 .build();
-        getClient().customResources(EntandoKeycloakServer.class).inNamespace(MY_NAMESPACE).create(keycloakServer);
+        getClient().resources(EntandoKeycloakServer.class).inNamespace(MY_NAMESPACE).create(keycloakServer);
         //When
-        EntandoKeycloakServer actual = getClient().customResources(EntandoKeycloakServer.class).inNamespace(MY_NAMESPACE)
+        EntandoKeycloakServer actual = getClient().resources(EntandoKeycloakServer.class).inNamespace(MY_NAMESPACE)
                 .withName(MY_KEYCLOAK).get();
 
         //Then
@@ -113,8 +113,8 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
 
         //When
         final EntandoKeycloakServerBuilder toEdit = new EntandoKeycloakServerBuilder(
-                getClient().customResources(EntandoKeycloakServer.class).inNamespace(MY_NAMESPACE).create(keycloakServer));
-        EntandoKeycloakServer actual = getClient().customResources(EntandoKeycloakServer.class).inNamespace(MY_NAMESPACE)
+                getClient().resources(EntandoKeycloakServer.class).inNamespace(MY_NAMESPACE).create(keycloakServer));
+        EntandoKeycloakServer actual = getClient().resources(EntandoKeycloakServer.class).inNamespace(MY_NAMESPACE)
                 .withName(MY_KEYCLOAK)
                 .patch(toEdit
                         .editMetadata().addToLabels("my-label", "my-value")
@@ -139,7 +139,7 @@ public abstract class AbstractEntandoKeycloakServerTest implements CustomResourc
         actual.getStatus().putServerStatus(new ServerStatus("some-qualifier"));
         actual.getStatus().putServerStatus(new ServerStatus("another-qualifier"));
         actual.getStatus().updateDeploymentPhase(EntandoDeploymentPhase.STARTED, 5L);
-        actual = getClient().customResources(EntandoKeycloakServer.class).inNamespace(actual.getMetadata().getNamespace())
+        actual = getClient().resources(EntandoKeycloakServer.class).inNamespace(actual.getMetadata().getNamespace())
                 .updateStatus(actual);
         //Then
         assertThat(actual.getSpec().getDbms().get(), is(DbmsVendor.MYSQL));

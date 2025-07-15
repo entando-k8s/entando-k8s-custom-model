@@ -157,7 +157,7 @@ public abstract class AbstractEntandoDeBundleTest implements CustomResourceTestU
     }
 
     protected MixedOperation<EntandoDeBundle, KubernetesResourceList<EntandoDeBundle>, Resource<EntandoDeBundle>> entandoDeBundles() {
-        return getClient().customResources(EntandoDeBundle.class);
+        return getClient().resources(EntandoDeBundle.class);
     }
 
 }

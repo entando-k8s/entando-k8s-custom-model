@@ -38,8 +38,7 @@ public abstract class AbstractEntandoAppPluginLinkTest implements CustomResource
 
     @BeforeEach
     public void deleteEntandoAppPluginLinks() {
-
-        prepareNamespace(getClient().customResources(EntandoAppPluginLink.class), MY_APP_NAMESPACE);
+        prepareNamespace(getClient().resources(EntandoAppPluginLink.class), MY_APP_NAMESPACE);
     }
 
     @Test
@@ -56,13 +55,13 @@ public abstract class AbstractEntandoAppPluginLinkTest implements CustomResource
                 .endSpec()
                 .build();
 
-        getClient().customResources(EntandoAppPluginLink.class).inNamespace(MY_APP_NAMESPACE)
+        getClient().resources(EntandoAppPluginLink.class).inNamespace(MY_APP_NAMESPACE)
                 .create(new EntandoAppPluginLinkBuilder().withMetadata(entandoAppPluginLink.getMetadata())
                         .withSpec(entandoAppPluginLink.getSpec())
                         .build());
         //When
 
-        EntandoAppPluginLink actual = getClient().customResources(EntandoAppPluginLink.class).inNamespace(MY_APP_NAMESPACE)
+        EntandoAppPluginLink actual = getClient().resources(EntandoAppPluginLink.class).inNamespace(MY_APP_NAMESPACE)
                 .withName(MY_APP_PLUGIN_LINK).get();
         //Then
         assertThat(actual.getSpec().getEntandoAppName(), is(MY_APP));
@@ -89,12 +88,12 @@ public abstract class AbstractEntandoAppPluginLinkTest implements CustomResource
         //When
         //We are not using the mock server here because of a known bug
 
-        getClient().customResources(EntandoAppPluginLink.class).inNamespace(MY_APP_NAMESPACE).create(entandoAppPluginLink);
+        getClient().resources(EntandoAppPluginLink.class).inNamespace(MY_APP_NAMESPACE).create(entandoAppPluginLink);
 
-        EntandoAppPluginLink actual = getClient().customResources(EntandoAppPluginLink.class).inNamespace(MY_APP_NAMESPACE)
+        EntandoAppPluginLink actual = getClient().resources(EntandoAppPluginLink.class).inNamespace(MY_APP_NAMESPACE)
                 .withName(MY_APP_PLUGIN_LINK)
                 .patch(new EntandoAppPluginLinkBuilder(
-                        getClient().customResources(EntandoAppPluginLink.class).inNamespace(MY_APP_NAMESPACE).withName(MY_APP_PLUGIN_LINK)
+                        getClient().resources(EntandoAppPluginLink.class).inNamespace(MY_APP_NAMESPACE).withName(MY_APP_PLUGIN_LINK)
                                 .fromServer().get())
                         .editMetadata().addToLabels("my-label", "my-value")
                         .endMetadata()

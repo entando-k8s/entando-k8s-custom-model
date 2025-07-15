@@ -221,7 +221,7 @@ public abstract class AbstractEntandoPluginTest implements CustomResourceTestUti
     }
 
     protected MixedOperation<EntandoPlugin, KubernetesResourceList<EntandoPlugin>, Resource<EntandoPlugin>> entandoPlugins() {
-        return getClient().customResources(EntandoPlugin.class);
+        return getClient().resources(EntandoPlugin.class);
     }
 
 }
