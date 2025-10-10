@@ -251,7 +251,7 @@ public abstract class AbstractEntandoAppTest implements CustomResourceTestUtil {
     }
 
     protected MixedOperation<EntandoApp, KubernetesResourceList<EntandoApp>, Resource<EntandoApp>> entandoApps() {
-        return getClient().customResources(EntandoApp.class);
+        return getClient().resources(EntandoApp.class);
     }
 
 }

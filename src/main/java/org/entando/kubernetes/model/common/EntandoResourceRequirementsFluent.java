@@ -16,12 +16,14 @@
 
 package org.entando.kubernetes.model.common;
 
-import io.fabric8.kubernetes.api.model.ResourceRequirementsFluentImpl;
+import io.fabric8.kubernetes.api.model.Quantity;
+import io.fabric8.kubernetes.api.model.ResourceRequirements;
+import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder;
+import io.fabric8.kubernetes.api.model.ResourceRequirementsFluent;
 
 //The equals method is inherited and should never be used
 @SuppressWarnings("java:S2160")
-public abstract class EntandoResourceRequirementsFluent<N extends EntandoResourceRequirementsFluent<N>>
-        extends ResourceRequirementsFluentImpl<N> {
+public abstract class EntandoResourceRequirementsFluent<N extends EntandoResourceRequirementsFluent<N>> extends ResourceRequirementsFluent<N> {
 
     private String storageRequest;
     private String storageLimit;
@@ -30,9 +32,21 @@ public abstract class EntandoResourceRequirementsFluent<N extends EntandoResourc
     private String cpuRequest;
     private String cpuLimit;
     private String fileUploadLimit;
+    private ResourceRequirements resourceRequirements;
 
     protected EntandoResourceRequirementsFluent(EntandoResourceRequirements resourceRequirements) {
         super(resourceRequirements);
+//        this.resourceRequirements = new ResourceRequirementsBuilder()
+//                .addToLimits("storage", new Quantity(resourceRequirements.getStorageLimit().orElse(null)))
+//                .addToRequests("storage", new Quantity(resourceRequirements.getStorageRequest().orElse(null)))
+//                .addToLimits("memory", new Quantity(resourceRequirements.getMemoryLimit().orElse(null)))
+//                .addToRequests("memory", new Quantity(resourceRequirements.getMemoryRequest().orElse(null)))
+//                .addToLimits("cpu", new Quantity(resourceRequirements.getCpuLimit().orElse(null)))
+//                .addToRequests("cpu", new Quantity(resourceRequirements.getCpuRequest().orElse(null)))
+//                .withClaims(resourceRequirements.getClaims())
+//                .withAdditionalProperties(resourceRequirements.getAdditionalProperties())
+//                .build();
+
         this.storageRequest = resourceRequirements.getStorageRequest().orElse(null);
         this.storageLimit = resourceRequirements.getStorageLimit().orElse(null);
         this.memoryRequest = resourceRequirements.getMemoryRequest().orElse(null);
@@ -83,7 +97,7 @@ public abstract class EntandoResourceRequirementsFluent<N extends EntandoResourc
 
     public EntandoResourceRequirements build() {
         return new EntandoResourceRequirements(storageRequest, storageLimit, memoryRequest, memoryLimit, cpuRequest, cpuLimit,
-                fileUploadLimit, super.getLimits(), super.getRequests());
+                fileUploadLimit, this.getLimits(), this.getRequests());
     }
 
     @SuppressWarnings("unchecked")

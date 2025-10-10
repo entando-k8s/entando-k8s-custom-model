@@ -105,11 +105,11 @@ class DummyBean {
 
     public void onStartup(/*@Observes*/ StartupEvent event) {
         try {
-            deleteAll(getClient().customResources(EntandoDatabaseService.class));
-            deleteAll(getClient().customResources(EntandoKeycloakServer.class));
-            deleteAll(getClient().customResources(EntandoApp.class));
-            deleteAll(getClient().customResources(EntandoPlugin.class));
-            deleteAll(getClient().customResources(EntandoAppPluginLink.class));
+            deleteAll(getClient().resources(EntandoDatabaseService.class));
+            deleteAll(getClient().resources(EntandoKeycloakServer.class));
+            deleteAll(getClient().resources(EntandoApp.class));
+            deleteAll(getClient().resources(EntandoPlugin.class));
+            deleteAll(getClient().resources(EntandoAppPluginLink.class));
             testCreateEntandoDatabaseService();
             testCreateEntandoKeycloakServer();
             testCreateEntandoApp();
@@ -164,9 +164,9 @@ class DummyBean {
                 .endSpec()
                 .build();
         getClient().namespaces().createOrReplace(new NamespaceBuilder().withNewMetadata().withName(MY_NAMESPACE).endMetadata().build());
-        getClient().customResources(EntandoPlugin.class).inNamespace(MY_NAMESPACE).create(externalDatabase);
+        getClient().resources(EntandoPlugin.class).inNamespace(MY_NAMESPACE).create(externalDatabase);
         //When
-        KubernetesResourceList<EntandoPlugin> list = getClient().customResources(EntandoPlugin.class)
+        KubernetesResourceList<EntandoPlugin> list = getClient().resources(EntandoPlugin.class)
                 .inNamespace(MY_NAMESPACE).list();
         EntandoPlugin actual = list.getItems().get(0);
         //Then
@@ -215,9 +215,9 @@ class DummyBean {
                 .endSpec()
                 .build();
         getClient().namespaces().createOrReplace(new NamespaceBuilder().withNewMetadata().withName(MY_NAMESPACE).endMetadata().build());
-        getClient().customResources(EntandoApp.class).inNamespace(MY_NAMESPACE).create(entandoApp);
+        getClient().resources(EntandoApp.class).inNamespace(MY_NAMESPACE).create(entandoApp);
         //When
-        KubernetesResourceList<EntandoApp> list = getClient().customResources(EntandoApp.class).inNamespace(MY_NAMESPACE)
+        KubernetesResourceList<EntandoApp> list = getClient().resources(EntandoApp.class).inNamespace(MY_NAMESPACE)
                 .list();
         EntandoApp actual = list.getItems().get(0);
         //Then
@@ -239,7 +239,7 @@ class DummyBean {
         db.setEntandoControllerFailure(
                 new EntandoControllerFailureBuilder().withFailedObjectKind("app").withFailedObjectName(MY_APP).withMessage("Failed")
                         .withDetailMessage("Failedmiserably").build());
-        actual = getClient().customResources(EntandoApp.class).inNamespace(MY_NAMESPACE).withName(MY_APP).fromServer()
+        actual = getClient().resources(EntandoApp.class).inNamespace(MY_NAMESPACE).withName(MY_APP).fromServer()
                 .get();
         ServerStatus db1 = actual.getStatus().getServerStatus("db").get();
         assertThat(db1.getEntandoControllerFailure().get().getMessage(), "Failed");
@@ -263,10 +263,10 @@ class DummyBean {
                 .endSpec()
                 .build();
         getClient().namespaces().createOrReplace(new NamespaceBuilder().withNewMetadata().withName(MY_NAMESPACE).endMetadata().build());
-        getClient().customResources(EntandoKeycloakServer.class).inNamespace(MY_NAMESPACE)
+        getClient().resources(EntandoKeycloakServer.class).inNamespace(MY_NAMESPACE)
                 .create(keycloakServer);
         //When
-        KubernetesResourceList<EntandoKeycloakServer> list = getClient().customResources(EntandoKeycloakServer.class)
+        KubernetesResourceList<EntandoKeycloakServer> list = getClient().resources(EntandoKeycloakServer.class)
                 .inNamespace(MY_NAMESPACE).list();
         EntandoKeycloakServer actual = list.getItems().get(0);
         //Then
@@ -291,10 +291,10 @@ class DummyBean {
                 .endSpec()
                 .build();
         getClient().namespaces().createOrReplace(new NamespaceBuilder().withNewMetadata().withName(MY_NAMESPACE).endMetadata().build());
-        getClient().customResources(EntandoAppPluginLink.class).inNamespace(MY_APP_NAMESPACE)
+        getClient().resources(EntandoAppPluginLink.class).inNamespace(MY_APP_NAMESPACE)
                 .create(entandoAppPluginLink);
         //When
-        KubernetesResourceList<EntandoAppPluginLink> list = getClient().customResources(EntandoAppPluginLink.class)
+        KubernetesResourceList<EntandoAppPluginLink> list = getClient().resources(EntandoAppPluginLink.class)
                 .inNamespace(MY_APP_NAMESPACE).list();
         EntandoAppPluginLink actual = list.getItems().get(0);
         //Then
@@ -320,10 +320,10 @@ class DummyBean {
                 .endSpec()
                 .build();
         getClient().namespaces().createOrReplace(new NamespaceBuilder().withNewMetadata().withName(MY_NAMESPACE).endMetadata().build());
-        getClient().customResources(EntandoDatabaseService.class).inNamespace(MY_NAMESPACE)
+        getClient().resources(EntandoDatabaseService.class).inNamespace(MY_NAMESPACE)
                 .create(externalDatabase);
         //When
-        KubernetesResourceList<EntandoDatabaseService> list = getClient().customResources(EntandoDatabaseService.class)
+        KubernetesResourceList<EntandoDatabaseService> list = getClient().resources(EntandoDatabaseService.class)
                 .inNamespace(MY_NAMESPACE).list();
         EntandoDatabaseService actual = list.getItems().get(0);
         //Then

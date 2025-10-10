@@ -19,9 +19,9 @@ package org.entando.kubernetes.model.common;
 import io.fabric8.kubernetes.api.builder.Nested;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
-import io.fabric8.kubernetes.api.model.ObjectMetaFluentImpl;
+import io.fabric8.kubernetes.api.model.ObjectMetaFluent;
 
-public class MetadataNestedImpl<N extends EntandoBaseFluent<N>> extends ObjectMetaFluentImpl<MetadataNestedImpl<N>> implements
+public class MetadataNestedImpl<N extends EntandoBaseFluent<N>> extends ObjectMetaFluent<MetadataNestedImpl<N>> implements
         Nested<N> {
 
     private final N parentBuilder;
