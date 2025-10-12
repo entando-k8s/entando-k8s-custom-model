@@ -42,7 +42,7 @@ public interface CustomResourceTestUtil {
         } else {
             await().atMost(Duration.ofMinutes(2)).until(() -> {
                 oper.inNamespace(namespace).delete();
-                return ((CustomResourceList) oper.inNamespace(namespace).list()).getItems().isEmpty();
+                return ((KubernetesResourceList) oper.inNamespace(namespace).list()).getItems().isEmpty();
             });
         }
     }
