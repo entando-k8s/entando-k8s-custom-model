@@ -36,17 +36,6 @@ public abstract class EntandoResourceRequirementsFluent<N extends EntandoResourc
 
     protected EntandoResourceRequirementsFluent(EntandoResourceRequirements resourceRequirements) {
         super(resourceRequirements);
-//        this.resourceRequirements = new ResourceRequirementsBuilder()
-//                .addToLimits("storage", new Quantity(resourceRequirements.getStorageLimit().orElse(null)))
-//                .addToRequests("storage", new Quantity(resourceRequirements.getStorageRequest().orElse(null)))
-//                .addToLimits("memory", new Quantity(resourceRequirements.getMemoryLimit().orElse(null)))
-//                .addToRequests("memory", new Quantity(resourceRequirements.getMemoryRequest().orElse(null)))
-//                .addToLimits("cpu", new Quantity(resourceRequirements.getCpuLimit().orElse(null)))
-//                .addToRequests("cpu", new Quantity(resourceRequirements.getCpuRequest().orElse(null)))
-//                .withClaims(resourceRequirements.getClaims())
-//                .withAdditionalProperties(resourceRequirements.getAdditionalProperties())
-//                .build();
-
         this.storageRequest = resourceRequirements.getStorageRequest().orElse(null);
         this.storageLimit = resourceRequirements.getStorageLimit().orElse(null);
         this.memoryRequest = resourceRequirements.getMemoryRequest().orElse(null);
