@@ -27,9 +27,11 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.fabric8.kubernetes.api.model.Quantity;
+import io.fabric8.kubernetes.api.model.ResourceClaim;
 import io.fabric8.kubernetes.api.model.ResourceRequirements;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 
@@ -64,7 +66,8 @@ public class EntandoResourceRequirements extends ResourceRequirements implements
             @JsonProperty("fileUploadLimit") String fileUploadLimit,
             @JsonProperty("limits") Map<String, Quantity> limits,
             @JsonProperty("requests") Map<String, Quantity> requests) {
-        super(limits, requests);
+//        super(List< ResourceClaim > claims, Map<String, Quantity> limits, Map<String, Quantity> requests);
+        super(new ArrayList(), limits, requests);
         this.storageRequest = storageRequest;
         this.storageLimit = storageLimit;
         this.memoryRequest = memoryRequest;

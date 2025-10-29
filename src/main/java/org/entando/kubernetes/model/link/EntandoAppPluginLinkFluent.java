@@ -16,13 +16,12 @@
 
 package org.entando.kubernetes.model.link;
 
-import io.fabric8.kubernetes.api.builder.Fluent;
 import io.fabric8.kubernetes.api.builder.Nested;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
 import org.entando.kubernetes.model.common.EntandoFluent;
 
-public class EntandoAppPluginLinkFluent<A extends EntandoAppPluginLinkFluent<A>> extends EntandoFluent<A> implements Fluent<A> {
+public class EntandoAppPluginLinkFluent<A extends EntandoAppPluginLinkFluent<A>> extends EntandoFluent<A> {
 
     protected EntandoAppPluginLinkSpecBuilder spec;
 

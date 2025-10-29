@@ -21,10 +21,10 @@
     <parent>
         <groupId>org.entando</groupId>
         <artifactId>entando-quarkus-parent</artifactId>
-        <version>7.3.0</version>
+        <version>7.3.0-fix.1</version>
         <relativePath/>
     </parent>
-    <version>7.3.0</version>
+    <version>7.3.0-fix.1</version>
     <artifactId>entando-k8s-custom-model</artifactId>
 
     <name>Entando Kubernetes Custom Model</name>
@@ -64,7 +64,6 @@
         <tag>HEAD</tag>
     </scm>
     <properties>
-<!--        comment -->
         <github.organization>entando-k8s</github.organization>
         <sonar.projectKey>${github.organization}_${project.artifactId}</sonar.projectKey>
         <sonar.junit.reportPaths>target/surefire-reports</sonar.junit.reportPaths>
@@ -75,6 +74,15 @@
     </issueManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+        </dependency>
+
         <!-- Compile-scoped dependencies. -->
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -89,6 +97,18 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         <!-- Test-scoped dependencies. -->
         <dependency>

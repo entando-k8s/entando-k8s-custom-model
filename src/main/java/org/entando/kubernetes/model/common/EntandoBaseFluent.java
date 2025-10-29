@@ -16,10 +16,9 @@
 
 package org.entando.kubernetes.model.common;
 
-import io.fabric8.kubernetes.api.builder.Fluent;
 import io.fabric8.kubernetes.api.model.ObjectMeta;
 
-public interface EntandoBaseFluent<F extends EntandoBaseFluent<F>> extends Fluent<F> {
+public interface EntandoBaseFluent<F extends EntandoBaseFluent<F>> {
 
     MetadataNestedImpl<F> editMetadata();
 

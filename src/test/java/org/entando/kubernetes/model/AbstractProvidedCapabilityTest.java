@@ -42,7 +42,7 @@ public abstract class AbstractProvidedCapabilityTest implements CustomResourceTe
     @BeforeEach
     public void deleteEntandoAppPluginLinks() {
 
-        prepareNamespace(getClient().customResources(ProvidedCapability.class), MY_NAMESPACE);
+        prepareNamespace(getClient().resources(ProvidedCapability.class), MY_NAMESPACE);
     }
 
     @Test
@@ -71,13 +71,13 @@ public abstract class AbstractProvidedCapabilityTest implements CustomResourceTe
                 .endSpec()
                 .build();
 
-        getClient().customResources(ProvidedCapability.class).inNamespace(MY_NAMESPACE)
+        getClient().resources(ProvidedCapability.class).inNamespace(MY_NAMESPACE)
                 .create(new ProvidedCapabilityBuilder().withMetadata(providedCapability.getMetadata())
                         .withSpec(providedCapability.getSpec())
                         .build());
         //When
 
-        ProvidedCapability actual = getClient().customResources(ProvidedCapability.class).inNamespace(MY_NAMESPACE).withName(MY_CAPABILITY)
+        ProvidedCapability actual = getClient().resources(ProvidedCapability.class).inNamespace(MY_NAMESPACE).withName(MY_CAPABILITY)
                 .get();
         //Then
         assertThat(actual.getSpec().getCapability(), is(StandardCapability.SSO));
@@ -123,11 +123,11 @@ public abstract class AbstractProvidedCapabilityTest implements CustomResourceTe
         //When
         //We are not using the mock server here because of a known bug
 
-        getClient().customResources(ProvidedCapability.class).inNamespace(MY_NAMESPACE).create(providedCapability);
+        getClient().resources(ProvidedCapability.class).inNamespace(MY_NAMESPACE).create(providedCapability);
 
-        ProvidedCapability actual = getClient().customResources(ProvidedCapability.class).inNamespace(MY_NAMESPACE).withName(MY_CAPABILITY)
+        ProvidedCapability actual = getClient().resources(ProvidedCapability.class).inNamespace(MY_NAMESPACE).withName(MY_CAPABILITY)
                 .patch(new ProvidedCapabilityBuilder(
-                        getClient().customResources(ProvidedCapability.class).inNamespace(MY_NAMESPACE).withName(MY_CAPABILITY).fromServer()
+                        getClient().resources(ProvidedCapability.class).inNamespace(MY_NAMESPACE).withName(MY_CAPABILITY).fromServer()
                                 .get())
                         .editMetadata().addToLabels("my-label", "my-value")
                         .endMetadata()

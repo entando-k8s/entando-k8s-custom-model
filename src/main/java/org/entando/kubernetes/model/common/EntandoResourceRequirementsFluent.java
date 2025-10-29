@@ -16,12 +16,14 @@
 
 package org.entando.kubernetes.model.common;
 
-import io.fabric8.kubernetes.api.model.ResourceRequirementsFluentImpl;
+import io.fabric8.kubernetes.api.model.Quantity;
+import io.fabric8.kubernetes.api.model.ResourceRequirements;
+import io.fabric8.kubernetes.api.model.ResourceRequirementsBuilder;
+import io.fabric8.kubernetes.api.model.ResourceRequirementsFluent;
 
 //The equals method is inherited and should never be used
 @SuppressWarnings("java:S2160")
-public abstract class EntandoResourceRequirementsFluent<N extends EntandoResourceRequirementsFluent<N>>
-        extends ResourceRequirementsFluentImpl<N> {
+public abstract class EntandoResourceRequirementsFluent<N extends EntandoResourceRequirementsFluent<N>> extends ResourceRequirementsFluent<N> {
 
     private String storageRequest;
     private String storageLimit;
@@ -30,6 +32,7 @@ public abstract class EntandoResourceRequirementsFluent<N extends EntandoResourc
     private String cpuRequest;
     private String cpuLimit;
     private String fileUploadLimit;
+    private ResourceRequirements resourceRequirements;
 
     protected EntandoResourceRequirementsFluent(EntandoResourceRequirements resourceRequirements) {
         super(resourceRequirements);
@@ -83,7 +86,7 @@ public abstract class EntandoResourceRequirementsFluent<N extends EntandoResourc
 
     public EntandoResourceRequirements build() {
         return new EntandoResourceRequirements(storageRequest, storageLimit, memoryRequest, memoryLimit, cpuRequest, cpuLimit,
-                fileUploadLimit, super.getLimits(), super.getRequests());
+                fileUploadLimit, this.getLimits(), this.getRequests());
     }
 
     @SuppressWarnings("unchecked")

@@ -48,7 +48,7 @@ public abstract class AbstractEntandoDatabaseServiceTest implements CustomResour
 
     @BeforeEach
     public void deleteEntandoDatabaseService() {
-        prepareNamespace(getClient().customResources(EntandoDatabaseService.class), MY_NAMESPACE);
+        prepareNamespace(getClient().resources(EntandoDatabaseService.class), MY_NAMESPACE);
     }
 
     @Test
@@ -72,9 +72,9 @@ public abstract class AbstractEntandoDatabaseServiceTest implements CustomResour
                 .withProvisioningStrategy(CapabilityProvisioningStrategy.DEPLOY_DIRECTLY)
                 .endSpec()
                 .build();
-        getClient().customResources(EntandoDatabaseService.class).inNamespace(MY_NAMESPACE).create(externalDatabase);
+        getClient().resources(EntandoDatabaseService.class).inNamespace(MY_NAMESPACE).create(externalDatabase);
         //When
-        EntandoDatabaseService actual = getClient().customResources(EntandoDatabaseService.class).inNamespace(MY_NAMESPACE)
+        EntandoDatabaseService actual = getClient().resources(EntandoDatabaseService.class).inNamespace(MY_NAMESPACE)
                 .withName(MY_EXTERNAL_DATABASE).get();
         //Then
         assertThat(actual.getSpec().getDatabaseName().get(), is(MY_DB));
@@ -113,8 +113,8 @@ public abstract class AbstractEntandoDatabaseServiceTest implements CustomResour
                 .build();
         //When
         final EntandoDatabaseServiceBuilder toEdit = new EntandoDatabaseServiceBuilder(
-                getClient().customResources(EntandoDatabaseService.class).inNamespace(MY_NAMESPACE).create(externalDatabase));
-        EntandoDatabaseService actual = getClient().customResources(EntandoDatabaseService.class).inNamespace(MY_NAMESPACE)
+                getClient().resources(EntandoDatabaseService.class).inNamespace(MY_NAMESPACE).create(externalDatabase));
+        EntandoDatabaseService actual = getClient().resources(EntandoDatabaseService.class).inNamespace(MY_NAMESPACE)
                 .withName(MY_EXTERNAL_DATABASE).patch(
                         toEdit
                                 .editMetadata().addToLabels("my-label", "my-value")
