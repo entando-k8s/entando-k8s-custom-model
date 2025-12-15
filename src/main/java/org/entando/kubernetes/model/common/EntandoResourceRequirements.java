@@ -66,7 +66,7 @@ public class EntandoResourceRequirements extends ResourceRequirements implements
             @JsonProperty("fileUploadLimit") String fileUploadLimit,
             @JsonProperty("limits") Map<String, Quantity> limits,
             @JsonProperty("requests") Map<String, Quantity> requests) {
-//        super(List< ResourceClaim > claims, Map<String, Quantity> limits, Map<String, Quantity> requests);
+        //super(List< ResourceClaim > claims, Map<String, Quantity> limits, Map<String, Quantity> requests);
         super(new ArrayList(), limits, requests);
         this.storageRequest = storageRequest;
         this.storageLimit = storageLimit;
