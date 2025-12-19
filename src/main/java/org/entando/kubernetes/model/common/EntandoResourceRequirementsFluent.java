@@ -23,7 +23,8 @@ import io.fabric8.kubernetes.api.model.ResourceRequirementsFluent;
 
 //The equals method is inherited and should never be used
 @SuppressWarnings("java:S2160")
-public abstract class EntandoResourceRequirementsFluent<N extends EntandoResourceRequirementsFluent<N>> extends ResourceRequirementsFluent<N> {
+public abstract class EntandoResourceRequirementsFluent<N extends EntandoResourceRequirementsFluent<N>>
+        extends ResourceRequirementsFluent<N> {
 
     private String storageRequest;
     private String storageLimit;
