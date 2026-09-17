@@ -21,10 +21,10 @@
     <parent>
         <groupId>org.entando</groupId>
         <artifactId>entando-quarkus-parent</artifactId>
-        <version>7.3.0-fix.2</version>
+        <version>7.5.1</version>
         <relativePath/>
     </parent>
-    <version>7.3.0-fix.2</version>
+    <version>7.5.1-SNAPSHOT</version>
     <artifactId>entando-k8s-custom-model</artifactId>
 
     <name>Entando Kubernetes Custom Model</name>
@@ -46,8 +46,8 @@
 
     <repositories>
         <repository>
-            <id>jx-releases</id>
-            <url>https://nexus-jx.apps.serv.run/repository/maven-releases/</url>
+            <id>nexus-entando</id>
+            <url>https://dependencies.entando.org/repository/maven-releases/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
